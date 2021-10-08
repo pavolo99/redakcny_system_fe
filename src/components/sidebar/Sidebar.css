@@ -1,0 +1,18 @@
+.SideBar {
+    width: 256px;
+    height: 90vh;
+    background-color: white;
+}
+
+.SideBar-item {
+    padding-left: 1rem;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.Active-item {
+    background-color: #E3F2FD;
+    color: #2196F3;
+}
