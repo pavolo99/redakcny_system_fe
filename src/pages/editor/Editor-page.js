@@ -3,7 +3,7 @@ import classes from './Editor-page.css'
 import Header from "../../components/header/Header";
 import {EditorView} from "@codemirror/view";
 import {EditorState} from "@codemirror/state";
-import {makeStyles, TextField} from "@material-ui/core";
+import {Button, makeStyles, TextField} from "@material-ui/core";
 import {useLocation} from "react-router-dom";
 import axios from "axios";
 import {extensions} from "../../components/codemirror-settings/extensions";
@@ -49,7 +49,6 @@ const EditorPage = (props) => {
 
   const changeHandler = e => {
     setAllValues({...allValues, [e.target.name]: e.target.value})
-    console.log(e.target.name);
   }
 
   const materialClasses = useStyles();
@@ -107,7 +106,7 @@ const EditorPage = (props) => {
   return (
       <div>
         <Header/>
-        <form onSubmit={onSaveArticle}>
+        <form>
           <div className="Editor-content">
             <div className="Left-side">
               <div><TextField label="Kľúčové slová"
@@ -127,6 +126,11 @@ const EditorPage = (props) => {
                               style={{width: "100%"}} variant="filled"
                               required={true} onChange={changeHandler}
                               className={materialClasses.root}/></div>
+
+              <Button className="Submit-button" onClick={onSaveArticle}>
+                Uložiť článok
+              </Button>
+
             </div>
             <div className="Center-editor">
               <div className="Name-abstract-inputs">
@@ -144,7 +148,7 @@ const EditorPage = (props) => {
               <div ref={editor}></div>
             </div>
             <div className="Right-side">
-              <button>Uložiť článok</button>
+              Komentare budu coskoro
             </div>
           </div>
         </form>
