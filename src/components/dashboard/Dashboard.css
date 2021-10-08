@@ -1,0 +1,36 @@
+.Content {
+    margin-top: 1rem;
+    margin-left: 1rem;
+    width: 85%;
+}
+
+.New-article-button {
+    background-color: #2196F3 !important;
+    color: white !important;
+    border-radius: 30px !important;
+    padding: 15px !important;
+}
+
+.Article-list {
+    margin-top: 1rem;
+    background-color: white;
+    padding: 15px;
+}
+
+.Headers {
+    color: #757575;
+    display: flex;
+}
+
+.Article-item {
+    display: flex;
+    cursor: pointer;
+}
+
+.Headers > div {
+    width: 20%;
+}
+
+.Article-item > div {
+    width: 20%;
+}
