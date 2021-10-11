@@ -1,5 +1,5 @@
 import React from "react";
-import classes from "./Dashboard.css"
+import "./ArticleList.css"
 import {Button} from "@material-ui/core";
 import {useHistory} from "react-router-dom";
 import axios from "axios";
@@ -7,7 +7,7 @@ import ArticleStatus from "../article-status/Article-status";
 
 const baseURL = "http://localhost:8080/article";
 
-export default function Dashboard() {
+export default function ArticleList(props) {
   const [articles, setArticles] = React.useState([]);
 
   React.useEffect(() => {
@@ -15,7 +15,7 @@ export default function Dashboard() {
       console.log(response)
       setArticles(response.data);
     });
-  }, []);
+  }, [props.selectedArticles]);
 
   const history = useHistory();
 
@@ -28,7 +28,7 @@ export default function Dashboard() {
     history.push('/editor')
   }
 
-  const mappedArticleList = () => (
+  const mappedArticleList =
       <div>
         {articles.map(article => (
             <div key={article.id} onClick={(() => onEditArticle(article))}>
@@ -42,17 +42,15 @@ export default function Dashboard() {
                 {/*<div>{article.lastEditedBy}</div>*/}
                 <div>Dlugos</div>
               </div>
-              <hr/>
+              <hr className="Article-divider"/>
             </div>
         ))}
       </div>
-  );
-  if (!articles || articles.length < 1) return null;
 
   return (
       <div className="Content">
         <Button className="New-article-button" onClick={onCreateNewArticle}>
-          Nový článok
+          + Nový článok
         </Button>
         <div className="Article-list">
           <div className="Headers">
@@ -62,8 +60,9 @@ export default function Dashboard() {
             <div>Posledná editácia</div>
             <div>Naposledy upravil</div>
           </div>
-          <hr/>
-          {mappedArticleList()}
+          <hr className="Article-divider"/>
+          {articles && articles.length > 0 ? mappedArticleList
+              : 'Žiadne články nevyhovujú kritériám'}
         </div>
       </div>
   );

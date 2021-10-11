@@ -1,14 +1,14 @@
 .Content {
     margin-top: 1rem;
     margin-left: 1rem;
-    width: 85%;
+    width: 80%;
 }
 
 .New-article-button {
     background-color: #2196F3 !important;
     color: white !important;
-    border-radius: 30px !important;
-    padding: 15px !important;
+    border-radius: 20px !important;
+    padding: 5px 15px !important;
 }
 
 .Article-list {
@@ -20,11 +20,19 @@
 .Headers {
     color: #757575;
     display: flex;
+    padding-top: 5px;
+    padding-bottom: 5px;
 }
 
 .Article-item {
     display: flex;
     cursor: pointer;
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
+.Article-item:hover {
+    background-color: #C4C4C4;
 }
 
 .Headers > div {
@@ -33,4 +41,8 @@
 
 .Article-item > div {
     width: 20%;
+}
+
+.Article-divider {
+    margin: 0;
 }

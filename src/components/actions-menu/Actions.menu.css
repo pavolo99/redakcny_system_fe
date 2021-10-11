@@ -1,0 +1,26 @@
+.Dropdown-expansion {
+    margin-top: 21rem;
+    width: 250px;
+    height: 310px;
+    background-color: white;
+    z-index: 50;
+    border: 1px solid black;
+    border-radius: 5px;
+}
+
+.Dropdown-option {
+    padding: 10px;
+    font-size: 110%;
+}
+
+.Dropdown-option:hover {
+    background-color: #C4C4C4;
+    cursor: pointer;
+}
+
+hr.Action-menu-divider {
+    border-top: 1px solid #bbb;
+    width: 90%;
+    margin: 0;
+}
+

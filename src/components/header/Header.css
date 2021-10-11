@@ -2,12 +2,43 @@
     width: 100%;
     height: 64px;
     background-color: #2196F3;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
 }
 
 .App-link {
     color: white;
     font-size: 150%;
-    padding-top: 1rem;
     margin-left: 1rem;
     cursor: pointer;
+    white-space: nowrap;
+}
+
+.Three-dots-menu {
+    margin-left: 20rem;
+    cursor: pointer;
+    height: 0.5rem;
+}
+
+.Vertical-divider {
+    border-left: 3px solid white;
+    height: 64px;
+    margin-left: 57px;
+}
+
+.Quick-menu-item {
+    cursor: pointer;
+    display: flex;
+    margin-left: 0.5rem;
+}
+
+.Quick-menu-img {
+    margin-left: 1rem;
+    margin-right: 1rem;
+}
+
+.Quick-menu-text {
+    color: white;
+    font-size: 120%;
 }

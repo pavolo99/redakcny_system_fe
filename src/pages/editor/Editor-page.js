@@ -1,5 +1,5 @@
 import React from "react";
-import classes from './Editor-page.css'
+import './Editor-page.css'
 import Header from "../../components/header/Header";
 import {EditorView} from "@codemirror/view";
 import {EditorState} from "@codemirror/state";
@@ -8,6 +8,7 @@ import {useLocation} from "react-router-dom";
 import axios from "axios";
 import {extensions} from "../../components/codemirror-settings/extensions";
 import {theme} from "../../components/codemirror-settings/theme";
+import {MuiMessage} from "../../components/mui-message/Mui-message";
 
 const baseURL = "http://localhost:8080/article";
 
@@ -47,6 +48,12 @@ const EditorPage = (props) => {
     publicationDecision: articleWithoutCode.publicationDecision
   });
 
+  const [muiMessage, setMuiMessage] = React.useState({
+    open: false,
+    severity: 'success',
+    message: 'Článok bol úspešne uložený'
+  });
+
   const changeHandler = e => {
     setAllValues({...allValues, [e.target.name]: e.target.value})
   }
@@ -60,7 +67,6 @@ const EditorPage = (props) => {
   });
 
   React.useEffect(() => {
-
     let textContent = '';
     if (props && props.location && props.location.state) {
       textContent = props.location.state.text;
@@ -96,16 +102,32 @@ const EditorPage = (props) => {
     if (articleWithoutCode.id) {
       axios.put(baseURL + '/' + articleWithoutCode.id,
           {...saveDto, id: articleWithoutCode.id})
-      .then(value => console.log('created: ' + value));
+      .then(() => {
+        setMuiMessage(prevState => {
+          return {...prevState, open: true}
+        });
+      });
     } else {
-      axios.post(baseURL, saveDto).then(
-          value => console.log('created: ' + value));
+      axios.post(baseURL, saveDto).then(() => {
+        setMuiMessage(prevState => {
+          return {...prevState, open: true}
+        });
+      });
     }
+  }
+
+  const closeMuiMessage = () => {
+    setMuiMessage(prevState => {
+      return {...prevState, open: false}
+    })
   }
 
   return (
       <div>
-        <Header/>
+        <Header openedArticleId={articleWithoutCode.id}/>
+        <MuiMessage severity={muiMessage.severity} open={muiMessage.open}
+                    onCloseMuiMessage={closeMuiMessage}
+                    message={muiMessage.message}/>
         <form>
           <div className="Editor-content">
             <div className="Left-side">
