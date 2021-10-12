@@ -11,10 +11,9 @@ export default function ArticleList(props) {
   const [articles, setArticles] = React.useState([]);
 
   React.useEffect(() => {
-    axios.get(baseURL).then((response) => {
-      console.log(response)
-      setArticles(response.data);
-    });
+    axios.get(baseURL + '/list/' + props.selectedArticles).then((response) =>
+        setArticles(response.data)
+    );
   }, [props.selectedArticles]);
 
   const history = useHistory();
@@ -36,7 +35,8 @@ export default function ArticleList(props) {
                 <div>{article.name}</div>
                 {/*<div>{article.authors}</div>*/}
                 <div>Autori</div>
-                <div><ArticleStatus name={article.articleStatus} reviewNumber={article.reviewNumber} /></div>
+                <div><ArticleStatus name={article.articleStatus}
+                                    reviewNumber={article.reviewNumber}/></div>
                 {/*<div>{article.lastEditedOn}</div>*/}
                 <div>Dnes</div>
                 {/*<div>{article.lastEditedBy}</div>*/}
@@ -62,7 +62,9 @@ export default function ArticleList(props) {
           </div>
           <hr className="Article-divider"/>
           {articles && articles.length > 0 ? mappedArticleList
-              : 'Žiadne články nevyhovujú kritériám'}
+              : <div className="Empty-articles">
+                Žiadne články nevyhovujú kritériám
+              </div>}
         </div>
       </div>
   );

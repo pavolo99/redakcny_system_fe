@@ -46,3 +46,8 @@
 .Article-divider {
     margin: 0;
 }
+
+.Empty-articles {
+    font-style: italic;
+    padding-top: 1rem;
+}
