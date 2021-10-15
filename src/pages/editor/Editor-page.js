@@ -125,18 +125,37 @@ const EditorPage = (props) => {
 
   return (
       <div>
-        <Header openedArticleId={articleWithoutCode.id} openedArticleStatus={articleWithoutCode.articleStatus}/>
+        <Header openedArticleId={articleWithoutCode.id}
+                openedArticleStatus={articleWithoutCode.articleStatus}/>
         <MuiMessage severity={muiMessage.severity} open={muiMessage.open}
                     onCloseMuiMessage={closeMuiMessage}
                     message={muiMessage.message}/>
         <form>
-          <div className="Editor-content">
-            <div className="Left-side">
+          <div className="Flex-row">
+            <div className="Key-words">
               <div><TextField label="Kľúčové slová"
                               name="keyWords" value={allValues.keyWords}
                               variant="filled" style={{width: "100%"}}
                               required={true} onChange={changeHandler}
                               className={materialClasses.root}/></div>
+            </div>
+            <div className="Article-name">
+              <TextField label="Názov článku" variant="filled"
+                         value={allValues.articleName}
+                         style={{width: "100%"}} name="articleName"
+                         required={true} onChange={changeHandler}
+                         className={materialClasses.root}/>
+            </div>
+            <div className="Article-abstract">
+              <TextField label="Abstrakt" variant="filled"
+                         value={allValues.articleAbstract}
+                         style={{width: "100%"}} name="articleAbstract"
+                         required={true} onChange={changeHandler}
+                         className={materialClasses.root}/>
+            </div>
+          </div>
+          <div className="Flex-row">
+            <div className="Left-side">
               <div><TextField name="publicFileName"
                               label="Názov zverejneného súboru"
                               value={allValues.publicFileName}
@@ -156,22 +175,9 @@ const EditorPage = (props) => {
 
             </div>
             <div className="Center-editor">
-              <div className="Name-abstract-inputs">
-                <div><TextField label="Názov článku" variant="filled"
-                                value={allValues.articleName}
-                                style={{width: "100%"}} name="articleName"
-                                required={true} onChange={changeHandler}
-                                className={materialClasses.root}/></div>
-                <div><TextField label="Abstrakt" variant="filled"
-                                value={allValues.articleAbstract}
-                                style={{width: "100%"}} name="articleAbstract"
-                                required={true} onChange={changeHandler}
-                                className={materialClasses.root}/></div>
-              </div>
               <div ref={editor}></div>
             </div>
             <div className="Right-side">
-              Komentare budu coskoro
             </div>
           </div>
         </form>
