@@ -36,6 +36,7 @@ const EditorPage = (props) => {
     articleWithoutCode.articleAbstract = location.state.articleAbstract
     articleWithoutCode.publicFileName = location.state.publicFileName
     articleWithoutCode.publicationDecision = location.state.publicationDecision
+    articleWithoutCode.articleStatus = location.state.articleStatus
   }
 
   const editor = React.useRef();
@@ -124,7 +125,7 @@ const EditorPage = (props) => {
 
   return (
       <div>
-        <Header openedArticleId={articleWithoutCode.id}/>
+        <Header openedArticleId={articleWithoutCode.id} openedArticleStatus={articleWithoutCode.articleStatus}/>
         <MuiMessage severity={muiMessage.severity} open={muiMessage.open}
                     onCloseMuiMessage={closeMuiMessage}
                     message={muiMessage.message}/>

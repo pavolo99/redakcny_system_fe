@@ -36,33 +36,113 @@ export default function Header(props) {
     setIsMenuClicked((prevState) => !prevState);
   }
 
-  function onSendReview() {
-
-  }
-
-  function onApproveArticle() {
-    const messageData = {
-      open: true,
-      message: 'Článok bol úspešne schválený',
-      severity: 'success'
-    }
-    axios.put(baseURL + '/approved/' + props.openedArticleId)
+  function onRemoveArticle() {
+    const messageData = createMessageData('Článok bol úspešne vymazaný');
+    axios.delete(baseURL + '/deleted/' + props.openedArticleId)
     .catch((error) => {
-      messageData.severity = 'error';
-      if (error.response.data.message === 'Article must be after review to be approved') {
-        messageData.message = 'Článok môže byť schválený až po recenzii';
-      } else {
-        messageData.message = 'Nastala neočakávaná chyba pri schvaľovaní článku'
-      }
+      handleError(messageData, error,
+          'Article must be in writing state and cannot be after any review',
+          'Článok môže byť vymazaný iba, ak článok nie je a ani nebol v žiadnej recenzii');
     })
     .finally(() => setMuiMessage(messageData));
   }
 
-  const editorPart = <>
-    <div className="Quick-menu-item">
-      <img src={Review} alt="Review" onClick={() => onSendReview()}
+  function onDownloadArticle() {
+    console.log('download');
+  }
+
+  function onPublishArticle() {
+    const messageData = createMessageData(
+        'Článok bol úspešne publikovaný a archivovaný');
+    axios.put(baseURL + '/published/' + props.openedArticleId)
+    .catch((error) => {
+      handleError(messageData, error, 'Article must be approved',
+          'Článok musí byť schválený');
+    })
+    .finally(() => setMuiMessage(messageData));
+  }
+
+  function onDenyArticle() {
+    const messageData = createMessageData(
+        'Článok bol úspešne zamietnutý a archivovaný');
+    axios.put(baseURL + '/denied/' + props.openedArticleId)
+    .catch((error) => {
+      handleError(messageData, error, 'Article must be after review',
+          'Článok musí byť po recenzii');
+    })
+    .finally(() => setMuiMessage(messageData));
+  }
+
+  function onArchiveArticle() {
+    const messageData = createMessageData('Článok bol úspešne archivovaný');
+    axios.put(baseURL + '/archived/' + props.openedArticleId)
+    .catch((error) => {
+      handleError(messageData, error,
+          'Article must be first reviewed or approved',
+          'Článok musí byť po recenzii alebo musí byť schválený');
+    })
+    .finally(() => setMuiMessage(messageData));
+  }
+
+  function onSendToReview() {
+    const messageData = createMessageData(
+        'Článok bol úspešne odoslaný na recenziu');
+    axios.put(baseURL + '/sent-to-review/' + props.openedArticleId)
+    .catch((error) => {
+      handleError(messageData, error, 'Article must be in the writing process',
+          'Článok môže byť odoslaný na recenziu iba, ak je v stave písania');
+    })
+    .finally(() => setMuiMessage(messageData));
+  }
+
+  function onSendReview() {
+    const messageData = createMessageData(
+        'Recenzia článku bola úspešne odoslaná autorovi');
+    axios.put(baseURL + '/sent-review/' + props.openedArticleId)
+    .catch((error) => {
+      handleError(messageData, error, 'Article must be in the review',
+          'Recenzia môže byť odoslaná iba, ak je článok v recenzii');
+    })
+    .finally(() => setMuiMessage(messageData));
+  }
+
+  function onApproveArticle() {
+    const messageData = createMessageData('Článok bol úspešne schválený');
+    axios.put(baseURL + '/approved/' + props.openedArticleId)
+    .catch((error) => {
+      handleError(messageData, error, 'Article must be first reviewed',
+          'Článok môže byť schválený až po recenzii');
+    })
+    .finally(() => setMuiMessage(messageData));
+  }
+
+  function createMessageData(message) {
+    return {
+      open: true,
+      message: message,
+      severity: 'success'
+    };
+  }
+
+  function handleError(messageData, error, responseMessage, errorMessage) {
+    messageData.severity = 'error';
+    if (error.response.data.message === responseMessage) {
+      messageData.message = errorMessage;
+    } else {
+      messageData.message = 'Nastala neočakávaná chyba pri schvaľovaní článku'
+    }
+  }
+
+  const editorActionsMenu = <>
+    <div className="Quick-menu-item" onClick={() => onSendToReview()}>
+      <img src={Review} alt="Review"
            className="Quick-menu-img"/>
       <div className="Quick-menu-text">Odoslať na recenziu</div>
+    </div>
+    <div className="Quick-menu-item" onClick={() => onSendReview()}>
+      <img src={Review} alt="Review"
+           className="Quick-menu-img"/>
+      <div className="Quick-menu-text">Odoslať recenziu</div>
     </div>
     <div className="Quick-menu-item" onClick={() => onApproveArticle()}>
       <img src={Approve} alt="Approve" className="Quick-menu-img"/>
@@ -73,7 +153,13 @@ export default function Header(props) {
         alt="Three dots" className="Three-dots-menu"
         onClick={() => onMenuClick()}/>
     {isMenuClicked ? <ActionsMenu openedArticleId={props.openedArticleId}
-                                  className="Dropdown-expansion"/> : null}
+                                  articleStatus={props.openedArticleStatus}
+                                  className="Dropdown-expansion"
+                                  onRemoveArticle={onRemoveArticle}
+                                  onDownloadArticle={onDownloadArticle}
+                                  onDenyArticle={onDenyArticle}
+                                  onPublishArticle={onPublishArticle}
+                                  onArchiveArticle={onArchiveArticle}/> : null}
   </>
 
   return (
@@ -82,7 +168,7 @@ export default function Header(props) {
           <span>Redakčný systém</span>
         </div>
         <div className="Vertical-divider"/>
-        {props.openedArticleId ? editorPart : null}
+        {props.openedArticleId ? editorActionsMenu : null}
         <MuiMessage severity={muiMessage.severity} open={muiMessage.open}
                     onCloseMuiMessage={closeMuiMessage}
                     message={muiMessage.message}/>

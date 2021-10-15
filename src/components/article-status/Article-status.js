@@ -1,14 +1,12 @@
 export default function ArticleStatus(props) {
+  const reviewNumber = props.reviewNumber;
   let articleStatusName;
   switch (props.name) {
     case 'WRITING':
-      articleStatusName = 'V procese'
+      articleStatusName = reviewNumber === 0 ? 'V procese' : 'Po ' + props.reviewNumber + '. recenzii'
       break;
     case 'IN_REVIEW':
-      articleStatusName = 'V ' + props.reviewNumber + '. recenzii'
-      break;
-    case 'AFTER_REVIEW':
-      articleStatusName = 'Po ' + props.reviewNumber + '. recenzii'
+      articleStatusName = 'V ' + reviewNumber + '. recenzii'
       break;
     case 'APPROVED':
       articleStatusName = 'Schválený'
