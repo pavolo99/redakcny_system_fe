@@ -1,0 +1,29 @@
+.Images {
+    background-color: white;
+    padding: 1rem;
+}
+
+h4.Images-header {
+    margin: 0;
+}
+
+.Image-row {
+    display: flex;
+    flex-direction: row;
+    margin-top: 0.5rem;
+    justify-content: space-between;
+}
+
+.Delete-icon {
+    cursor: pointer;
+}
+
+.Upload-image {
+    cursor: pointer;
+    margin-top: 0.5rem;
+}
+
+.Empty-images {
+    font-style: italic;
+    padding-top: 0.5rem;
+}

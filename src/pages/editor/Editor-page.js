@@ -9,6 +9,7 @@ import axios from "axios";
 import {extensions} from "../../components/codemirror-settings/extensions";
 import {theme} from "../../components/codemirror-settings/theme";
 import {MuiMessage} from "../../components/mui-message/Mui-message";
+import ImageSection from "../../components/image-section/Image-section";
 
 const baseURL = "http://localhost:8080/article";
 
@@ -55,6 +56,8 @@ const EditorPage = (props) => {
     message: 'Článok bol úspešne uložený'
   });
 
+  const [editorView, setEditorView] = React.useState(null);
+
   const changeHandler = e => {
     setAllValues({...allValues, [e.target.name]: e.target.value})
   }
@@ -74,7 +77,7 @@ const EditorPage = (props) => {
       setAllValues({...allValues, 'code': textContent})
     }
 
-    let state = EditorState.create({
+    let editorState = EditorState.create({
       doc: textContent,
       extensions: [
         extensions,
@@ -82,11 +85,12 @@ const EditorPage = (props) => {
         onUpdate
       ],
     });
-    let view = new EditorView({state, parent: editor.current});
+    setEditorView(new EditorView({state: editorState, parent: editor.current}));
 
-    return () => {
-      view.destroy();
-    };
+    // TODO reconsider this destroy method
+    // return () => {
+    //   view.viewState.destroy();
+    // };
   }, []);
 
   function onSaveArticle(event) {
@@ -121,6 +125,16 @@ const EditorPage = (props) => {
     setMuiMessage(prevState => {
       return {...prevState, open: false}
     })
+  }
+
+  function onImageInsertion(imageSource) {
+    let insertImageTransaction = editorView.state.update({
+      changes: {
+        from: editorView.state.doc.length,
+        insert: "\n![Pridajte nejaký popis obrázku](" + imageSource + ")"
+      }
+    })
+    editorView.dispatch(insertImageTransaction);
   }
 
   return (
@@ -168,6 +182,12 @@ const EditorPage = (props) => {
                               style={{width: "100%"}} variant="filled"
                               required={true} onChange={changeHandler}
                               className={materialClasses.root}/></div>
+
+              <div>
+                <ImageSection
+                    insertImage={(imageSource) => onImageInsertion(imageSource)}
+                    articleId={articleWithoutCode.id}/>
+              </div>
 
               <Button className="Submit-button" onClick={onSaveArticle}>
                 Uložiť článok
