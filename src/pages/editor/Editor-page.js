@@ -10,6 +10,7 @@ import {extensions} from "../../components/codemirror-settings/extensions";
 import {theme} from "../../components/codemirror-settings/theme";
 import {MuiMessage} from "../../components/mui-message/Mui-message";
 import ImageSection from "../../components/image-section/Image-section";
+import EditorToolbar from "../../components/editor-toolbar/Editor-toolbar";
 
 const baseURL = "http://localhost:8080/article";
 
@@ -195,6 +196,7 @@ const EditorPage = (props) => {
 
             </div>
             <div className="Center-editor">
+              <EditorToolbar />
               <div ref={editor}></div>
             </div>
             <div className="Right-side">
