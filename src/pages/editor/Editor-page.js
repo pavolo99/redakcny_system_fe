@@ -11,6 +11,7 @@ import {theme} from "../../components/codemirror-settings/theme";
 import {MuiMessage} from "../../components/mui-message/Mui-message";
 import ImageSection from "../../components/image-section/Image-section";
 import EditorToolbar from "../../components/editor-toolbar/Editor-toolbar";
+import ReactMarkdown from 'react-markdown'
 
 const baseURL = "http://localhost:8080/article";
 
@@ -58,6 +59,8 @@ const EditorPage = (props) => {
   });
 
   const [editorView, setEditorView] = React.useState(null);
+
+  const [editorVisible, setEditorVisible] = React.useState(true);
 
   const changeHandler = e => {
     setAllValues({...allValues, [e.target.name]: e.target.value})
@@ -138,6 +141,10 @@ const EditorPage = (props) => {
     editorView.dispatch(insertImageTransaction);
   }
 
+  function onToggleEditorPreview() {
+    setEditorVisible(prevState => !prevState);
+  }
+
   return (
       <div>
         <Header openedArticleId={articleWithoutCode.id}
@@ -195,9 +202,10 @@ const EditorPage = (props) => {
               </Button>
 
             </div>
-            <div className="Center-editor">
-              <EditorToolbar />
-              <div ref={editor}></div>
+            <div className="Center-editor Editor">
+              <EditorToolbar editorVisible={editorVisible} toggleEditorPreview={() => onToggleEditorPreview()}/>
+              <div ref={editor} className={editorVisible ? '' : 'Invisible'}/>
+              <ReactMarkdown children={allValues.code} className={editorVisible ? 'Invisible' : 'Visible Preview'}/>
             </div>
             <div className="Right-side">
             </div>
