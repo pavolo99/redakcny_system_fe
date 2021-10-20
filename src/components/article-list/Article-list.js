@@ -1,22 +1,11 @@
 import React from "react";
 import "./Article-list.css"
-import {Button, makeStyles} from "@material-ui/core";
+import {Button} from "@material-ui/core";
 import {useHistory} from "react-router-dom";
 import axios from "axios";
 import ArticleStatus from "../article-status/Article-status";
 import {apiUrl} from "../environment/environment";
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
-import Select from '@mui/material/Select';
-
-const useStyles = makeStyles(() => ({
-  root: {
-    "& .MuiFilledInput-root": {
-      background: "rgb(255,255,255)"
-    }
-  }
-}));
+import ArticleStatusDropdown from "../article-status-dropdown/Article-status-dropdown";
 
 export default function ArticleList(props) {
   const [articles, setArticles] = React.useState([]);
@@ -83,19 +72,9 @@ export default function ArticleList(props) {
           <Button className="New-article-button" onClick={onCreateNewArticle}>
             + Nový článok
           </Button>
-          <FormControl className={useStyles().root + ' Article-status-dropdown'}
-                       variant="filled"
-                       disabled={props.selectedArticles === 'APPROVED'
-                       || props.selectedArticles === 'ARCHIVED'}>
-            <InputLabel>Stav článku</InputLabel>
-            <Select value={articleStatus}
-                    onChange={(event) => onFilterArticlesByStatus(event)}>
-              <MenuItem value="ALL">Všetky</MenuItem>
-              <MenuItem value="WRITING">V procese</MenuItem>
-              <MenuItem value="IN_REVIEW">Pripravené na recenziu</MenuItem>
-              <MenuItem value="AFTER_REVIEW">Po recenzii</MenuItem>
-            </Select>
-          </FormControl>
+          <ArticleStatusDropdown articleStatus={articleStatus}
+                                 selectedArticles={props.selectedArticles}
+                                 filterArticlesByStatus={(event) => onFilterArticlesByStatus(event)}/>
         </div>
         <div className="Article-list">
           <div className="Headers">
