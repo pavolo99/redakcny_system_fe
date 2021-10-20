@@ -8,8 +8,7 @@ import Approve from "../../assets/approve.svg"
 import ActionsMenu from "../actions-menu/Actions-menu";
 import {MuiMessage} from "../mui-message/Mui-message";
 import axios from "axios";
-
-const baseURL = "http://localhost:8080/article";
+import {apiUrl} from "../environment/environment";
 
 export default function Header(props) {
   const history = useHistory();
@@ -38,7 +37,7 @@ export default function Header(props) {
 
   function onRemoveArticle() {
     const messageData = createMessageData('Článok bol úspešne vymazaný');
-    axios.delete(baseURL + '/deleted/' + props.openedArticleId)
+    axios.delete(apiUrl + '/article/deleted/' + props.openedArticleId)
     .catch((error) => {
       handleError(messageData, error,
           'Article must be in writing state and cannot be after any review',
@@ -54,7 +53,7 @@ export default function Header(props) {
   function onPublishArticle() {
     const messageData = createMessageData(
         'Článok bol úspešne publikovaný a archivovaný');
-    axios.put(baseURL + '/published/' + props.openedArticleId)
+    axios.put(apiUrl + '/article/published/' + props.openedArticleId)
     .catch((error) => {
       handleError(messageData, error, 'Article must be approved',
           'Článok musí byť schválený');
@@ -65,7 +64,7 @@ export default function Header(props) {
   function onDenyArticle() {
     const messageData = createMessageData(
         'Článok bol úspešne zamietnutý a archivovaný');
-    axios.put(baseURL + '/denied/' + props.openedArticleId)
+    axios.put(apiUrl + '/article/denied/' + props.openedArticleId)
     .catch((error) => {
       handleError(messageData, error, 'Article must be after review',
           'Článok musí byť po recenzii');
@@ -75,7 +74,7 @@ export default function Header(props) {
 
   function onArchiveArticle() {
     const messageData = createMessageData('Článok bol úspešne archivovaný');
-    axios.put(baseURL + '/archived/' + props.openedArticleId)
+    axios.put(apiUrl + '/article/archived/' + props.openedArticleId)
     .catch((error) => {
       handleError(messageData, error,
           'Article must be first reviewed or approved',
@@ -87,7 +86,7 @@ export default function Header(props) {
   function onSendToReview() {
     const messageData = createMessageData(
         'Článok bol úspešne odoslaný na recenziu');
-    axios.put(baseURL + '/sent-to-review/' + props.openedArticleId)
+    axios.put(apiUrl + '/article/sent-to-review/' + props.openedArticleId)
     .catch((error) => {
       handleError(messageData, error, 'Article must be in the writing process',
           'Článok môže byť odoslaný na recenziu iba, ak je v stave písania');
@@ -98,7 +97,7 @@ export default function Header(props) {
   function onSendReview() {
     const messageData = createMessageData(
         'Recenzia článku bola úspešne odoslaná autorovi');
-    axios.put(baseURL + '/sent-review/' + props.openedArticleId)
+    axios.put(apiUrl + '/article/sent-review/' + props.openedArticleId)
     .catch((error) => {
       handleError(messageData, error, 'Article must be in the review',
           'Recenzia môže byť odoslaná iba, ak je článok v recenzii');
@@ -108,7 +107,7 @@ export default function Header(props) {
 
   function onApproveArticle() {
     const messageData = createMessageData('Článok bol úspešne schválený');
-    axios.put(baseURL + '/approved/' + props.openedArticleId)
+    axios.put(apiUrl + '/article/approved/' + props.openedArticleId)
     .catch((error) => {
       handleError(messageData, error, 'Article must be first reviewed',
           'Článok môže byť schválený až po recenzii');

@@ -12,8 +12,7 @@ import {MuiMessage} from "../../components/mui-message/Mui-message";
 import ImageSection from "../../components/image-section/Image-section";
 import EditorToolbar from "../../components/editor-toolbar/Editor-toolbar";
 import ReactMarkdown from 'react-markdown'
-
-const baseURL = "http://localhost:8080/article";
+import {apiUrl} from "../../components/environment/environment";
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -66,8 +65,6 @@ const EditorPage = (props) => {
     setAllValues({...allValues, [e.target.name]: e.target.value})
   }
 
-  const materialClasses = useStyles();
-
   const onUpdate = EditorView.updateListener.of((v) => {
     setAllValues(prevState => {
       return {...prevState, code: v.state.doc.toString()}
@@ -109,7 +106,7 @@ const EditorPage = (props) => {
     }
 
     if (articleWithoutCode.id) {
-      axios.put(baseURL + '/' + articleWithoutCode.id,
+      axios.put(apiUrl + '/article/' + articleWithoutCode.id,
           {...saveDto, id: articleWithoutCode.id})
       .then(() => {
         setMuiMessage(prevState => {
@@ -117,7 +114,7 @@ const EditorPage = (props) => {
         });
       });
     } else {
-      axios.post(baseURL, saveDto).then(() => {
+      axios.post(apiUrl + '/article', saveDto).then(() => {
         setMuiMessage(prevState => {
           return {...prevState, open: true}
         });
@@ -159,21 +156,21 @@ const EditorPage = (props) => {
                               name="keyWords" value={allValues.keyWords}
                               variant="filled" style={{width: "100%"}}
                               required={true} onChange={changeHandler}
-                              className={materialClasses.root}/></div>
+                              className={useStyles().root}/></div>
             </div>
             <div className="Article-name">
               <TextField label="Názov článku" variant="filled"
                          value={allValues.articleName}
                          style={{width: "100%"}} name="articleName"
                          required={true} onChange={changeHandler}
-                         className={materialClasses.root}/>
+                         className={useStyles().root}/>
             </div>
             <div className="Article-abstract">
               <TextField label="Abstrakt" variant="filled"
                          value={allValues.articleAbstract}
                          style={{width: "100%"}} name="articleAbstract"
                          required={true} onChange={changeHandler}
-                         className={materialClasses.root}/>
+                         className={useStyles().root}/>
             </div>
           </div>
           <div className="Flex-row">
@@ -183,13 +180,13 @@ const EditorPage = (props) => {
                               value={allValues.publicFileName}
                               style={{width: "100%"}} variant="filled"
                               required={true} onChange={changeHandler}
-                              className={materialClasses.root}/></div>
+                              className={useStyles().root}/></div>
               <div><TextField value={allValues.publicationDecision}
                               name="publicationDecision"
                               label="Rozhodnutie o publikácií článku"
                               style={{width: "100%"}} variant="filled"
                               required={true} onChange={changeHandler}
-                              className={materialClasses.root}/></div>
+                              className={useStyles().root}/></div>
 
               <div>
                 <ImageSection

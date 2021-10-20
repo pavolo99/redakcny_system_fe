@@ -3,11 +3,11 @@ import React from "react";
 import axios from "axios";
 import DeleteIcon from "../../assets/delete-image.png"
 import {MuiMessage} from "../mui-message/Mui-message";
+import {apiUrl} from "../environment/environment";
 
 
 export default function ImageSection(props) {
 
-  let baseUrl = 'http://localhost:8080/image';
   const [images, setImages] = React.useState([]);
 
   const [muiMessage, setMuiMessage] = React.useState({
@@ -28,7 +28,7 @@ export default function ImageSection(props) {
     const selectedFile = event.target.files[0];
     const fd = new FormData();
     fd.append('file', selectedFile, selectedFile.name)
-    axios.post(baseUrl + '/uploaded/' + props.articleId, fd)
+    axios.post(apiUrl + '/image/uploaded/' + props.articleId, fd)
     .then((response) => {
       setMuiMessage({
         open: true,
@@ -37,13 +37,13 @@ export default function ImageSection(props) {
         severity: 'success'
       })
       // response data as an id of the created image
-      props.insertImage(baseUrl + '/content/' + response.data);
+      props.insertImage(apiUrl + '/image/content/' + response.data);
       fetchImagesInfo();
     })
   }
 
   function onRemoveImage(imageInfo) {
-    axios.delete(baseUrl + '/' + imageInfo.id).then(() => {
+    axios.delete(apiUrl + '/image/' + imageInfo.id).then(() => {
       setMuiMessage({
         open: true,
         message: 'Obrázok s názvom ' + imageInfo.name + ' bol úspešne zmazaný',
@@ -55,7 +55,7 @@ export default function ImageSection(props) {
 
   function fetchImagesInfo() {
     if (props.articleId) {
-      axios.get(baseUrl + '/info/' + props.articleId)
+      axios.get(apiUrl + '/image/info/' + props.articleId)
       .then(response => {
         setImages(response.data);
       });

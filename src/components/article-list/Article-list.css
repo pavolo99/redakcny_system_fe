@@ -1,5 +1,5 @@
 .Content {
-    margin-top: 1rem;
+    margin-top: 0.5rem;
     margin-left: 1rem;
     width: 80%;
 }
@@ -7,8 +7,11 @@
 .New-article-button {
     background-color: #2196F3 !important;
     color: white !important;
-    border-radius: 20px !important;
-    padding: 5px 15px !important;
+    border-radius: 50px !important;
+    padding-right: 15px !important;
+    padding-left: 15px !important;
+    height: 3rem !important;
+    margin-top: 0.5rem !important;
 }
 
 .Article-list {
@@ -50,4 +53,14 @@
 .Empty-articles {
     font-style: italic;
     padding-top: 1rem;
+}
+
+.Flex-row-space-between {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.Article-status-dropdown {
+    width: 20%;
 }

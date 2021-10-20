@@ -1,7 +1,7 @@
 import React, {useState} from "react";
 import Header from "../../components/header/Header";
 import SideBar from "../../components/sidebar/SideBar";
-import ArticleList from "../../components/articleList/ArticleList";
+import ArticleList from "../../components/article-list/Article-list";
 import './Dashboard-page.css'
 
 export default function DashboardPage() {
