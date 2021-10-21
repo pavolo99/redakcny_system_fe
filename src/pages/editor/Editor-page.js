@@ -33,18 +33,18 @@ const EditorPage = (props) => {
   };
   if (location && location.state) {
     articleWithoutCode.id = location.state.id
-    articleWithoutCode.name = location.state.name
-    articleWithoutCode.keyWords = location.state.keyWords
-    articleWithoutCode.articleAbstract = location.state.articleAbstract
-    articleWithoutCode.publicFileName = location.state.publicFileName
-    articleWithoutCode.publicationDecision = location.state.publicationDecision
-    articleWithoutCode.articleStatus = location.state.articleStatus
+    articleWithoutCode.name = location.state.name ?? ''
+    articleWithoutCode.keyWords = location.state.keyWords ?? ''
+    articleWithoutCode.articleAbstract = location.state.articleAbstract ?? ''
+    articleWithoutCode.publicFileName = location.state.publicFileName ?? ''
+    articleWithoutCode.publicationDecision = location.state.publicationDecision ?? ''
+    articleWithoutCode.articleStatus = location.state.articleStatus ?? ''
   }
 
   const editor = React.useRef();
   const [allValues, setAllValues] = React.useState({
-    code: '',
-    articleName: articleWithoutCode.name,
+    text: '',
+    name: articleWithoutCode.name,
     keyWords: articleWithoutCode.keyWords,
     articleAbstract: articleWithoutCode.articleAbstract,
     publicFileName: articleWithoutCode.publicFileName,
@@ -67,7 +67,7 @@ const EditorPage = (props) => {
 
   const onUpdate = EditorView.updateListener.of((v) => {
     setAllValues(prevState => {
-      return {...prevState, code: v.state.doc.toString()}
+      return {...prevState, text: v.state.doc.toString()}
     });
   });
 
@@ -75,7 +75,7 @@ const EditorPage = (props) => {
     let textContent = '';
     if (props && props.location && props.location.state) {
       textContent = props.location.state.text;
-      setAllValues({...allValues, 'code': textContent})
+      setAllValues({...allValues, text: textContent})
     }
 
     let editorState = EditorState.create({
@@ -96,30 +96,20 @@ const EditorPage = (props) => {
 
   function onSaveArticle(event) {
     event.preventDefault();
-    let saveDto = {
-      name: allValues.articleName,
-      text: allValues.code,
-      keyWords: allValues.keyWords,
-      articleAbstract: allValues.articleAbstract,
-      publicFileName: allValues.publicFileName,
-      publicationDecision: allValues.publicationDecision
-    }
-
-    if (articleWithoutCode.id) {
-      axios.put(apiUrl + '/article/' + articleWithoutCode.id,
-          {...saveDto, id: articleWithoutCode.id})
-      .then(() => {
-        setMuiMessage(prevState => {
-          return {...prevState, open: true}
-        });
+    axios.put(apiUrl + '/article/' + articleWithoutCode.id,
+        {...allValues, id: articleWithoutCode.id})
+    .catch((error) => {
+      if (error.response.status === 400) {
+        setMuiMessage({open: true, message: 'Musíte vyplniť všetky povinné polia', severity: 'error'});
+      } else {
+        setMuiMessage({open: true, message: 'Nastala neočakávaná chyba pri ukladaní článku', severity: 'error'});
+      }
+    })
+    .then(() => {
+      setMuiMessage(prevState => {
+        return {...prevState, open: true}
       });
-    } else {
-      axios.post(apiUrl + '/article', saveDto).then(() => {
-        setMuiMessage(prevState => {
-          return {...prevState, open: true}
-        });
-      });
-    }
+    });
   }
 
   const closeMuiMessage = () => {
@@ -160,8 +150,8 @@ const EditorPage = (props) => {
             </div>
             <div className="Article-name">
               <TextField label="Názov článku" variant="filled"
-                         value={allValues.articleName}
-                         style={{width: "100%"}} name="articleName"
+                         value={allValues.name}
+                         style={{width: "100%"}} name="name"
                          required={true} onChange={changeHandler}
                          className={useStyles().root}/>
             </div>
@@ -202,7 +192,7 @@ const EditorPage = (props) => {
             <div className="Center-editor Editor">
               <EditorToolbar editorVisible={editorVisible} toggleEditorPreview={() => onToggleEditorPreview()}/>
               <div ref={editor} className={editorVisible ? '' : 'Invisible'}/>
-              <ReactMarkdown children={allValues.code} className={editorVisible ? 'Invisible' : 'Visible Preview'}/>
+              <ReactMarkdown children={allValues.text} className={editorVisible ? 'Invisible' : 'Visible Preview'}/>
             </div>
             <div className="Right-side">
             </div>

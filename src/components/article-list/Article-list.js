@@ -37,19 +37,20 @@ export default function ArticleList(props) {
 
   const history = useHistory();
 
-  function onEditArticle(article) {
-    history.push('/editor', article);
-    return article;
+  function onEditArticle(articleId) {
+    axios.get(apiUrl + '/article/' + articleId).then(
+        (response) => history.push('/editor', response.data))
   }
 
-  const onCreateNewArticle = () => {
-    history.push('/editor')
+  function onCreateNewArticle() {
+    axios.post(apiUrl + '/article', {}).then(
+        (response) => history.push('/editor', response.data));
   }
 
   const mappedArticleList =
       <div>
         {articles.map(article => (
-            <div key={article.id} onClick={(() => onEditArticle(article))}>
+            <div key={article.id} onClick={(() => onEditArticle(article.id))}>
               <div className="Article-item">
                 <div>{article.name}</div>
                 {/*<div>{article.authors}</div>*/}
