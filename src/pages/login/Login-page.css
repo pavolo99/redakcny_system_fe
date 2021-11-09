@@ -1,0 +1,29 @@
+.Login-box {
+    width: 35rem;
+    height: 22rem;
+    background-color: white;
+    position: absolute;
+    overflow: auto;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin: auto;
+    border-radius: 50px;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+}
+
+.Login-header {
+    font-size: 300%;
+    font-weight: 500;
+}
+
+.Login-providers {
+    text-align: center;
+}
+
+.Github-provider {
+    margin-bottom: 2rem;
+}
