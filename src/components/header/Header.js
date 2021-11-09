@@ -13,7 +13,7 @@ import {apiUrl} from "../environment/environment";
 export default function Header(props) {
   const history = useHistory();
 
-  const onCreateNewArticle = () => {
+  const onRedirectToDashboard = () => {
     history.push('/dashboard')
   }
 
@@ -163,7 +163,7 @@ export default function Header(props) {
 
   return (
       <div className="Header">
-        <div className="App-link" onClick={onCreateNewArticle}>
+        <div className="App-link" onClick={onRedirectToDashboard}>
           <span>Redakčný systém</span>
         </div>
         <div className="Vertical-divider"/>

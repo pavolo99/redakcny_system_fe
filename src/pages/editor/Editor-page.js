@@ -4,7 +4,7 @@ import Header from "../../components/header/Header";
 import {EditorView} from "@codemirror/view";
 import {EditorState} from "@codemirror/state";
 import {Button, makeStyles, TextField} from "@material-ui/core";
-import {useLocation} from "react-router-dom";
+import {useHistory, useLocation} from "react-router-dom";
 import axios from "axios";
 import {extensions} from "../../components/codemirror-settings/extensions";
 import {theme} from "../../components/codemirror-settings/theme";
@@ -24,6 +24,12 @@ const useStyles = makeStyles(() => ({
 
 const EditorPage = (props) => {
   const location = useLocation();
+  const history = useHistory();
+
+  if (!localStorage.getItem("loggedUser")) {
+    history.push('/login');
+  }
+
   let articleWithoutCode = {
     name: '',
     keyWords: '',
