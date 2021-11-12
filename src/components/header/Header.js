@@ -124,6 +124,10 @@ export default function Header(props) {
   }
 
   function handleError(messageData, error, responseMessage, errorMessage) {
+    if (error.response.status === 401) {
+      localStorage.clear();
+      history.push('/login');
+    }
     messageData.severity = 'error';
     if (error.response.data.message === responseMessage) {
       messageData.message = errorMessage;

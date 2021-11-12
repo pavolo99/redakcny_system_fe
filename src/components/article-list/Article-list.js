@@ -19,8 +19,11 @@ export default function ArticleList(props) {
       }
     };
     axios.get(apiUrl + '/article/list', queryParams)
-    .then((response) => {
-      setArticles(response.data);
+    .catch(error => handle401(error))
+    .then(response => {
+      if (response) {
+        setArticles(response.data);
+      }
     });
   }
 
@@ -38,13 +41,30 @@ export default function ArticleList(props) {
   const history = useHistory();
 
   function onEditArticle(articleId) {
-    axios.get(apiUrl + '/article/' + articleId).then(
-        (response) => history.push('/editor', response.data))
+    axios.get(apiUrl + '/article/' + articleId)
+    .catch(error => handle401(error))
+    .then(response => {
+      if (response) {
+        history.push('/editor', response.data);
+      }
+    });
   }
 
   function onCreateNewArticle() {
-    axios.post(apiUrl + '/article', {}).then(
-        (response) => history.push('/editor', response.data));
+    axios.post(apiUrl + '/article', {})
+    .catch(error => handle401(error))
+    .then(response => {
+      if (response) {
+        history.push('/editor', response.data);
+      }
+    })
+  }
+
+  function handle401(error) {
+    if (error.response.status === 401) {
+      localStorage.clear();
+      history.push('/login');
+    }
   }
 
   const mappedArticleList =

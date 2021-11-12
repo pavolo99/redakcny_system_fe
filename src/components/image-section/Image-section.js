@@ -4,10 +4,10 @@ import axios from "axios";
 import DeleteIcon from "../../assets/delete-image.png"
 import {MuiMessage} from "../mui-message/Mui-message";
 import {apiUrl} from "../environment/environment";
-
+import {useHistory} from "react-router-dom";
 
 export default function ImageSection(props) {
-
+  const history = useHistory();
   const [images, setImages] = React.useState([]);
 
   const [muiMessage, setMuiMessage] = React.useState({
@@ -21,6 +21,7 @@ export default function ImageSection(props) {
     })
 
   }
+
   function onFileUpload(event) {
     if (!event || !event.target || !event.target.files || event.target.files.length < 1) {
       return;
@@ -29,36 +30,53 @@ export default function ImageSection(props) {
     const fd = new FormData();
     fd.append('file', selectedFile, selectedFile.name)
     axios.post(apiUrl + '/image/uploaded/' + props.articleId, fd)
-    .then((response) => {
-      setMuiMessage({
-        open: true,
-        message: 'Obrázok s názvom ' + selectedFile.name
-            + ' bol úspešne nahraný',
-        severity: 'success'
-      })
-      // response data as an id of the created image
-      props.insertImage(apiUrl + '/image/content/' + response.data);
-      fetchImagesInfo();
+    .catch(error => handleError(error))
+    .then(response => {
+      if (response) {
+        setMuiMessage({
+          open: true,
+          message: 'Obrázok s názvom ' + selectedFile.name
+              + ' bol úspešne nahraný',
+          severity: 'success'
+        });
+        // response data as an id of the created image
+        props.insertImage(apiUrl + '/image/content/' + response.data);
+        fetchImagesInfo();
+      }
     })
   }
 
   function onRemoveImage(imageInfo) {
-    axios.delete(apiUrl + '/image/' + imageInfo.id).then(() => {
-      setMuiMessage({
-        open: true,
-        message: 'Obrázok s názvom ' + imageInfo.name + ' bol úspešne zmazaný',
-        severity: 'success'
-      })
-      fetchImagesInfo();
+    axios.delete(apiUrl + '/image/' + imageInfo.id)
+    .catch(error => handleError(error))
+    .then(response => {
+      if (response) {
+        setMuiMessage({
+          open: true,
+          message: 'Obrázok s názvom ' + imageInfo.name
+              + ' bol úspešne zmazaný',
+          severity: 'success'
+        })
+        fetchImagesInfo();
+      }
     });
   }
 
   function fetchImagesInfo() {
     if (props.articleId) {
       axios.get(apiUrl + '/image/info/' + props.articleId)
+      .catch(error => handleError(error))
       .then(response => {
-        setImages(response.data);
-      });
+        if (response) {
+          setImages(response.data);
+        }
+      })
+    }
+  }
+
+  function handleError(error) {
+    if (error.response.status === 401) {
+      history.push('/login');
     }
   }
 

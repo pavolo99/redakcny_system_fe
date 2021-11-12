@@ -7,10 +7,10 @@ import {BrowserRouter} from "react-router-dom";
 import axios from "axios";
 
 axios.interceptors.request.use(request => {
-  let loggedUser = JSON.parse(localStorage.getItem('loggedUser'));
+  let accessToken = localStorage.getItem('accessToken');
 
-  if (loggedUser && !request.url.endsWith('loggedUser')) {
-    request.headers.common.Authorization = `Bearer ${loggedUser.accessToken}`;
+  if (accessToken) {
+    request.headers.common.Authorization = `Bearer ${accessToken}`;
   }
 
   return request;

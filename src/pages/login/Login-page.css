@@ -24,6 +24,15 @@
     text-align: center;
 }
 
+.Login-box a {
+    cursor: auto;
+}
+
 .Github-provider {
     margin-bottom: 2rem;
+    cursor: pointer;
+}
+
+.Gitlab-provider {
+    cursor: pointer;
 }

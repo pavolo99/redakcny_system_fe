@@ -104,18 +104,26 @@ const EditorPage = (props) => {
     event.preventDefault();
     axios.put(apiUrl + '/article/' + articleWithoutCode.id,
         {...allValues, id: articleWithoutCode.id})
-    .catch((error) => {
-      if (error.response.status === 400) {
-        setMuiMessage({open: true, message: 'Musíte vyplniť všetky povinné polia', severity: 'error'});
-      } else {
-        setMuiMessage({open: true, message: 'Nastala neočakávaná chyba pri ukladaní článku', severity: 'error'});
+    .catch(error => handleError(error))
+    .then(response => {
+      if (response) {
+        setMuiMessage(prevState => {
+          return {...prevState, open: true}
+        });
       }
-    })
-    .then(() => {
-      setMuiMessage(prevState => {
-        return {...prevState, open: true}
-      });
     });
+  }
+
+  function handleError(error) {
+    if (error.response.status === 401) {
+      localStorage.clear();
+      history.push('/login');
+    }
+    else if (error.response.status === 400) {
+      setMuiMessage({open: true, message: 'Musíte vyplniť všetky povinné polia', severity: 'error'});
+    } else {
+      setMuiMessage({open: true, message: 'Nastala neočakávaná chyba pri ukladaní článku', severity: 'error'});
+    }
   }
 
   const closeMuiMessage = () => {

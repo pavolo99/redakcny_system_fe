@@ -16,7 +16,8 @@ export default function LoginPage() {
                    className="Github-provider"/>
             </a>
             <a href={apiUrl + '/oauth/login/gitlab'}>
-              <img src={GitlabLoginButton} alt="Gitlab login button"/>
+              <img src={GitlabLoginButton} alt="Gitlab login button"
+                   className="Gitlab-provider"/>
             </a>
           </div>
         </div>
