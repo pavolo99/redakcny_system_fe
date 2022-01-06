@@ -5,6 +5,7 @@ import ThreeDotsMenu from "../../assets/three-dots-menu.svg"
 import ThreeDotsMenuExpanded from "../../assets/three-dots-menu-expanded.svg"
 import Review from "../../assets/review.svg"
 import Approve from "../../assets/approve.svg"
+import Share from "../../assets/share.svg"
 import ActionsMenu from "../actions-menu/Actions-menu";
 import {MuiMessage} from "../mui-message/Mui-message";
 import axios from "axios";
@@ -24,6 +25,9 @@ export default function Header(props) {
     severity: '',
     message: ''
   });
+
+  function onOpenShareDialog() {
+  }
 
   const closeMuiMessage = () => {
     setMuiMessage(prevState => {
@@ -136,21 +140,26 @@ export default function Header(props) {
     }
   }
 
+  const isLoggedUserAuthor = JSON.parse(localStorage.getItem('loggedUser')).role === 'AUTHOR';
+
   const editorActionsMenu = <>
-    <div className="Quick-menu-item" onClick={() => onSendToReview()}>
-      <img src={Review} alt="Review"
-           className="Quick-menu-img"/>
-      <div className="Quick-menu-text">Odoslať na recenziu</div>
-    </div>
-    <div className="Quick-menu-item" onClick={() => onSendReview()}>
-      <img src={Review} alt="Review"
-           className="Quick-menu-img"/>
-      <div className="Quick-menu-text">Odoslať recenziu</div>
-    </div>
-    <div className="Quick-menu-item" onClick={() => onApproveArticle()}>
-      <img src={Approve} alt="Approve" className="Quick-menu-img"/>
-      <div className="Quick-menu-text">Schváliť</div>
-    </div>
+    {isLoggedUserAuthor && props.openedArticleStatus === 'WRITING' ?
+        <div className="Quick-menu-item" onClick={() => onSendToReview()}>
+          <img src={Review} alt="Review"
+               className="Quick-menu-img"/>
+          <div className="Quick-menu-text">Odoslať na recenziu</div>
+        </div> : null}
+    {!isLoggedUserAuthor && props.openedArticleStatus === 'IN_REVIEW' ?
+        <div className="Quick-menu-item" onClick={() => onSendReview()}>
+          <img src={Review} alt="Review"
+               className="Quick-menu-img"/>
+          <div className="Quick-menu-text">Odoslať recenziu</div>
+        </div> : null}
+    {!isLoggedUserAuthor && props.openedArticleStatus === 'IN_REVIEW' ?
+        <div className="Quick-menu-item" onClick={() => onApproveArticle()}>
+          <img src={Approve} alt="Approve" className="Quick-menu-img"/>
+          <div className="Quick-menu-text">Schváliť</div>
+        </div> : null}
     <img
         src={isMenuClicked ? ThreeDotsMenuExpanded : ThreeDotsMenu}
         alt="Three dots" className="Three-dots-menu"
@@ -163,6 +172,11 @@ export default function Header(props) {
                                   onDenyArticle={onDenyArticle}
                                   onPublishArticle={onPublishArticle}
                                   onArchiveArticle={onArchiveArticle}/> : null}
+
+    <div className="Share-item" onClick={() => onOpenShareDialog()}>
+      <img src={Share} alt="Share" className="Quick-menu-img"/>
+      <div className="Quick-menu-text">Zdielať</div>
+    </div>
   </>
 
   return (

@@ -159,7 +159,7 @@ const EditorPage = (props) => {
               <div><TextField label="Kľúčové slová"
                               name="keyWords" value={allValues.keyWords}
                               variant="filled" style={{width: "100%"}}
-                              required={true} onChange={changeHandler}
+                              onChange={changeHandler}
                               className={useStyles().root}/></div>
             </div>
             <div className="Article-name">
@@ -173,7 +173,7 @@ const EditorPage = (props) => {
               <TextField label="Abstrakt" variant="filled"
                          value={allValues.articleAbstract}
                          style={{width: "100%"}} name="articleAbstract"
-                         required={true} onChange={changeHandler}
+                         onChange={changeHandler}
                          className={useStyles().root}/>
             </div>
           </div>
@@ -183,13 +183,13 @@ const EditorPage = (props) => {
                               label="Názov zverejneného súboru"
                               value={allValues.publicFileName}
                               style={{width: "100%"}} variant="filled"
-                              required={true} onChange={changeHandler}
+                              onChange={changeHandler}
                               className={useStyles().root}/></div>
               <div><TextField value={allValues.publicationDecision}
                               name="publicationDecision"
                               label="Rozhodnutie o publikácií článku"
                               style={{width: "100%"}} variant="filled"
-                              required={true} onChange={changeHandler}
+                              onChange={changeHandler}
                               className={useStyles().root}/></div>
 
               <div>

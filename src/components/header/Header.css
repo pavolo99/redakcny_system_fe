@@ -33,6 +33,13 @@
     margin-left: 0.5rem;
 }
 
+.Share-item {
+    cursor: pointer;
+    display: flex;
+    margin-left: 30%;
+}
+
+
 .Quick-menu-img {
     margin-left: 1rem;
     margin-right: 1rem;

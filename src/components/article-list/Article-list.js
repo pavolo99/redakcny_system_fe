@@ -22,6 +22,11 @@ export default function ArticleList(props) {
     .catch(error => handle401(error))
     .then(response => {
       if (response) {
+        for (let article of response.data) {
+          const updatedAtDate = new Date(article.updatedAt);
+          article.updatedAt = updatedAtDate.getDate() + '.' + (updatedAtDate.getMonth() + 1) + '.' + updatedAtDate.getFullYear() + ' ' + updatedAtDate.getHours() + ':' + updatedAtDate.getMinutes();
+          article.updatedBy = article.updatedBy.username + ' (' + article.updatedBy.firstName + ' ' + article.updatedBy.lastName + ')'
+        }
         setArticles(response.data);
       }
     });
@@ -77,10 +82,8 @@ export default function ArticleList(props) {
                 <div>Autori</div>
                 <div><ArticleStatus name={article.articleStatus}
                                     reviewNumber={article.reviewNumber}/></div>
-                {/*<div>{article.lastEditedOn}</div>*/}
-                <div>Dnes</div>
-                {/*<div>{article.lastEditedBy}</div>*/}
-                <div>Dlugos</div>
+                <div>{article.updatedAt}</div>
+                <div>{article.updatedBy}</div>
               </div>
               <hr className="Article-divider"/>
             </div>
