@@ -149,6 +149,7 @@ const EditorPage = (props) => {
   return (
       <div>
         <Header openedArticleId={articleWithoutCode.id}
+                openedArticleName={articleWithoutCode.name}
                 openedArticleStatus={articleWithoutCode.articleStatus}/>
         <MuiMessage severity={muiMessage.severity} open={muiMessage.open}
                     onCloseMuiMessage={closeMuiMessage}

@@ -1,0 +1,33 @@
+.Collaborator-row {
+    display: flex;
+    flex-direction: row;
+    margin-bottom: 1.5rem;
+    justify-content: space-between;
+    align-items: flex-end;
+}
+
+.Collaborator-column {
+    width: 15%;
+}
+.Collaborator-column-name {
+    width: 25%;
+    margin-left: -3rem;
+}
+.Collaborator-column-avatar {
+    max-width: 0;
+}
+
+.Delete-collaborator {
+    color: red;
+    cursor: pointer;
+    width: 2%;
+    font-size: 200%;
+}
+
+.Collaborator-owner {
+    margin-bottom: 7px;
+}
+
+.Collaborators-number {
+    margin-bottom: 1rem;
+}

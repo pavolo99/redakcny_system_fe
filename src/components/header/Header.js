@@ -5,11 +5,13 @@ import ThreeDotsMenu from "../../assets/three-dots-menu.svg"
 import ThreeDotsMenuExpanded from "../../assets/three-dots-menu-expanded.svg"
 import Review from "../../assets/review.svg"
 import Approve from "../../assets/approve.svg"
-import Share from "../../assets/share.svg"
 import ActionsMenu from "../actions-menu/Actions-menu";
 import {MuiMessage} from "../mui-message/Mui-message";
 import axios from "axios";
 import {apiUrl} from "../environment/environment";
+import Avatar from 'react-avatar';
+import ShareArticleItem from "../share-article-dialog/Share-article-item";
+import {getFullName} from "../../shared/Utils";
 
 export default function Header(props) {
   const history = useHistory();
@@ -25,9 +27,6 @@ export default function Header(props) {
     severity: '',
     message: ''
   });
-
-  function onOpenShareDialog() {
-  }
 
   const closeMuiMessage = () => {
     setMuiMessage(prevState => {
@@ -140,7 +139,8 @@ export default function Header(props) {
     }
   }
 
-  const isLoggedUserAuthor = JSON.parse(localStorage.getItem('loggedUser')).role === 'AUTHOR';
+  let loggedUser = JSON.parse(localStorage.getItem('loggedUser'));
+  const isLoggedUserAuthor = loggedUser.role === 'AUTHOR';
 
   const editorActionsMenu = <>
     {isLoggedUserAuthor && props.openedArticleStatus === 'WRITING' ?
@@ -173,11 +173,10 @@ export default function Header(props) {
                                   onPublishArticle={onPublishArticle}
                                   onArchiveArticle={onArchiveArticle}/> : null}
 
-    <div className="Share-item" onClick={() => onOpenShareDialog()}>
-      <img src={Share} alt="Share" className="Quick-menu-img"/>
-      <div className="Quick-menu-text">Zdielať</div>
-    </div>
-  </>
+    <ShareArticleItem className="Share-item"
+                      openedArticleName={props.openedArticleName}
+                      openedArticleId={props.openedArticleId}/>
+  </>;
 
   return (
       <div className="Header">
@@ -186,6 +185,10 @@ export default function Header(props) {
         </div>
         <div className="Vertical-divider"/>
         {props.openedArticleId ? editorActionsMenu : null}
+        <div className="Avatar">
+          <Avatar name={getFullName(loggedUser)} round={true} size="40"
+                  fgColor="black" color="white"/>
+        </div>
         <MuiMessage severity={muiMessage.severity} open={muiMessage.open}
                     onCloseMuiMessage={closeMuiMessage}
                     message={muiMessage.message}/>
