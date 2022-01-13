@@ -166,16 +166,11 @@ export default function Header(props) {
         onClick={() => onMenuClick()}/>
     {isMenuClicked ? <ActionsMenu openedArticleId={props.openedArticleId}
                                   articleStatus={props.openedArticleStatus}
-                                  className="Dropdown-expansion"
                                   onRemoveArticle={onRemoveArticle}
                                   onDownloadArticle={onDownloadArticle}
                                   onDenyArticle={onDenyArticle}
                                   onPublishArticle={onPublishArticle}
                                   onArchiveArticle={onArchiveArticle}/> : null}
-
-    <ShareArticleItem className="Share-item"
-                      openedArticleName={props.openedArticleName}
-                      openedArticleId={props.openedArticleId}/>
   </>;
 
   return (
@@ -185,9 +180,15 @@ export default function Header(props) {
         </div>
         <div className="Vertical-divider"/>
         {props.openedArticleId ? editorActionsMenu : null}
-        <div className="Avatar">
-          <Avatar name={getFullName(loggedUser)} round={true} size="40"
-                  fgColor="black" color="white"/>
+        <div className="Share-avatar-row">{props.openedArticleId ? <div className="Share-item">
+          <ShareArticleItem
+              openedArticleName={props.openedArticleName}
+              openedArticleId={props.openedArticleId}/>
+        </div> : null}
+          <div className="Avatar">
+            <Avatar name={getFullName(loggedUser)} round={true} size="40"
+                    fgColor="black" color="white"/>
+          </div>
         </div>
         <MuiMessage severity={muiMessage.severity} open={muiMessage.open}
                     onCloseMuiMessage={closeMuiMessage}

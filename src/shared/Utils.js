@@ -14,7 +14,7 @@ export function getUser(userDto) {
     return userDto.firstName + ' ' + userDto.lastName + ', ' + userDto.email + ', ' + userDto.username;
 }
 
-export function generateColorBasedOnUser(userValue) {
+export function generateHSLColorBasedOnUserInfo(userValue) {
     let hash = 0;
     for (let i = 0; i < userValue.length; i++) {
         hash = userValue.charCodeAt(i) + ((hash << 5) - hash);

@@ -17,7 +17,7 @@ import FormControl from "@mui/material/FormControl";
 import Avatar from 'react-avatar';
 import {MuiMessage} from "../mui-message/Mui-message";
 import {
-  generateColorBasedOnUser,
+  generateHSLColorBasedOnUserInfo,
   getFullName, getUser,
   getUsernameWithFullName, getUserValue
 } from "../../shared/Utils";
@@ -159,7 +159,7 @@ export default function ShareArticleItem(props) {
           <div className="Collaborator-column-avatar">
             <Avatar name={getFullName(collaborator.userDto)} fgColor="white"
                     className="Column-avatar" round={true} size="40"
-                    color={generateColorBasedOnUser(getUserValue(collaborator.userDto))}/>
+                    color={generateHSLColorBasedOnUserInfo(getUserValue(collaborator.userDto))}/>
           </div>
           <div className="Collaborator-column-name">
             <div>{getUsernameWithFullName(collaborator.userDto)}</div>
@@ -196,8 +196,8 @@ export default function ShareArticleItem(props) {
         </div>))}
   </div>;
 
-  return (<>
-    <div onClick={handleClickOpen} className="Share-item">
+  return (<div>
+    <div onClick={handleClickOpen} className="Display-flex">
       <img src={Share} alt="Share" className="Quick-menu-img"/>
       <div className="Quick-menu-text">Zdielať</div>
     </div>
@@ -227,5 +227,5 @@ export default function ShareArticleItem(props) {
     <MuiMessage severity={muiMessage.severity} open={muiMessage.open}
                 onCloseMuiMessage={closeMuiMessage}
                 message={muiMessage.message}/>
-  </>);
+  </div>);
 }

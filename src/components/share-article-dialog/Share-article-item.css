@@ -31,3 +31,7 @@
 .Collaborators-number {
     margin-bottom: 1rem;
 }
+
+.Display-flex {
+    display: flex;
+}

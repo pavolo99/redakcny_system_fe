@@ -35,10 +35,14 @@
 
 .Share-item {
     cursor: pointer;
-    display: flex;
-    margin-left: 30%;
+    margin-right: 5rem;
 }
 
+.Share-avatar-row {
+    display: flex;
+    margin-left: auto;
+    align-items: center;
+}
 
 .Quick-menu-img {
     margin-left: 1rem;
@@ -51,7 +55,6 @@
 }
 
 .Avatar {
-    margin-left: auto;
     margin-right: 1rem;
     cursor: pointer;
 }
