@@ -11,6 +11,7 @@ import {getUsernameWithFullName} from "../../shared/Utils";
 export default function ArticleList(props) {
   const [articles, setArticles] = React.useState([]);
   const [articleStatus, setArticleStatus] = React.useState('ALL');
+  let loggedUserId = JSON.parse(localStorage.getItem('loggedUser')).id;
 
   function fetchArticlesBasedOnTypeAndStatus() {
     let queryParams = {
@@ -26,7 +27,7 @@ export default function ArticleList(props) {
         for (let article of response.data) {
           const updatedAtDate = new Date(article.updatedAt);
           article.updatedAt = updatedAtDate.getDate() + '.' + (updatedAtDate.getMonth() + 1) + '.' + updatedAtDate.getFullYear() + ' ' + updatedAtDate.getHours() + ':' + updatedAtDate.getMinutes();
-          article.updatedBy = getUsernameWithFullName(article.updatedBy);
+          article.updatedBy = loggedUserId === article.updatedBy.id ? 'Vy' : getUsernameWithFullName(article.updatedBy);
         }
         setArticles(response.data);
       }
@@ -79,8 +80,6 @@ export default function ArticleList(props) {
             <div key={article.id} onClick={(() => onEditArticle(article.id))}>
               <div className="Article-item">
                 <div>{article.name}</div>
-                {/*<div>{article.authors}</div>*/}
-                <div>Autori</div>
                 <div><ArticleStatus name={article.articleStatus}
                                     reviewNumber={article.reviewNumber}/></div>
                 <div>{article.updatedAt}</div>
@@ -104,7 +103,6 @@ export default function ArticleList(props) {
         <div className="Article-list">
           <div className="Headers">
             <div>Názov</div>
-            <div>Autori</div>
             <div>Stav</div>
             <div>Posledná editácia</div>
             <div>Naposledy upravil</div>

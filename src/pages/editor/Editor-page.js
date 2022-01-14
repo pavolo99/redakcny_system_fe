@@ -37,6 +37,7 @@ const EditorPage = (props) => {
     publicFileName: '',
     publicationDecision: ''
   };
+  let canLoggedUserEdit;
   if (location && location.state) {
     articleWithoutCode.id = location.state.id
     articleWithoutCode.name = location.state.name ?? ''
@@ -45,6 +46,7 @@ const EditorPage = (props) => {
     articleWithoutCode.publicFileName = location.state.publicFileName ?? ''
     articleWithoutCode.publicationDecision = location.state.publicationDecision ?? ''
     articleWithoutCode.articleStatus = location.state.articleStatus ?? ''
+    canLoggedUserEdit = location.state.canLoggedUserEdit
   }
 
   const editor = React.useRef();
@@ -205,9 +207,10 @@ const EditorPage = (props) => {
 
             </div>
             <div className="Center-editor Editor">
-              <EditorToolbar editorVisible={editorVisible} toggleEditorPreview={() => onToggleEditorPreview()}/>
-              <div ref={editor} className={editorVisible ? '' : 'Invisible'}/>
-              <ReactMarkdown children={allValues.text} className={editorVisible ? 'Invisible' : 'Visible Preview'}/>
+              {canLoggedUserEdit ? <EditorToolbar editorVisible={editorVisible}
+                              toggleEditorPreview={() => onToggleEditorPreview()}/> : null}
+              {canLoggedUserEdit ? <div ref={editor} className={editorVisible ? '' : 'Invisible'}/> : null}
+              <ReactMarkdown children={allValues.text} className={editorVisible && canLoggedUserEdit ? 'Invisible' : 'Visible Preview'} />
             </div>
             <div className="Right-side">
             </div>

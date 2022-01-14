@@ -64,6 +64,8 @@
     padding: 1rem 1rem 1rem 1.5rem;
     font-family: "Helvetica Neue", sans-serif;
     line-height: 150%;
+    height: 80vh;
+    overflow-y: auto;
 }
 
 .Visible {

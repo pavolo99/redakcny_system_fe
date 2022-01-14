@@ -6,7 +6,7 @@ export const theme = EditorView.theme({
     backgroundColor: "white"
   },
   ".cm-content": {
-    minHeight: "80vh",
+    height: "80vh",
     overflowY: "auto",
     paddingLeft: "3%",
     paddingTop: "3%",
@@ -16,6 +16,6 @@ export const theme = EditorView.theme({
   },
   ".cm-activeLine": {backgroundColor: "white"},
   "&.cm-focused": {
-    outline: "none"
+    outline: "none !important",
   },
 }, {dark: false})

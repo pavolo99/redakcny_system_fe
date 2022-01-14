@@ -14,7 +14,8 @@ const tagMap = new Map<Tag, Omit<TagStyle, "tag">>([
   [t.heading6, { fontSize: "100%", fontWeight: "bold" }],
   [t.strong, { fontWeight: "bold" }],
   [t.emphasis, { fontStyle: "italic" }],
-  [t.quote, { fontStyle: "italic", color: "grey" }]
+  [t.quote, { fontStyle: "italic", color: "grey" }],
+  [t.link, { color: "grey" }]
 ]);
 
 const specs = Array.from(tagMap.entries()).map(([tag, style]) => ({
