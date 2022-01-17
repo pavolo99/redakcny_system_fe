@@ -1,5 +1,5 @@
 import "./Image-section.css"
-import React from "react";
+import React, {useEffect, useState} from "react";
 import axios from "axios";
 import DeleteIcon from "../../assets/delete-image.png"
 import {MuiMessage} from "../mui-message/Mui-message";
@@ -8,9 +8,9 @@ import {useHistory} from "react-router-dom";
 
 export default function ImageSection(props) {
   const history = useHistory();
-  const [images, setImages] = React.useState([]);
+  const [images, setImages] = useState([]);
 
-  const [muiMessage, setMuiMessage] = React.useState({
+  const [muiMessage, setMuiMessage] = useState({
     open: false,
     severity: '',
     message: ''
@@ -19,7 +19,6 @@ export default function ImageSection(props) {
     setMuiMessage(prevState => {
       return {...prevState, open: false}
     })
-
   }
 
   function onFileUpload(event) {
@@ -35,11 +34,9 @@ export default function ImageSection(props) {
       if (response) {
         setMuiMessage({
           open: true,
-          message: 'Obrázok s názvom ' + selectedFile.name
-              + ' bol úspešne nahraný',
+          message: 'Obrázok s názvom ' + selectedFile.name + ' bol úspešne nahraný',
           severity: 'success'
         });
-        // response data as an id of the created image
         props.insertImage(apiUrl + '/image/content/' + response.data);
         fetchImagesInfo();
       }
@@ -53,8 +50,7 @@ export default function ImageSection(props) {
       if (response) {
         setMuiMessage({
           open: true,
-          message: 'Obrázok s názvom ' + imageInfo.name
-              + ' bol úspešne zmazaný',
+          message: 'Obrázok s názvom ' + imageInfo.name + ' bol úspešne zmazaný',
           severity: 'success'
         })
         fetchImagesInfo();
@@ -70,7 +66,7 @@ export default function ImageSection(props) {
         if (response) {
           setImages(response.data);
         }
-      })
+      });
     }
   }
 
@@ -80,9 +76,10 @@ export default function ImageSection(props) {
     }
   }
 
-  React.useEffect(() => {
+  useEffect(() => {
     fetchImagesInfo();
-  }, [])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [props.articleId])
 
   const mappedImagesInfo = <div>
     {images.length > 0 ? images.map(imagesInfo => (
@@ -107,5 +104,4 @@ export default function ImageSection(props) {
                onChange={(event) => onFileUpload(event)}/>
       </div>
   );
-
 }

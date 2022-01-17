@@ -53,6 +53,7 @@ export default function ShareArticleItem(props) {
     if (isShareDialogOpen) {
       fetchArticleCollaborators();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isShareDialogOpen]);
 
   const handleClickOpen = () => {

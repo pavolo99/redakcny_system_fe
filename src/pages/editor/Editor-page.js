@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect, useRef, useState} from "react";
 import './Editor-page.css'
 import Header from "../../components/header/Header";
 import {EditorView} from "@codemirror/view";
@@ -22,90 +22,76 @@ const useStyles = makeStyles(() => ({
   }
 }));
 
-const EditorPage = (props) => {
+const EditorPage = () => {
   const location = useLocation();
   const history = useHistory();
 
-  if (!localStorage.getItem("loggedUser")) {
-    history.push('/login');
-  }
-
-  let articleWithoutCode = {
+  const [article, setArticle] = useState({
+    id: null,
     name: '',
+    text: '',
     keyWords: '',
     articleAbstract: '',
     publicFileName: '',
-    publicationDecision: ''
-  };
-  let canLoggedUserEdit;
-  if (location && location.state) {
-    articleWithoutCode.id = location.state.id
-    articleWithoutCode.name = location.state.name ?? ''
-    articleWithoutCode.keyWords = location.state.keyWords ?? ''
-    articleWithoutCode.articleAbstract = location.state.articleAbstract ?? ''
-    articleWithoutCode.publicFileName = location.state.publicFileName ?? ''
-    articleWithoutCode.publicationDecision = location.state.publicationDecision ?? ''
-    articleWithoutCode.articleStatus = location.state.articleStatus ?? ''
-    canLoggedUserEdit = location.state.canLoggedUserEdit
-  }
-
-  const editor = React.useRef();
-  const [allValues, setAllValues] = React.useState({
-    text: '',
-    name: articleWithoutCode.name,
-    keyWords: articleWithoutCode.keyWords,
-    articleAbstract: articleWithoutCode.articleAbstract,
-    publicFileName: articleWithoutCode.publicFileName,
-    publicationDecision: articleWithoutCode.publicationDecision
+    publicationDecision: '',
+    reviewNumber: 0,
+    articleStatus: null,
+    canLoggedUserEdit: false,
   });
 
-  const [muiMessage, setMuiMessage] = React.useState({
+    useEffect(() => {
+    axios.get(apiUrl + '/article/' + location.state.articleId)
+    .catch(error => handleError(error))
+    .then(response => {
+      if (response) {
+        const mergedArticleObject = {...article, ...response.data};
+        setArticle(mergedArticleObject);
+
+        let editorState = EditorState.create({
+          doc: response.data.text,
+          extensions: [
+            extensions,
+            theme,
+            onUpdate
+          ],
+        });
+        setEditorView(new EditorView({state: editorState, parent: editorRef.current}));
+      }
+    });
+
+    return () => {
+      setEditorView({})
+      setArticle({});
+    };
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+  const editorRef = useRef();
+
+  const [muiMessage, setMuiMessage] = useState({
     open: false,
     severity: 'success',
     message: 'Článok bol úspešne uložený'
   });
 
-  const [editorView, setEditorView] = React.useState(null);
+  const [editorView, setEditorView] = useState(null);
 
-  const [editorVisible, setEditorVisible] = React.useState(true);
+  const [editorVisible, setEditorVisible] = useState(true);
 
-  const changeHandler = e => {
-    setAllValues({...allValues, [e.target.name]: e.target.value})
+  const onInputsValueChange = e => {
+    setArticle({...article, [e.target.name]: e.target.value})
   }
 
   const onUpdate = EditorView.updateListener.of((v) => {
-    setAllValues(prevState => {
+    setArticle(prevState => {
       return {...prevState, text: v.state.doc.toString()}
     });
   });
 
-  React.useEffect(() => {
-    let textContent = '';
-    if (props && props.location && props.location.state) {
-      textContent = props.location.state.text;
-      setAllValues({...allValues, text: textContent})
-    }
-
-    let editorState = EditorState.create({
-      doc: textContent,
-      extensions: [
-        extensions,
-        theme,
-        onUpdate
-      ],
-    });
-    setEditorView(new EditorView({state: editorState, parent: editor.current}));
-
-    // TODO reconsider this destroy method
-    // return () => {
-    //   view.viewState.destroy();
-    // };
-  }, []);
-
   function onSaveArticle(event) {
     event.preventDefault();
-    axios.put(apiUrl + '/article/' + articleWithoutCode.id,
-        {...allValues, id: articleWithoutCode.id})
+    axios.put(apiUrl + '/article/' + article.id,
+        {...article, id: article.id})
     .catch(error => handleError(error))
     .then(response => {
       if (response) {
@@ -150,9 +136,9 @@ const EditorPage = (props) => {
 
   return (
       <div>
-        <Header openedArticleId={articleWithoutCode.id}
-                openedArticleName={articleWithoutCode.name}
-                openedArticleStatus={articleWithoutCode.articleStatus}/>
+        <Header openedArticleId={article.id}
+                openedArticleName={article.name}
+                openedArticleStatus={article.articleStatus}/>
         <MuiMessage severity={muiMessage.severity} open={muiMessage.open}
                     onCloseMuiMessage={closeMuiMessage}
                     message={muiMessage.message}/>
@@ -160,23 +146,23 @@ const EditorPage = (props) => {
           <div className="Flex-row">
             <div className="Key-words">
               <div><TextField label="Kľúčové slová"
-                              name="keyWords" value={allValues.keyWords}
+                              name="keyWords" value={article.keyWords}
                               variant="filled" style={{width: "100%"}}
-                              onChange={changeHandler}
+                              onChange={onInputsValueChange}
                               className={useStyles().root}/></div>
             </div>
             <div className="Article-name">
               <TextField label="Názov článku" variant="filled"
-                         value={allValues.name}
+                         value={article.name}
                          style={{width: "100%"}} name="name"
-                         required={true} onChange={changeHandler}
+                         required={true} onChange={onInputsValueChange}
                          className={useStyles().root}/>
             </div>
             <div className="Article-abstract">
               <TextField label="Abstrakt" variant="filled"
-                         value={allValues.articleAbstract}
+                         value={article.articleAbstract}
                          style={{width: "100%"}} name="articleAbstract"
-                         onChange={changeHandler}
+                         onChange={onInputsValueChange}
                          className={useStyles().root}/>
             </div>
           </div>
@@ -184,21 +170,21 @@ const EditorPage = (props) => {
             <div className="Left-side">
               <div><TextField name="publicFileName"
                               label="Názov zverejneného súboru"
-                              value={allValues.publicFileName}
+                              value={article.publicFileName}
                               style={{width: "100%"}} variant="filled"
-                              onChange={changeHandler}
+                              onChange={onInputsValueChange}
                               className={useStyles().root}/></div>
-              <div><TextField value={allValues.publicationDecision}
+              <div><TextField value={article.publicationDecision}
                               name="publicationDecision"
                               label="Rozhodnutie o publikácií článku"
                               style={{width: "100%"}} variant="filled"
-                              onChange={changeHandler}
+                              onChange={onInputsValueChange}
                               className={useStyles().root}/></div>
 
               <div>
                 <ImageSection
                     insertImage={(imageSource) => onImageInsertion(imageSource)}
-                    articleId={articleWithoutCode.id}/>
+                    articleId={article.id}/>
               </div>
 
               <Button className="Submit-button" onClick={onSaveArticle}>
@@ -207,10 +193,10 @@ const EditorPage = (props) => {
 
             </div>
             <div className="Center-editor Editor">
-              {canLoggedUserEdit ? <EditorToolbar editorVisible={editorVisible}
+              {article.canLoggedUserEdit ? <EditorToolbar editorVisible={editorVisible}
                               toggleEditorPreview={() => onToggleEditorPreview()}/> : null}
-              {canLoggedUserEdit ? <div ref={editor} className={editorVisible ? '' : 'Invisible'}/> : null}
-              <ReactMarkdown children={allValues.text} className={editorVisible && canLoggedUserEdit ? 'Invisible' : 'Visible Preview'} />
+              {article.canLoggedUserEdit ? <div ref={editorRef} className={editorVisible ? '' : 'Invisible'}/> : null}
+              <ReactMarkdown children={article.text} className={editorVisible && article.canLoggedUserEdit ? 'Invisible' : 'Visible Preview'} />
             </div>
             <div className="Right-side">
             </div>

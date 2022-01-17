@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import "./Article-list.css"
 import {Button} from "@material-ui/core";
 import {useHistory} from "react-router-dom";
@@ -9,8 +9,8 @@ import ArticleStatusDropdown from "../article-status-dropdown/Article-status-dro
 import {getUsernameWithFullName} from "../../shared/Utils";
 
 export default function ArticleList(props) {
-  const [articles, setArticles] = React.useState([]);
-  const [articleStatus, setArticleStatus] = React.useState('ALL');
+  const [articles, setArticles] = useState([]);
+  const [articleStatus, setArticleStatus] = useState('ALL');
   let loggedUserId = JSON.parse(localStorage.getItem('loggedUser')).id;
 
   function fetchArticlesBasedOnTypeAndStatus() {
@@ -38,23 +38,18 @@ export default function ArticleList(props) {
     setArticleStatus(event.target.value);
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (props.selectedArticles === 'ARCHIVED' || props.selectedArticles === 'APPROVER') {
       setArticleStatus('ALL');
     }
     fetchArticlesBasedOnTypeAndStatus();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [props.selectedArticles, articleStatus]);
 
   const history = useHistory();
 
   function onEditArticle(articleId) {
-    axios.get(apiUrl + '/article/' + articleId)
-    .catch(error => handle401(error))
-    .then(response => {
-      if (response) {
-        history.push('/editor', response.data);
-      }
-    });
+    history.push('/editor', {articleId});
   }
 
   function onCreateNewArticle() {
@@ -62,7 +57,7 @@ export default function ArticleList(props) {
     .catch(error => handle401(error))
     .then(response => {
       if (response) {
-        history.push('/editor', response.data);
+        history.push('/editor', {articleId: response.data});
       }
     })
   }
