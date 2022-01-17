@@ -6,8 +6,6 @@ export const theme = EditorView.theme({
     backgroundColor: "white"
   },
   ".cm-content": {
-    height: "80vh",
-    overflowY: "auto",
     paddingLeft: "3%",
     paddingTop: "3%",
     whiteSpace: "pre-wrap",
