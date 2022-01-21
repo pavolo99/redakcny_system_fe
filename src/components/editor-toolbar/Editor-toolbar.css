@@ -15,3 +15,13 @@ hr.Editor-toolbar-divider {
     color: white !important;
     width: 90px;
 }
+
+.Toolbar-row {
+    display: flex;
+    align-items: center;
+}
+
+.Toolbar-insert-icon {
+    margin-left: 1rem;
+    cursor: pointer;
+}

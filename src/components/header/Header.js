@@ -145,24 +145,24 @@ export default function Header(props) {
   const editorActionsMenu = <>
     {isLoggedUserAuthor && props.openedArticleStatus === 'WRITING' ?
         <div className="Quick-menu-item" onClick={() => onSendToReview()}>
-          <img src={Review} alt="Review"
+          <img src={Review} alt="Odoslať na recenziu"
                className="Quick-menu-img"/>
           <div className="Quick-menu-text">Odoslať na recenziu</div>
         </div> : null}
     {!isLoggedUserAuthor && props.openedArticleStatus === 'IN_REVIEW' ?
         <div className="Quick-menu-item" onClick={() => onSendReview()}>
-          <img src={Review} alt="Review"
+          <img src={Review} alt="Odoslať recenziu"
                className="Quick-menu-img"/>
           <div className="Quick-menu-text">Odoslať recenziu</div>
         </div> : null}
     {!isLoggedUserAuthor && props.openedArticleStatus === 'IN_REVIEW' ?
         <div className="Quick-menu-item" onClick={() => onApproveArticle()}>
-          <img src={Approve} alt="Approve" className="Quick-menu-img"/>
+          <img src={Approve} alt="Schváliť" className="Quick-menu-img"/>
           <div className="Quick-menu-text">Schváliť</div>
         </div> : null}
     <img
         src={isMenuClicked ? ThreeDotsMenuExpanded : ThreeDotsMenu}
-        alt="Three dots" className="Three-dots-menu"
+        alt="Menu" className="Three-dots-menu"
         onClick={() => onMenuClick()}/>
     {isMenuClicked ? <ActionsMenu openedArticleId={props.openedArticleId}
                                   articleStatus={props.openedArticleStatus}

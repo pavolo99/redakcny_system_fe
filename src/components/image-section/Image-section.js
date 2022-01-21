@@ -37,7 +37,8 @@ export default function ImageSection(props) {
           message: 'Obrázok s názvom ' + selectedFile.name + ' bol úspešne nahraný',
           severity: 'success'
         });
-        props.insertImage(apiUrl + '/image/content/' + response.data);
+        const uploadedImagePath = apiUrl + '/image/content/' + response.data;
+        props.onInsertTextToEditor('\n![Pridajte nejaký popis](' + uploadedImagePath + ')\n', 3);
         fetchImagesInfo();
       }
     })
@@ -87,7 +88,7 @@ export default function ImageSection(props) {
              onClick={(() => onRemoveImage(imagesInfo))}>
           <div>{imagesInfo.name}</div>
           <div className="Delete-icon">
-            <img src={DeleteIcon} alt="Delete icon"/>
+            <img src={DeleteIcon} alt="Vymazať obrázok"/>
           </div>
         </div>
     )) : <div className="Empty-images">Žiadne vlastné obrázky</div>}

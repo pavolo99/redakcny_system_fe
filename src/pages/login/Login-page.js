@@ -12,11 +12,11 @@ export default function LoginPage() {
           <h1 className="Login-header">Prihlásenie</h1>
           <div className="Login-providers">
             <a href={apiUrl + '/oauth/login/github'}>
-              <img src={GithubLoginButton} alt="Github login button"
+              <img src={GithubLoginButton} alt="Prihlásenie cez Github"
                    className="Github-provider"/>
             </a>
             <a href={apiUrl + '/oauth/login/gitlab'}>
-              <img src={GitlabLoginButton} alt="Gitlab login button"
+              <img src={GitlabLoginButton} alt="Prihlásenie cez GitLab"
                    className="Gitlab-provider"/>
             </a>
           </div>

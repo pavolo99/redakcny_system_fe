@@ -199,7 +199,7 @@ export default function ShareArticleItem(props) {
 
   return (<div>
     <div onClick={handleClickOpen} className="Display-flex">
-      <img src={Share} alt="Share" className="Quick-menu-img"/>
+      <img src={Share} alt="Zdieľať" className="Quick-menu-img"/>
       <div className="Quick-menu-text">Zdielať</div>
     </div>
     <Dialog open={isShareDialogOpen} onClose={handleClose} fullWidth={true}

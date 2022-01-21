@@ -3,7 +3,7 @@ export function getFullName(userDto) {
 }
 
 export function getUserValue(userDto) {
-    return userDto.firstName + userDto.lastName + userDto.email + userDto.username + userDto.id;
+    return userDto.firstName + userDto.lastName + userDto.id;
 }
 
 export function getUsernameWithFullName(userDto) {
@@ -22,4 +22,17 @@ export function generateHSLColorBasedOnUserInfo(userValue) {
 
     const h = hash % 360;
     return 'hsl(' + h + ', ' + 70 + '%, ' + 47 + '%)';
+}
+
+export function convertTimestampToDate(timeStamp) {
+    const date = new Date(timeStamp);
+    const currentDate = new Date();
+    if (currentDate.getDate() === date.getDate()
+        && currentDate.getMonth() === date.getMonth()
+        && currentDate.getFullYear() === date.getFullYear()) {
+        return 'Dnes o ' + date.getHours() + ':' + (date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes())
+    }
+    return date.getDate() + '.' + (date.getMonth() + 1) + '.'
+        + date.getFullYear() + ' ' + date.getHours() + ':'
+        + (date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes());
 }

@@ -2,7 +2,7 @@ import React, {useEffect, useRef, useState} from "react";
 import './Editor-page.css'
 import Header from "../../components/header/Header";
 import {EditorView} from "@codemirror/view";
-import {EditorState} from "@codemirror/state";
+import {EditorSelection, EditorState, SelectionRange} from "@codemirror/state";
 import {Button, makeStyles, TextField} from "@material-ui/core";
 import {useHistory, useLocation} from "react-router-dom";
 import axios from "axios";
@@ -13,6 +13,7 @@ import ImageSection from "../../components/image-section/Image-section";
 import EditorToolbar from "../../components/editor-toolbar/Editor-toolbar";
 import ReactMarkdown from 'react-markdown'
 import {apiUrl} from "../../components/environment/environment";
+import CommentSection from "../../components/comment-section/Comment-section";
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -77,6 +78,7 @@ const EditorPage = () => {
   const [editorView, setEditorView] = useState(null);
 
   const [editorVisible, setEditorVisible] = useState(true);
+  const [isNewCommentIconClicked, setIsNewCommentIconClicked] = useState(false);
 
   const onInputsValueChange = e => {
     setArticle({...article, [e.target.name]: e.target.value})
@@ -120,19 +122,31 @@ const EditorPage = () => {
     })
   }
 
-  function onImageInsertion(imageSource) {
-    let insertImageTransaction = editorView.state.update({
-      changes: {
-        from: editorView.state.doc.length,
-        insert: "\n![Pridajte nejaký popis obrázku](" + imageSource + ")"
-      }
-    })
-    editorView.dispatch(insertImageTransaction);
-  }
-
   function onToggleEditorPreview() {
     setEditorVisible(prevState => !prevState);
   }
+
+  function createTextSelection(commentRangeFrom, commentRangeTo) {
+    editorView.focus();
+    let newSelectionRange = new SelectionRange(commentRangeFrom, commentRangeTo);
+    editorView.dispatch(editorView.state.update({
+      selection: EditorSelection.create([newSelectionRange])
+    }))
+  }
+
+  function insertValueToEditorOnCurrentCursorPosition(insertedValue, cursorPositionIndex) {
+    let insertTransaction = editorView.state.update({
+      changes: {
+        from: selectionRange.to,
+        insert: insertedValue
+      }
+    })
+    editorView.dispatch(insertTransaction);
+    // just shift cursor
+    createTextSelection(selectionRange.to + cursorPositionIndex, selectionRange.to + cursorPositionIndex)
+  }
+
+  const selectionRange = editorView && editorView.state.selection ? editorView.state.selection.ranges[0] : null;
 
   return (
       <div>
@@ -182,9 +196,8 @@ const EditorPage = () => {
                               className={useStyles().root}/></div>
 
               <div>
-                <ImageSection
-                    insertImage={(imageSource) => onImageInsertion(imageSource)}
-                    articleId={article.id}/>
+                <ImageSection articleId={article.id}
+                              onInsertTextToEditor={(insertedValue, cursorShiftIndex) => insertValueToEditorOnCurrentCursorPosition(insertedValue, cursorShiftIndex)}/>
               </div>
 
               <Button className="Submit-button" onClick={onSaveArticle}>
@@ -193,12 +206,24 @@ const EditorPage = () => {
 
             </div>
             <div className="Center-editor Editor">
-              {article.canLoggedUserEdit ? <EditorToolbar editorVisible={editorVisible}
-                              toggleEditorPreview={() => onToggleEditorPreview()}/> : null}
-              {article.canLoggedUserEdit ? <div ref={editorRef} className={editorVisible ? '' : 'Invisible'}/> : null}
-              <ReactMarkdown children={article.text} className={editorVisible && article.canLoggedUserEdit ? 'Invisible' : 'Visible Preview'} />
+              {article.canLoggedUserEdit ? <EditorToolbar
+                  setIsNewCommentIconClicked={setIsNewCommentIconClicked} isNewCommentIconClicked={isNewCommentIconClicked}
+                  onInsertTextToEditor={(insertedValue, cursorShiftIndex) => insertValueToEditorOnCurrentCursorPosition(insertedValue, cursorShiftIndex)}
+                  editorVisible={editorVisible}
+                  toggleEditorPreview={() => onToggleEditorPreview()}/> : null}
+              {article.canLoggedUserEdit ? <div ref={editorRef}
+                                                className={editorVisible ? ''
+                                                    : 'Invisible'}/> : null}
+              <ReactMarkdown children={article.text} className={editorVisible
+              && article.canLoggedUserEdit ? 'Invisible' : 'Visible Preview'}/>
             </div>
             <div className="Right-side">
+              <CommentSection articleId={article.id}
+                              isNewCommentIconClicked={isNewCommentIconClicked}
+                              setIsNewCommentIconClicked={setIsNewCommentIconClicked}
+                              commentedText={article.text.substring(selectionRange ? selectionRange.from : 0, selectionRange ? selectionRange.to : 0)}
+                              selectionRange={selectionRange}
+                              selectCommentedText={(from, to) => createTextSelection(from, to)}/>
             </div>
           </div>
         </form>

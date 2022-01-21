@@ -1,0 +1,102 @@
+.Comments-section {
+    margin-top: 1rem;
+}
+
+.Comments-list {
+    margin-top: 1rem;
+}
+
+.Comment {
+    background-color: #E5E5E5;
+    width: 90%;
+    align-content: center;
+    margin-left: 0.5rem;
+    padding: 3% 3% 3% 3%;
+    border: 2px solid grey;
+    margin-bottom: 0.5rem;
+}
+
+.Comment:hover {
+    border: 2px solid #2196F3;
+}
+
+.Avatar-time-row {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    margin-bottom: 1rem;
+}
+
+.Mark-solved-row {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    margin-top: -3%;
+}
+
+.Mark-solved-button {
+    cursor: pointer;
+    color: #2196F3;
+}
+
+.Mark-solved-button:hover {
+    color: black;
+}
+
+.Comment-right-side {
+    margin-left: 1rem;
+}
+
+.Updated-at {
+    font-style: italic;
+    font-size: 80%;
+}
+
+.Text {
+    margin-top: 4px;
+    margin-bottom: 2px;
+    word-break: break-word;
+}
+
+.Remove-button {
+    color: darkred;
+    cursor: pointer;
+}
+
+.Remove-button:hover {
+    color: #2196F3;
+}
+
+.Reply-avatar-input-row {
+    display: flex;
+}
+
+.Comment-reply-buttons-row {
+    margin-top: 1rem;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.Comment-reply-button-submit {
+    background-color: #2196F3 !important;
+    color: white !important;
+}
+
+.Comment-reply-button-cancel {
+    margin-right: 1rem !important;
+}
+
+.Add-comment-avatar-input-row {
+    display: flex;
+}
+
+.New-comment {
+    border: 2px solid #2196F3;
+}
+
+.Comments-all-checkbox-row {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    margin-right: 0.5rem;
+}

@@ -6,7 +6,10 @@ import axios from "axios";
 import ArticleStatus from "../article-status/Article-status";
 import {apiUrl} from "../environment/environment";
 import ArticleStatusDropdown from "../article-status-dropdown/Article-status-dropdown";
-import {getUsernameWithFullName} from "../../shared/Utils";
+import {
+  convertTimestampToDate,
+  getUsernameWithFullName
+} from "../../shared/Utils";
 
 export default function ArticleList(props) {
   const [articles, setArticles] = useState([]);
@@ -25,8 +28,7 @@ export default function ArticleList(props) {
     .then(response => {
       if (response) {
         for (let article of response.data) {
-          const updatedAtDate = new Date(article.updatedAt);
-          article.updatedAt = updatedAtDate.getDate() + '.' + (updatedAtDate.getMonth() + 1) + '.' + updatedAtDate.getFullYear() + ' ' + updatedAtDate.getHours() + ':' + updatedAtDate.getMinutes();
+          article.updatedAt = convertTimestampToDate(article.updatedAt);
           article.updatedBy = loggedUserId === article.updatedBy.id ? 'Vy' : getUsernameWithFullName(article.updatedBy);
         }
         setArticles(response.data);
