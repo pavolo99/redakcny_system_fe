@@ -22,7 +22,7 @@ export default function CommentSection(props) {
 
   function fetchComments(allComments) {
     if (props.articleId) {
-      axios.get(apiUrl + '/comment/' + props.articleId + '/' + allComments ?? showAllComments)
+      axios.get(apiUrl + '/comment/' + props.articleId + '/' + (allComments ?? showAllComments))
       .catch(error => handleError(error))
       .then(response => {
         if (response) {
