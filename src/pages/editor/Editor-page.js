@@ -212,10 +212,8 @@ const EditorPage = () => {
                   editorVisible={editorVisible}
                   toggleEditorPreview={() => onToggleEditorPreview()}/> : null}
               {article.canLoggedUserEdit ? <div ref={editorRef}
-                                                className={editorVisible ? ''
-                                                    : 'Invisible'}/> : null}
-              <ReactMarkdown children={article.text} className={editorVisible
-              && article.canLoggedUserEdit ? 'Invisible' : 'Visible Preview'}/>
+                                                className={editorVisible ? '' : 'Invisible'}/> : null}
+              <ReactMarkdown children={article.text} className={editorVisible && article.canLoggedUserEdit ? 'Invisible' : 'Visible Preview'}/>
             </div>
             <div className="Right-side">
               <CommentSection articleId={article.id}
