@@ -4,7 +4,7 @@ export default function ActionsMenu(props) {
 
   return (
       <div className="Dropdown-expansion">
-        <div className="Dropdown-option">Verzie</div>
+        <div className="Dropdown-option" onClick={() => props.onShowArticleVersions()}>Verzie</div>
         <hr className="Action-menu-divider"/>
         <div className="Dropdown-option" onClick={() => props.onArchiveArticle()}>Archivovať</div>
         <div className="Dropdown-option" onClick={() => props.onRemoveArticle()}>Zmazať</div>

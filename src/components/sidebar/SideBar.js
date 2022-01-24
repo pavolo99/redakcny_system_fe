@@ -23,7 +23,7 @@ export default function SideBar(props) {
         </div>
         <div className={selectedArticles === 'REVIEWED_BY_ME' ? 'SideBar-item Active-item' : 'SideBar-item'}
              onClick={() => onSelectArticlesType('REVIEWED_BY_ME')}>
-          <div>Mnou recenzované</div>
+          <div>Na recenziu</div>
         </div>
         <div className={selectedArticles === 'APPROVED' ? 'SideBar-item Active-item' : 'SideBar-item'}
              onClick={() => onSelectArticlesType('APPROVED')}>

@@ -1,20 +1,35 @@
 export function getFullName(userDto) {
+    if (!userDto) {
+        return '';
+    }
     return userDto.firstName + ' ' + userDto.lastName;
 }
 
 export function getUserValue(userDto) {
+    if (!userDto) {
+        return '';
+    }
     return userDto.firstName + userDto.lastName + userDto.id;
 }
 
 export function getUsernameWithFullName(userDto) {
+    if (!userDto) {
+        return '';
+    }
     return userDto.username + ' (' + userDto.firstName + ' ' + userDto.lastName + ')';
 }
 
 export function getUser(userDto) {
+    if (!userDto) {
+        return '';
+    }
     return userDto.firstName + ' ' + userDto.lastName + ', ' + userDto.email + ', ' + userDto.username;
 }
 
 export function generateHSLColorBasedOnUserInfo(userValue) {
+    if (!userValue) {
+        return '';
+    }
     let hash = 0;
     for (let i = 0; i < userValue.length; i++) {
         hash = userValue.charCodeAt(i) + ((hash << 5) - hash);
@@ -25,6 +40,9 @@ export function generateHSLColorBasedOnUserInfo(userValue) {
 }
 
 export function convertTimestampToDate(timeStamp) {
+    if (!timeStamp) {
+        return '';
+    }
     const date = new Date(timeStamp);
     const currentDate = new Date();
     if (currentDate.getDate() === date.getDate()

@@ -49,6 +49,10 @@ export default function Header(props) {
     .finally(() => setMuiMessage(messageData));
   }
 
+  function onShowArticleVersions() {
+    history.push('/versions', props.openedArticleId)
+  }
+
   function onDownloadArticle() {
     console.log('download');
   }
@@ -61,6 +65,7 @@ export default function Header(props) {
       handleError(messageData, error, 'Article must be approved',
           'Článok musí byť schválený');
     })
+    .then(response => handleArticleStatusChangeEventFromResponse(response))
     .finally(() => setMuiMessage(messageData));
   }
 
@@ -72,6 +77,7 @@ export default function Header(props) {
       handleError(messageData, error, 'Article must be after review',
           'Článok musí byť po recenzii');
     })
+    .then(response => handleArticleStatusChangeEventFromResponse(response))
     .finally(() => setMuiMessage(messageData));
   }
 
@@ -83,6 +89,7 @@ export default function Header(props) {
           'Article must be first reviewed or approved',
           'Článok musí byť po recenzii alebo musí byť schválený');
     })
+    .then(response => handleArticleStatusChangeEventFromResponse(response))
     .finally(() => setMuiMessage(messageData));
   }
 
@@ -94,6 +101,7 @@ export default function Header(props) {
       handleError(messageData, error, 'Article must be in the writing process',
           'Článok môže byť odoslaný na recenziu iba, ak je v stave písania');
     })
+    .then(response => handleArticleStatusChangeEventFromResponse(response))
     .finally(() => setMuiMessage(messageData));
   }
 
@@ -105,6 +113,7 @@ export default function Header(props) {
       handleError(messageData, error, 'Article must be in the review',
           'Recenzia môže byť odoslaná iba, ak je článok v recenzii');
     })
+    .then(response => handleArticleStatusChangeEventFromResponse(response))
     .finally(() => setMuiMessage(messageData));
   }
 
@@ -115,7 +124,14 @@ export default function Header(props) {
       handleError(messageData, error, 'Article must be first reviewed',
           'Článok môže byť schválený až po recenzii');
     })
+    .then(response => handleArticleStatusChangeEventFromResponse(response))
     .finally(() => setMuiMessage(messageData));
+  }
+
+  function handleArticleStatusChangeEventFromResponse(response) {
+    if (response) {
+      props.changeArticleStatus(response.data.articleStatus);
+    }
   }
 
   function createMessageData(message) {
@@ -166,6 +182,7 @@ export default function Header(props) {
         onClick={() => onMenuClick()}/>
     {isMenuClicked ? <ActionsMenu openedArticleId={props.openedArticleId}
                                   articleStatus={props.openedArticleStatus}
+                                  onShowArticleVersions={onShowArticleVersions}
                                   onRemoveArticle={onRemoveArticle}
                                   onDownloadArticle={onDownloadArticle}
                                   onDenyArticle={onDenyArticle}

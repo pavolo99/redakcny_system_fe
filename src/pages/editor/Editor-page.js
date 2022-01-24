@@ -51,6 +51,7 @@ const EditorPage = () => {
         let editorState = EditorState.create({
           doc: response.data.text,
           extensions: [
+            EditorView.contentAttributes.of({ contenteditable: response.data.canLoggedUserEdit }),
             extensions,
             theme,
             onUpdate
@@ -128,7 +129,9 @@ const EditorPage = () => {
 
   function createTextSelection(commentRangeFrom, commentRangeTo) {
     editorView.focus();
-    let newSelectionRange = new SelectionRange(commentRangeFrom, commentRangeTo);
+    const cursorPosFrom = commentRangeFrom > editorView.state.doc.length ? 0 : commentRangeFrom;
+    const cursorPosTo = commentRangeTo > editorView.state.doc.length ? 0 : commentRangeTo;
+    let newSelectionRange = new SelectionRange(cursorPosFrom, cursorPosTo);
     editorView.dispatch(editorView.state.update({
       selection: EditorSelection.create([newSelectionRange])
     }))
@@ -152,7 +155,8 @@ const EditorPage = () => {
       <div>
         <Header openedArticleId={article.id}
                 openedArticleName={article.name}
-                openedArticleStatus={article.articleStatus}/>
+                openedArticleStatus={article.articleStatus}
+                changeArticleStatus={(newArticleStatus) => setArticle(prevState => { return {...prevState, articleStatus: newArticleStatus}})}/>
         <MuiMessage severity={muiMessage.severity} open={muiMessage.open}
                     onCloseMuiMessage={closeMuiMessage}
                     message={muiMessage.message}/>
@@ -206,14 +210,11 @@ const EditorPage = () => {
 
             </div>
             <div className="Center-editor Editor">
-              {article.canLoggedUserEdit ? <EditorToolbar
-                  setIsNewCommentIconClicked={setIsNewCommentIconClicked} isNewCommentIconClicked={isNewCommentIconClicked}
+              <EditorToolbar setIsNewCommentIconClicked={setIsNewCommentIconClicked} isNewCommentIconClicked={isNewCommentIconClicked}
                   onInsertTextToEditor={(insertedValue, cursorShiftIndex) => insertValueToEditorOnCurrentCursorPosition(insertedValue, cursorShiftIndex)}
-                  editorVisible={editorVisible}
-                  toggleEditorPreview={() => onToggleEditorPreview()}/> : null}
-              {article.canLoggedUserEdit ? <div ref={editorRef}
-                                                className={editorVisible ? '' : 'Invisible'}/> : null}
-              <ReactMarkdown children={article.text} className={editorVisible && article.canLoggedUserEdit ? 'Invisible' : 'Visible Preview'}/>
+                  editorVisible={editorVisible} toggleEditorPreview={() => onToggleEditorPreview()}/>
+              <div ref={editorRef} className={editorVisible ? '' : 'Invisible'}/>
+              <ReactMarkdown children={article.text} className={editorVisible ? 'Invisible' : 'Visible Preview'}/>
             </div>
             <div className="Right-side">
               <CommentSection articleId={article.id}
