@@ -59,6 +59,7 @@ const VersionsPage = (props) => {
         }
       });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   },[])
 
   function onNavigateVersion(next, skip) {

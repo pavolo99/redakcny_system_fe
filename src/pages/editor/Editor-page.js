@@ -209,7 +209,7 @@ const EditorPage = () => {
               </Button>
 
             </div>
-            <div className="Center-editor Editor">
+            <div className="Center-editor">
               <EditorToolbar setIsNewCommentIconClicked={setIsNewCommentIconClicked} isNewCommentIconClicked={isNewCommentIconClicked}
                   onInsertTextToEditor={(insertedValue, cursorShiftIndex) => insertValueToEditorOnCurrentCursorPosition(insertedValue, cursorShiftIndex)}
                   editorVisible={editorVisible} toggleEditorPreview={() => onToggleEditorPreview()}/>

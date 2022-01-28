@@ -9,7 +9,7 @@ export default function LoginCallbackPage() {
   const accessToken = new URLSearchParams(search).get('accessToken');
   localStorage.setItem("accessToken", accessToken);
 
-  axios.get(apiUrl + "/loggedUser").then(response => {
+  axios.get(apiUrl + "/user/logged").then(response => {
     localStorage.setItem("loggedUser", JSON.stringify(response.data))
     history.push('/dashboard')
   }).catch(error => {

@@ -86,7 +86,7 @@ export default function ImageSection(props) {
     {images.length > 0 ? images.map(imagesInfo => (
         <div key={imagesInfo.id} className="Image-row"
              onClick={(() => onRemoveImage(imagesInfo))}>
-          <div>{imagesInfo.name}</div>
+          <div>{imagesInfo.name.length < 33 ? imagesInfo.name : (imagesInfo.name.substring(0, 30) + '...')}</div>
           <div className="Delete-icon">
             <img src={DeleteIcon} alt="Vymazať obrázok"/>
           </div>
@@ -101,7 +101,7 @@ export default function ImageSection(props) {
                     message={muiMessage.message}/>
         <h4 className="Images-header">Obrázky</h4>
         {mappedImagesInfo}
-        <input type="file" className="Upload-image"
+        <input type="file" className="Upload-image" accept="image/*"
                onChange={(event) => onFileUpload(event)}/>
       </div>
   );

@@ -8,10 +8,9 @@
 
 .Center-editor {
     width: 50%;
-}
-
-.Editor {
     margin-bottom: 2rem;
+    background-color: white;
+    min-height: 70vh;
 }
 
 .Left-side {
