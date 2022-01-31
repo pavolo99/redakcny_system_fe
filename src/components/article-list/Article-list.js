@@ -50,8 +50,8 @@ export default function ArticleList(props) {
 
   const history = useHistory();
 
-  function onEditArticle(articleId) {
-    history.push('/editor', {articleId});
+  function onEditArticle(articleId, articleStatus) {
+    history.push(articleStatus === 'ARCHIVED' ? '/archive' : '/editor', {articleId});
   }
 
   function onCreateNewArticle() {
@@ -70,17 +70,19 @@ export default function ArticleList(props) {
       history.push('/login');
     }
   }
+  let loggedUserRole = JSON.parse(localStorage.getItem('loggedUser')).role;
 
   const mappedArticleList =
       <div>
         {articles.map(article => (
-            <div key={article.id} onClick={(() => onEditArticle(article.id))}>
+            <div key={article.id} onClick={(() => onEditArticle(article.id, article.articleStatus))}>
               <div className="Article-item">
                 <div>{article.name}</div>
                 <div><ArticleStatus name={article.articleStatus}
                                     reviewNumber={article.reviewNumber}/></div>
                 <div>{article.updatedAt}</div>
                 <div>{article.updatedBy}</div>
+                {loggedUserRole === 'EDITOR' && props.selectedArticles === 'REVIEWED_BY_ME' ? <div>{article.publicationDecision}</div> : null }
               </div>
               <hr className="Article-divider"/>
             </div>
@@ -103,6 +105,7 @@ export default function ArticleList(props) {
             <div>Stav</div>
             <div>Posledná editácia</div>
             <div>Naposledy upravil</div>
+            {loggedUserRole === 'EDITOR' && props.selectedArticles === 'REVIEWED_BY_ME' ? <div>Informácia o publikácií</div> : null }
           </div>
           <hr className="Article-divider"/>
           {

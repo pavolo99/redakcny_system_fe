@@ -51,8 +51,7 @@ const VersionsPage = (props) => {
             extensions: [
               EditorView.contentAttributes.of({contenteditable: false}),
               extensions,
-              theme,
-              onUpdate
+              theme
             ],
           });
           setEditorView(new EditorView({state: editorState, parent: editorRef.current}));
@@ -121,13 +120,6 @@ const VersionsPage = (props) => {
   }
 
   const editorRef = useRef();
-
-  const onUpdate = EditorView.updateListener.of((v) => {
-    setLoadedVersion(prevState => {
-      return {...prevState, text: v.state.doc.toString()}
-    });
-  });
-
 
   function handleError(error) {
     if (error.response.status === 401) {

@@ -3,7 +3,7 @@ import './Editor-page.css'
 import Header from "../../components/header/Header";
 import {EditorView} from "@codemirror/view";
 import {EditorSelection, EditorState, SelectionRange} from "@codemirror/state";
-import {Button, makeStyles, TextField} from "@material-ui/core";
+import {Button, TextField} from "@material-ui/core";
 import {useHistory, useLocation} from "react-router-dom";
 import axios from "axios";
 import {extensions} from "../../components/codemirror-settings/extensions";
@@ -14,19 +14,11 @@ import EditorToolbar from "../../components/editor-toolbar/Editor-toolbar";
 import ReactMarkdown from 'react-markdown'
 import {apiUrl} from "../../components/environment/environment";
 import CommentSection from "../../components/comment-section/Comment-section";
-
-const useStyles = makeStyles(() => ({
-  root: {
-    "& .MuiFilledInput-root": {
-      background: "rgb(255,255,255)"
-    }
-  }
-}));
+import {articleCanBeEdited} from "../../shared/Utils";
 
 const EditorPage = () => {
   const location = useLocation();
   const history = useHistory();
-
   const [article, setArticle] = useState({
     id: null,
     name: '',
@@ -51,7 +43,7 @@ const EditorPage = () => {
         let editorState = EditorState.create({
           doc: response.data.text,
           extensions: [
-            EditorView.contentAttributes.of({ contenteditable: response.data.canLoggedUserEdit }),
+            EditorView.contentAttributes.of({ contenteditable: response.data.canLoggedUserEdit && articleCanBeEdited(response.data.articleStatus) }),
             extensions,
             theme,
             onUpdate
@@ -151,6 +143,7 @@ const EditorPage = () => {
 
   const selectionRange = editorView && editorView.state.selection ? editorView.state.selection.ranges[0] : null;
 
+  let loggedUserRole = JSON.parse(localStorage.getItem('loggedUser')).role;
   return (
       <div>
         <Header openedArticleId={article.id}
@@ -166,22 +159,19 @@ const EditorPage = () => {
               <div><TextField label="Kľúčové slová"
                               name="keyWords" value={article.keyWords}
                               variant="filled" style={{width: "100%"}}
-                              onChange={onInputsValueChange}
-                              className={useStyles().root}/></div>
+                              onChange={onInputsValueChange}/></div>
             </div>
             <div className="Article-name">
               <TextField label="Názov článku" variant="filled"
                          value={article.name}
                          style={{width: "100%"}} name="name"
-                         required={true} onChange={onInputsValueChange}
-                         className={useStyles().root}/>
+                         required={true} onChange={onInputsValueChange}/>
             </div>
             <div className="Article-abstract">
               <TextField label="Abstrakt" variant="filled"
                          value={article.articleAbstract}
                          style={{width: "100%"}} name="articleAbstract"
-                         onChange={onInputsValueChange}
-                         className={useStyles().root}/>
+                         onChange={onInputsValueChange}/>
             </div>
           </div>
           <div className="Flex-row">
@@ -190,17 +180,18 @@ const EditorPage = () => {
                               label="Názov zverejneného súboru"
                               value={article.publicFileName}
                               style={{width: "100%"}} variant="filled"
-                              onChange={onInputsValueChange}
-                              className={useStyles().root}/></div>
-              <div><TextField value={article.publicationDecision}
-                              name="publicationDecision"
-                              label="Rozhodnutie o publikácií článku"
-                              style={{width: "100%"}} variant="filled"
-                              onChange={onInputsValueChange}
-                              className={useStyles().root}/></div>
+                              onChange={onInputsValueChange}/></div>
+              {loggedUserRole === 'EDITOR' ? <div>
+                <TextField value={article.publicationDecision}
+                               name="publicationDecision"
+                               label="Rozhodnutie o publikácií článku"
+                               style={{width: "100%"}} variant="filled"
+                               onChange={onInputsValueChange}/></div> : null}
 
               <div>
                 <ImageSection articleId={article.id}
+                              canLoggedUserEdit={article.canLoggedUserEdit}
+                              articleStatus={article.articleStatus}
                               onInsertTextToEditor={(insertedValue, cursorShiftIndex) => insertValueToEditorOnCurrentCursorPosition(insertedValue, cursorShiftIndex)}/>
               </div>
 

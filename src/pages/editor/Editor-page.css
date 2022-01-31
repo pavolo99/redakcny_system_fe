@@ -58,6 +58,10 @@
     color: white !important;
 }
 
+.Submit-button:disabled {
+    background-color: rgba(135, 140, 138, 0.73) !important;
+}
+
 .Preview {
     background-color: white;
     padding: 1rem 1rem 1rem 1.5rem;
@@ -73,4 +77,8 @@
 
 .Invisible {
     display: none;
+}
+
+.MuiFilledInput-root {
+    background: white !important;
 }

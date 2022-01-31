@@ -54,3 +54,7 @@ export function convertTimestampToDate(timeStamp) {
         + date.getFullYear() + ' ' + date.getHours() + ':'
         + (date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes());
 }
+
+export function articleCanBeEdited(articleStatus) {
+    return articleStatus === 'WRITING' || articleStatus === 'IN_REVIEW' || articleStatus === 'APPROVED';
+}

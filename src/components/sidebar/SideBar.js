@@ -6,6 +6,7 @@ export default function SideBar(props) {
   function onSelectArticlesType(filterType) {
     props.setSelectedArticles(filterType);
   }
+  let loggedUserRole = JSON.parse(localStorage.getItem('loggedUser')).role;
 
   return (
       <div className="SideBar">
@@ -21,10 +22,11 @@ export default function SideBar(props) {
              onClick={() => onSelectArticlesType('ARCHIVED')}>
           <div>Archivované</div>
         </div>
-        <div className={selectedArticles === 'REVIEWED_BY_ME' ? 'SideBar-item Active-item' : 'SideBar-item'}
-             onClick={() => onSelectArticlesType('REVIEWED_BY_ME')}>
+        {loggedUserRole === 'EDITOR' ? <div className={selectedArticles === 'REVIEWED_BY_ME'
+            ? 'SideBar-item Active-item' : 'SideBar-item'}
+              onClick={() => onSelectArticlesType('REVIEWED_BY_ME')}>
           <div>Na recenziu</div>
-        </div>
+        </div> : null}
         <div className={selectedArticles === 'APPROVED' ? 'SideBar-item Active-item' : 'SideBar-item'}
              onClick={() => onSelectArticlesType('APPROVED')}>
           <div>Schválené</div>

@@ -56,5 +56,10 @@
 
 .Avatar {
     margin-right: 1rem;
+}
+
+.Logout-button {
     cursor: pointer;
+    margin-right: 1rem;
+    width: 30px;
 }

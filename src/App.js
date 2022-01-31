@@ -6,6 +6,7 @@ import EditorPage from "./pages/editor/Editor-page";
 import React from "react";
 import LoginCallbackPage from "./pages/login-callback/Login-callback-page";
 import VersionsPage from "./pages/versions/Versions-page";
+import ArchivePage from "./pages/archive/Archive-page";
 
 function App() {
 
@@ -20,6 +21,7 @@ function App() {
           <Route path='/dashboard' component={DashboardPage}/>
           <Route path='/editor' component={EditorPage}/>
           <Route path='/versions' component={VersionsPage}/>
+          <Route path='/archive' component={ArchivePage}/>
 
           <Route exact path='/**'>
             <Redirect to="/dashboard"/>

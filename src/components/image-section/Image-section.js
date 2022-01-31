@@ -5,6 +5,7 @@ import DeleteIcon from "../../assets/delete-image.png"
 import {MuiMessage} from "../mui-message/Mui-message";
 import {apiUrl} from "../environment/environment";
 import {useHistory} from "react-router-dom";
+import {articleCanBeEdited} from "../../shared/Utils";
 
 export default function ImageSection(props) {
   const history = useHistory();
@@ -102,6 +103,7 @@ export default function ImageSection(props) {
         <h4 className="Images-header">Obrázky</h4>
         {mappedImagesInfo}
         <input type="file" className="Upload-image" accept="image/*"
+               disabled={!props.canLoggedUserEdit || !articleCanBeEdited(props.articleStatus)}
                onChange={(event) => onFileUpload(event)}/>
       </div>
   );

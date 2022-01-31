@@ -5,6 +5,7 @@ import ThreeDotsMenu from "../../assets/three-dots-menu.svg"
 import ThreeDotsMenuExpanded from "../../assets/three-dots-menu-expanded.svg"
 import Review from "../../assets/review.svg"
 import Approve from "../../assets/approve.svg"
+import Logout from "../../assets/logout.png"
 import ActionsMenu from "../actions-menu/Actions-menu";
 import {MuiMessage} from "../mui-message/Mui-message";
 import axios from "axios";
@@ -190,6 +191,11 @@ export default function Header(props) {
                                   onArchiveArticle={onArchiveArticle}/> : null}
   </>;
 
+  function onLogout() {
+    localStorage.clear();
+    history.push('/login');
+  }
+
   return (
       <div className="Header">
         <div className="App-link" onClick={onRedirectToDashboard}>
@@ -202,6 +208,7 @@ export default function Header(props) {
               openedArticleName={props.openedArticleName}
               openedArticleId={props.openedArticleId}/>
         </div> : null}
+            <img src={Logout} className="Logout-button" alt="Odhlásiť sa" onClick={onLogout}/>
           <div className="Avatar">
             <Avatar name={getFullName(loggedUser)} round={true} size="40"
                     fgColor="black" color="white"/>
