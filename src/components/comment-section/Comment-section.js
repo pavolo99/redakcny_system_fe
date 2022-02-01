@@ -8,7 +8,7 @@ import {
   convertTimestampToDate,
   generateHSLColorBasedOnUserInfo,
   getFullName,
-  getUserValue
+  getUserValue, handle401Error
 } from "../../shared/Utils";
 import {Button, TextField} from "@material-ui/core";
 import {Checkbox} from "@mui/material";
@@ -23,7 +23,7 @@ export default function CommentSection(props) {
   function fetchComments(allComments) {
     if (props.articleId) {
       axios.get(apiUrl + '/comment/' + props.articleId + '/' + (allComments ?? showAllComments))
-      .catch(error => handleError(error))
+      .catch(error => handle401Error(error, history))
       .then(response => {
         if (response) {
           const comments = response.data;
@@ -35,12 +35,6 @@ export default function CommentSection(props) {
           setComments(comments);
         }
       });
-    }
-  }
-
-  function handleError(error) {
-    if (error.response.status === 401) {
-      history.push('/login');
     }
   }
 
@@ -75,7 +69,7 @@ export default function CommentSection(props) {
   function createCommentReply(commentId) {
 
     axios.post(apiUrl + '/comment-reply/' + commentId, {text: commentReply.text})
-    .catch((error) => handleError(error))
+    .catch((error) => handle401Error(error, history))
     .then(response => {
       if (response) {
         fetchComments();
@@ -86,7 +80,7 @@ export default function CommentSection(props) {
 
   function onDeleteCommentReply(commentReplyId) {
     axios.delete(apiUrl + '/comment-reply/' + commentReplyId)
-    .catch(error => handleError(error))
+    .catch(error => handle401Error(error, history))
     .then(response => {
       if (response) {
         fetchComments();
@@ -111,7 +105,7 @@ export default function CommentSection(props) {
       text: commentText
     }
     axios.post(apiUrl + '/comment/' + articleId, commentCreateDto)
-    .catch((error) => handleError(error))
+    .catch((error) => handle401Error(error, history))
     .then(response => {
       if (response) {
         fetchComments();
@@ -123,7 +117,7 @@ export default function CommentSection(props) {
 
   function markAsResolved(commentId) {
     axios.put(apiUrl + '/comment/resolved/' + commentId, {})
-    .catch((error) => handleError(error))
+    .catch((error) => handle401Error(error, history))
     .then(response => {
       if (response) {
         fetchComments();
@@ -133,7 +127,7 @@ export default function CommentSection(props) {
 
   function onDeleteComment(commentId) {
     axios.delete(apiUrl + '/comment/' + commentId)
-    .catch(error => handleError(error))
+    .catch(error => handle401Error(error, history))
     .then(response => {
       if (response) {
         fetchComments();

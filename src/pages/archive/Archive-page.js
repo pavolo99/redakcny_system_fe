@@ -8,6 +8,7 @@ import {EditorView} from "@codemirror/view";
 import {extensions} from "../../components/codemirror-settings/extensions";
 import {theme} from "../../components/codemirror-settings/theme";
 import {Button} from "@material-ui/core";
+import {handle401Error} from "../../shared/Utils";
 
 const ArchivePage = (props) => {
   const history = useHistory();
@@ -20,7 +21,7 @@ const ArchivePage = (props) => {
   useEffect(() => {
     if (props.location.state) {
       axios.get(apiUrl + '/article/archived/' + props.location.state.articleId)
-      .catch(error => handleError(error))
+      .catch(error => handle401Error(error, history))
       .then(response => {
         if (response) {
           setArchivedArticle(response.data);
@@ -41,19 +42,13 @@ const ArchivePage = (props) => {
 
   const editorRef = useRef();
 
-  function handleError(error) {
-    if (error.response.status === 401) {
-      history.push('/login');
-    }
-  }
-
   function onRedirectToDashboard() {
     history.push('/dashboard');
   }
 
   function onRestoreArticle() {
     axios.put(apiUrl + '/article/restore/' + props.location.state.articleId)
-    .catch(error => handleError(error))
+    .catch(error => handle401Error(error, history))
     .then(response => {
       if (response) {
         onRedirectToDashboard();

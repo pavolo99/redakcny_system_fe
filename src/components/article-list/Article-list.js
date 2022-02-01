@@ -8,7 +8,7 @@ import {apiUrl} from "../environment/environment";
 import ArticleStatusDropdown from "../article-status-dropdown/Article-status-dropdown";
 import {
   convertTimestampToDate,
-  getUsernameWithFullName
+  getUsernameWithFullName, handle401Error
 } from "../../shared/Utils";
 
 export default function ArticleList(props) {
@@ -24,7 +24,7 @@ export default function ArticleList(props) {
       }
     };
     axios.get(apiUrl + '/article/list', queryParams)
-    .catch(error => handle401(error))
+    .catch(error => handle401Error(error, history))
     .then(response => {
       if (response) {
         for (let article of response.data) {
@@ -56,7 +56,7 @@ export default function ArticleList(props) {
 
   function onCreateNewArticle() {
     axios.post(apiUrl + '/article', {})
-    .catch(error => handle401(error))
+    .catch(error => handle401Error(error, history))
     .then(response => {
       if (response) {
         history.push('/editor', {articleId: response.data});
@@ -64,12 +64,6 @@ export default function ArticleList(props) {
     })
   }
 
-  function handle401(error) {
-    if (error.response.status === 401) {
-      localStorage.clear();
-      history.push('/login');
-    }
-  }
   let loggedUserRole = JSON.parse(localStorage.getItem('loggedUser')).role;
 
   const mappedArticleList =

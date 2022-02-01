@@ -12,7 +12,7 @@ import axios from "axios";
 import {apiUrl} from "../environment/environment";
 import Avatar from 'react-avatar';
 import ShareArticleItem from "../share-article-dialog/Share-article-item";
-import {getFullName} from "../../shared/Utils";
+import {getFullName, handle401Error} from "../../shared/Utils";
 
 export default function Header(props) {
   const history = useHistory();
@@ -144,10 +144,7 @@ export default function Header(props) {
   }
 
   function handleError(messageData, error, responseMessage, errorMessage) {
-    if (error.response.status === 401) {
-      localStorage.clear();
-      history.push('/login');
-    }
+    handle401Error(error, history);
     messageData.severity = 'error';
     if (error.response.data.message === responseMessage) {
       messageData.message = errorMessage;

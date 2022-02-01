@@ -14,7 +14,7 @@ import EditorToolbar from "../../components/editor-toolbar/Editor-toolbar";
 import ReactMarkdown from 'react-markdown'
 import {apiUrl} from "../../components/environment/environment";
 import CommentSection from "../../components/comment-section/Comment-section";
-import {articleCanBeEdited} from "../../shared/Utils";
+import {articleCanBeEdited, handle401Error} from "../../shared/Utils";
 
 const EditorPage = () => {
   const location = useLocation();
@@ -98,11 +98,8 @@ const EditorPage = () => {
   }
 
   function handleError(error) {
-    if (error.response.status === 401) {
-      localStorage.clear();
-      history.push('/login');
-    }
-    else if (error.response.status === 400) {
+    handle401Error(error, history);
+    if (error.response.status === 400) {
       setMuiMessage({open: true, message: 'Musíte vyplniť všetky povinné polia', severity: 'error'});
     } else {
       setMuiMessage({open: true, message: 'Nastala neočakávaná chyba pri ukladaní článku', severity: 'error'});

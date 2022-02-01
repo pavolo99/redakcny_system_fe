@@ -19,7 +19,7 @@ import {MuiMessage} from "../mui-message/Mui-message";
 import {
   generateHSLColorBasedOnUserInfo,
   getFullName, getUser,
-  getUsernameWithFullName, getUserValue
+  getUsernameWithFullName, getUserValue, handle401Error
 } from "../../shared/Utils";
 
 export default function ShareArticleItem(props) {
@@ -41,7 +41,7 @@ export default function ShareArticleItem(props) {
 
   function fetchArticleCollaborators() {
     axios.get(apiUrl + '/collaborator/' + props.openedArticleId)
-    .catch(error => handle401(error))
+    .catch(error => handle401Error(error, history))
     .then(response => {
       if (response) {
         setArticleCollaborators(response.data);
@@ -67,7 +67,7 @@ export default function ShareArticleItem(props) {
   function onKeyChange(searchValue) {
     if (searchValue) {
       axios.get(apiUrl + '/user/collaborator/' + searchValue)
-      .catch(error => handle401(error))
+      .catch(error => handle401Error(error, history))
       .then(response => {
         if (response) {
           setPotentialCollaborators(response.data);
@@ -77,13 +77,6 @@ export default function ShareArticleItem(props) {
   }
 
   const history = useHistory();
-
-  function handle401(error) {
-    if (error.response.status === 401) {
-      localStorage.clear();
-      history.push('/login');
-    }
-  }
 
   function onCollaboratorPropertyChange(index, property) {
     let articleCollaboratorsCopy = articleCollaborators.slice();
@@ -95,7 +88,7 @@ export default function ShareArticleItem(props) {
       canEdit: articleCollaborator.canEdit,
       author: articleCollaborator.author
     })
-    .catch(error => handle401(error))
+    .catch(error => handle401Error(error, history))
     .then(response => {
       if (response) {
         setMuiMessage({
@@ -109,9 +102,7 @@ export default function ShareArticleItem(props) {
 
   function onDeleteCollaborator(collaboratorId) {
     axios.delete(apiUrl + '/collaborator/deleted/' + collaboratorId)
-    .catch((error) => {
-      handle401(error)
-    })
+    .catch((error) => handle401Error(error, history))
     .then(response => {
       if (response) {
         setMuiMessage({
@@ -130,9 +121,8 @@ export default function ShareArticleItem(props) {
       axios.post(apiUrl + '/collaborator/added/' + props.openedArticleId + '/'
           + value.id, {})
       .catch(error => {
-        handle401(error);
-        if (error.response.data.message
-            === 'User is already collaborator for the article') {
+        handle401Error(error, history);
+        if (error.response.data.message === 'User is already collaborator for the article') {
           setMuiMessage({
             open: true,
             severity: 'error',

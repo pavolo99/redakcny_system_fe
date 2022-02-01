@@ -5,7 +5,7 @@ import DeleteIcon from "../../assets/delete-image.png"
 import {MuiMessage} from "../mui-message/Mui-message";
 import {apiUrl} from "../environment/environment";
 import {useHistory} from "react-router-dom";
-import {articleCanBeEdited} from "../../shared/Utils";
+import {articleCanBeEdited, handle401Error} from "../../shared/Utils";
 
 export default function ImageSection(props) {
   const history = useHistory();
@@ -30,7 +30,7 @@ export default function ImageSection(props) {
     const fd = new FormData();
     fd.append('file', selectedFile, selectedFile.name)
     axios.post(apiUrl + '/image/uploaded/' + props.articleId, fd)
-    .catch(error => handleError(error))
+    .catch(error => handle401Error(error, history))
     .then(response => {
       if (response) {
         setMuiMessage({
@@ -47,7 +47,7 @@ export default function ImageSection(props) {
 
   function onRemoveImage(imageInfo) {
     axios.delete(apiUrl + '/image/' + imageInfo.id)
-    .catch(error => handleError(error))
+    .catch(error => handle401Error(error, history))
     .then(response => {
       if (response) {
         setMuiMessage({
@@ -63,18 +63,12 @@ export default function ImageSection(props) {
   function fetchImagesInfo() {
     if (props.articleId) {
       axios.get(apiUrl + '/image/info/' + props.articleId)
-      .catch(error => handleError(error))
+      .catch(error => handle401Error(error, history))
       .then(response => {
         if (response) {
           setImages(response.data);
         }
       });
-    }
-  }
-
-  function handleError(error) {
-    if (error.response.status === 401) {
-      history.push('/login');
     }
   }
 

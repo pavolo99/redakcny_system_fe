@@ -58,3 +58,10 @@ export function convertTimestampToDate(timeStamp) {
 export function articleCanBeEdited(articleStatus) {
     return articleStatus === 'WRITING' || articleStatus === 'IN_REVIEW' || articleStatus === 'APPROVED';
 }
+
+export function handle401Error(error, history) {
+    if (error.response.status === 401) {
+        history.push('/login');
+        localStorage.clear();
+    }
+}

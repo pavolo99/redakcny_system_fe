@@ -3,7 +3,11 @@ import './Versions-page.css'
 import axios from "axios";
 import {apiUrl} from "../../components/environment/environment";
 import {useHistory} from "react-router-dom";
-import {convertTimestampToDate, getFullName} from "../../shared/Utils";
+import {
+  convertTimestampToDate,
+  getFullName,
+  handle401Error
+} from "../../shared/Utils";
 import SkipEnd from "../../assets/skip-end.svg"
 import SkipStart from "../../assets/skip-start.svg"
 import NavigateNext from "../../assets/navigate-next.svg"
@@ -42,7 +46,7 @@ const VersionsPage = (props) => {
   useEffect(() => {
     if (props.location.state) {
       axios.get(apiUrl + '/version/' + props.location.state + '/all')
-      .catch(error => handleError(error))
+      .catch(error => handle401Error(error, history))
       .then(response => {
         if (response) {
           const versionsDataResponse = setVersionsAndCurrentVersion(response);
@@ -73,7 +77,7 @@ const VersionsPage = (props) => {
       newVersion = versions.versionSimpleDtoList.find(value => value.order === versions.versionSimpleDtoList.length);
     }
     axios.get(apiUrl + '/version/' + newVersion.id + '/detail')
-    .catch(error => handleError(error))
+    .catch(error => handle401Error(error, history))
     .then(response => {
       if (response) {
         const responseData = response.data;
@@ -92,7 +96,7 @@ const VersionsPage = (props) => {
 
   function onSetAsCurrentVersion() {
     axios.post(apiUrl + '/version/' + loadedVersion.id + '/current', {})
-    .catch(error => handleError(error))
+    .catch(error => handle401Error(error, history))
     .then(response => {
       const versionsDataResponse = setVersionsAndCurrentVersion(response);
       const transaction = editorView.state.update({changes: {from: 0, to: editorView.state.doc.length, insert: versionsDataResponse.currentVersionText}});
@@ -120,12 +124,6 @@ const VersionsPage = (props) => {
   }
 
   const editorRef = useRef();
-
-  function handleError(error) {
-    if (error.response.status === 401) {
-      history.push('/login');
-    }
-  }
 
   function onRedirectToArticle() {
     history.push('/editor', {articleId: props.location.state});
