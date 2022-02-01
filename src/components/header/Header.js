@@ -157,23 +157,25 @@ export default function Header(props) {
   const isLoggedUserAuthor = loggedUser.role === 'AUTHOR';
 
   const editorActionsMenu = <>
-    {isLoggedUserAuthor && props.openedArticleStatus === 'WRITING' ?
+    <div style={{minWidth: '25%', display: 'flex', flexDirection: 'row'}}>
+      {isLoggedUserAuthor && props.openedArticleStatus === 'WRITING' ?
         <div className="Quick-menu-item" onClick={() => onSendToReview()}>
           <img src={Review} alt="Odoslať na recenziu"
                className="Quick-menu-img"/>
           <div className="Quick-menu-text">Odoslať na recenziu</div>
         </div> : null}
-    {!isLoggedUserAuthor && props.openedArticleStatus === 'IN_REVIEW' ?
-        <div className="Quick-menu-item" onClick={() => onSendReview()}>
-          <img src={Review} alt="Odoslať recenziu"
-               className="Quick-menu-img"/>
-          <div className="Quick-menu-text">Odoslať recenziu</div>
-        </div> : null}
-    {!isLoggedUserAuthor && props.openedArticleStatus === 'IN_REVIEW' ?
-        <div className="Quick-menu-item" onClick={() => onApproveArticle()}>
-          <img src={Approve} alt="Schváliť" className="Quick-menu-img"/>
-          <div className="Quick-menu-text">Schváliť</div>
-        </div> : null}
+      {!isLoggedUserAuthor && props.openedArticleStatus === 'IN_REVIEW' ?
+          <div className="Quick-menu-item" onClick={() => onSendReview()}>
+            <img src={Review} alt="Odoslať recenziu"
+                 className="Quick-menu-img"/>
+            <div className="Quick-menu-text">Odoslať recenziu</div>
+          </div> : null}
+      {!isLoggedUserAuthor && props.openedArticleStatus === 'IN_REVIEW' ?
+          <div className="Quick-menu-item" onClick={() => onApproveArticle()}>
+            <img src={Approve} alt="Schváliť" className="Quick-menu-img"/>
+            <div className="Quick-menu-text">Schváliť</div>
+          </div> : null}
+    </div>
     <img
         src={isMenuClicked ? ThreeDotsMenuExpanded : ThreeDotsMenu}
         alt="Menu" className="Three-dots-menu"
