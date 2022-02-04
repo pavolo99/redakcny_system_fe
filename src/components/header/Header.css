@@ -63,3 +63,8 @@
     margin-right: 1rem;
     width: 30px;
 }
+
+.Quick-action-items {
+    min-width: 25%;
+    display: flex;
+}

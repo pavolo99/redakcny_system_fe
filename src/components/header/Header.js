@@ -157,7 +157,7 @@ export default function Header(props) {
   const isLoggedUserAuthor = loggedUser.role === 'AUTHOR';
 
   const editorActionsMenu = <>
-    <div style={{minWidth: '25%', display: 'flex', flexDirection: 'row'}}>
+    <div className="Quick-action-items">
       {isLoggedUserAuthor && props.openedArticleStatus === 'WRITING' ?
         <div className="Quick-menu-item" onClick={() => onSendToReview()}>
           <img src={Review} alt="Odoslať na recenziu"
