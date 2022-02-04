@@ -191,7 +191,7 @@ export default function CommentSection(props) {
       <div className="Comments-section">
         <div className="Comments-all-checkbox-row"><Checkbox checked={showAllComments}
                        onChange={(event) => onFetchComments(event.target.checked)}/>
-          Všetky komentáre
+          Zobraziť aj vyriešené komentáre
         </div>
         {props.isNewCommentIconClicked ? <div className="Comment New-comment">
           <div className="Add-comment-avatar-input-row">

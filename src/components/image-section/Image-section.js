@@ -30,12 +30,21 @@ export default function ImageSection(props) {
     const fd = new FormData();
     fd.append('file', selectedFile, selectedFile.name)
     axios.post(apiUrl + '/image/uploaded/' + props.articleId, fd)
-    .catch(error => handle401Error(error, history))
+    .catch(error => {
+      handle401Error(error, history);
+      if (error.response.status === 400) {
+        setMuiMessage({
+          open: true,
+          message: 'Obrázok ' + selectedFile.name + ' už existuje',
+          severity: 'error'
+        });
+      }
+    })
     .then(response => {
       if (response) {
         setMuiMessage({
           open: true,
-          message: 'Obrázok s názvom ' + selectedFile.name + ' bol úspešne nahraný',
+          message: 'Obrázok ' + selectedFile.name + ' bol úspešne nahraný',
           severity: 'success'
         });
         const uploadedImagePath = apiUrl + '/image/content/' + response.data;
