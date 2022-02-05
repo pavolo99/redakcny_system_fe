@@ -88,10 +88,9 @@ export default function ImageSection(props) {
 
   const mappedImagesInfo = <div>
     {images.length > 0 ? images.map(imagesInfo => (
-        <div key={imagesInfo.id} className="Image-row"
-             onClick={(() => onRemoveImage(imagesInfo))}>
+        <div key={imagesInfo.id} className="Image-row">
           <div>{imagesInfo.name.length < 33 ? imagesInfo.name : (imagesInfo.name.substring(0, 30) + '...')}</div>
-          <div className="Delete-icon">
+          <div className="Delete-icon" onClick={(() => onRemoveImage(imagesInfo))}>
             <img src={DeleteIcon} alt="Vymazať obrázok"/>
           </div>
         </div>

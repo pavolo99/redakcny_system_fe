@@ -149,7 +149,7 @@ export default function Header(props) {
     if (error.response.data.message === responseMessage) {
       messageData.message = errorMessage;
     } else {
-      messageData.message = 'Nastala neočakávaná chyba pri schvaľovaní článku'
+      messageData.message = 'Nastala neočakávaná chyba pri ukladaní článku'
     }
   }
 
