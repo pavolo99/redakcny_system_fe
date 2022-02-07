@@ -74,7 +74,13 @@ const EditorPage = () => {
   const [isNewCommentIconClicked, setIsNewCommentIconClicked] = useState(false);
 
   const onInputsValueChange = e => {
-    setArticle({...article, [e.target.name]: e.target.value})
+    const targetName = e.target.name;
+    const targetValue = e.target.value;
+    if (targetName === 'publicFileName' && (targetValue.includes('.') || targetValue.includes('/') || targetValue.includes(' '))) {
+      e.preventDefault();
+      return;
+    }
+    setArticle({...article, [targetName]: targetValue})
   }
 
   const onUpdate = EditorView.updateListener.of((v) => {

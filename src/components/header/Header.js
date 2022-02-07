@@ -63,11 +63,30 @@ export default function Header(props) {
         'Článok bol úspešne publikovaný a archivovaný');
     axios.put(apiUrl + '/article/published/' + props.openedArticleId)
     .catch((error) => {
-      handleError(messageData, error, 'Article must be approved',
-          'Článok musí byť schválený');
+      handlePublicationError(error, history, messageData);
     })
     .then(response => handleArticleStatusChangeEventFromResponse(response))
     .finally(() => setMuiMessage(messageData));
+  }
+
+  function handlePublicationError(error, history, messageData) {
+    handle401Error(error, history);
+    messageData.severity = 'error';
+    if (error.response.data.message === 'A file with this name already exists') {
+      messageData.message = 'Článok alebo obrázok s rovnakým názvom už v repozitári existuje. Kontaktujte administrátora prosím.';
+    } else if (error.response.data.message === 'Publication configuration is not complete') {
+      messageData.message = 'Konfigurácia publikácie je nedokončená. Kontaktujte administrátora prosím.';
+    } else if (error.response.data.message === 'Article publication file name cannot be empty') {
+      messageData.message = 'Názov zverejneného súboru musí byť vyplnený.';
+    } else if (error.response.data.message === 'Invalid path to article') {
+      messageData.message = 'Cesta k článku v repozitári je nesprávna. Kontaktujte administrátora prosím.';
+    } else if (error.response.data.message === 'Branch does not exist') {
+      messageData.message = 'Vetva v repozitári neexistuje. Kontaktujte administrátora prosím.';
+    } else if (error.response.data.message === 'Unauthorized, make sure that private token is correct') {
+      messageData.message = 'Prístup k repozitáru bol zamietnutý. Uistite sa, či privátny token je správny. Kontaktujte administrátora prosím.';
+    } else {
+      messageData.message = 'Nastala neočakávaná chyba pri publikácií článku. Kontaktujte administrátora prosím.';
+    }
   }
 
   function onDenyArticle() {
