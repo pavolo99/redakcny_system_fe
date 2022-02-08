@@ -65,8 +65,7 @@ const ArchivePage = (props) => {
           <div className="Name">
             {archivedArticle.name}
           </div>
-          <Button className="Restore-button" onClick={onRestoreArticle}>Obnoviť
-            článok</Button>
+          <Button className="Restore-button" onClick={onRestoreArticle}>Obnoviť archivovaný článok</Button>
         </div>
         <hr className="Archive-header-divider"/>
         <div className="Archive-editor">

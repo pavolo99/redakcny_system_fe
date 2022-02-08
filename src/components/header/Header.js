@@ -66,7 +66,11 @@ export default function Header(props) {
     .catch((error) => {
       handlePublicationError(error, history, messageData);
     })
-    .then(response => handleArticleStatusChangeEventFromResponse(response))
+    .then((response) => {
+      if (response) {
+        history.push('/archive', {articleId: props.openedArticleId});
+      }
+    })
     .finally(() => setMuiMessage(messageData));
   }
 
