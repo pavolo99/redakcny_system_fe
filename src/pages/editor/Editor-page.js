@@ -180,7 +180,7 @@ const EditorPage = () => {
           <div className="Flex-row">
             <div className="Left-side">
               <div><TextField name="publicFileName"
-                              label="Názov zverejneného súboru"
+                              label="Názov zverejneného súboru (Slug)"
                               value={article.publicFileName}
                               style={{width: "100%"}} variant="filled"
                               onChange={onInputsValueChange}/></div>

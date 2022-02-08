@@ -6,6 +6,7 @@ import ThreeDotsMenuExpanded from "../../assets/three-dots-menu-expanded.svg"
 import Review from "../../assets/review.svg"
 import Approve from "../../assets/approve.svg"
 import Logout from "../../assets/logout.png"
+import Admin from "../../assets/admin.svg"
 import ActionsMenu from "../actions-menu/Actions-menu";
 import {MuiMessage} from "../mui-message/Mui-message";
 import axios from "axios";
@@ -172,6 +173,10 @@ export default function Header(props) {
     }
   }
 
+  function onNavigateToAdministration() {
+    history.push('/administration');
+  }
+
   let loggedUser = JSON.parse(localStorage.getItem('loggedUser'));
   const isLoggedUserAuthor = loggedUser.role === 'AUTHOR';
 
@@ -209,10 +214,19 @@ export default function Header(props) {
                                   onArchiveArticle={onArchiveArticle}/> : null}
   </>;
 
+  const administration = <div className="Quick-action-items">
+    <div className="Quick-menu-item" onClick={() => onNavigateToAdministration()}>
+      <img src={Admin} alt="Schváliť" className="Quick-menu-img"/>
+      <div className="Quick-menu-text">Administrácia</div>
+    </div>
+  </div>
+
   function onLogout() {
     localStorage.clear();
     history.push('/login');
   }
+
+  const loggedUserAdministrator = loggedUser.administrator === 'true';
 
   return (
       <div className="Header">
@@ -221,6 +235,7 @@ export default function Header(props) {
         </div>
         <div className="Vertical-divider"/>
         {props.openedArticleId ? editorActionsMenu : null}
+        {!props.openedArticleId && loggedUserAdministrator ? administration : null}
         <div className="Share-avatar-row">{props.openedArticleId ? <div className="Share-item">
           <ShareArticleItem
               openedArticleName={props.openedArticleName}
