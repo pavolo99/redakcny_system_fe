@@ -51,7 +51,11 @@ const AdministrationPage = () => {
     if (displayedTab === 'publicationConfig') {
       axios.get(apiUrl + '/administration/publication-config')
       .catch(error => handle401Error(error, history))
-      .then(response => setPublicationConfig(response.data));
+      .then(response => {
+        if (response) {
+          setPublicationConfig(response.data);
+        }
+      });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [displayedTab])
