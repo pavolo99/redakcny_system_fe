@@ -9,10 +9,12 @@
 .Collaborator-column {
     width: 15%;
 }
+
 .Collaborator-column-name {
     width: 25%;
     margin-left: -3rem;
 }
+
 .Collaborator-column-avatar {
     max-width: 0;
 }

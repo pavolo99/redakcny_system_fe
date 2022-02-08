@@ -149,7 +149,7 @@ export default function ShareArticleItem(props) {
         <div key={collaborator.userDto.id} className="Collaborator-row">
           <div className="Collaborator-column-avatar">
             <Avatar name={getFullName(collaborator.userDto)} fgColor="white"
-                    className="Column-avatar" round={true} size="40"
+                    round={true} size="40"
                     color={generateHSLColorBasedOnUserInfo(getUserValue(collaborator.userDto))}/>
           </div>
           <div className="Collaborator-column-name">

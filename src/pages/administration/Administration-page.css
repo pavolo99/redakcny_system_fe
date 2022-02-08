@@ -65,3 +65,36 @@
     color: white !important;
 }
 
+.Users-content {
+    margin: auto;
+}
+
+.User-row {
+    display: flex;
+    flex-direction: row;
+    padding: 1rem 1rem 0.5rem;
+    align-items: center;
+    width: 50%;
+    margin-left: auto;
+    margin-right: auto;
+    border-bottom: 1px solid black;
+}
+
+.Avatar {
+    width: 10%;
+}
+
+.User-column-additional-info {
+    width: 20%;
+}
+
+.User-column-role {
+    align-items: center;
+    display: flex;
+    width: 15%;
+}
+
+.Avatar-flex-row {
+    width: 45%;
+    display: flex;
+}
