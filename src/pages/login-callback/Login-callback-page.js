@@ -1,6 +1,5 @@
 import React from "react";
 import axios from "axios";
-import {apiUrl} from "../../components/environment/environment";
 import {useHistory, useLocation} from "react-router-dom";
 import {handle401Error} from "../../shared/Utils";
 
@@ -10,11 +9,13 @@ export default function LoginCallbackPage() {
   const accessToken = new URLSearchParams(search).get('accessToken');
   localStorage.setItem("accessToken", accessToken);
 
-  axios.get(apiUrl + "/user/logged")
+  axios.get(process.env.REACT_APP_BECKEND_API_URL + "/user/logged")
   .catch(error => handle401Error(error, history))
   .then(response => {
-    localStorage.setItem("loggedUser", JSON.stringify(response.data))
-    history.push('/dashboard')
+    if (response) {
+      localStorage.setItem("loggedUser", JSON.stringify(response.data))
+      history.push('/dashboard')
+    }
   });
 
   return (

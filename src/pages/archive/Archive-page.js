@@ -1,7 +1,6 @@
 import React, {useEffect, useRef, useState} from "react";
 import './Archive-page.css'
 import axios from "axios";
-import {apiUrl} from "../../components/environment/environment";
 import {useHistory} from "react-router-dom";
 import {EditorState} from "@codemirror/state";
 import {EditorView} from "@codemirror/view";
@@ -21,7 +20,7 @@ const ArchivePage = (props) => {
 
   useEffect(() => {
     if (props.location.state) {
-      axios.get(apiUrl + '/article/archived/' + props.location.state.articleId)
+      axios.get(process.env.REACT_APP_BECKEND_API_URL + '/article/archived/' + props.location.state.articleId)
       .catch(error => handle401Error(error, history))
       .then(response => {
         if (response) {
@@ -48,7 +47,7 @@ const ArchivePage = (props) => {
   }
 
   function onRestoreArticle() {
-    axios.put(apiUrl + '/article/restore/' + props.location.state.articleId)
+    axios.put(process.env.REACT_APP_BECKEND_API_URL + '/article/restore/' + props.location.state.articleId)
     .catch(error => handle401Error(error, history))
     .then(response => {
       if (response) {

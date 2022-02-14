@@ -1,7 +1,6 @@
 import React, {useEffect, useRef, useState} from "react";
 import './Versions-page.css'
 import axios from "axios";
-import {apiUrl} from "../../components/environment/environment";
 import {useHistory} from "react-router-dom";
 import {
   convertTimestampToDate,
@@ -45,7 +44,7 @@ const VersionsPage = (props) => {
 
   useEffect(() => {
     if (props.location.state) {
-      axios.get(apiUrl + '/version/' + props.location.state + '/all')
+      axios.get(process.env.REACT_APP_BECKEND_API_URL + '/version/' + props.location.state + '/all')
       .catch(error => handle401Error(error, history))
       .then(response => {
         if (response) {
@@ -76,7 +75,7 @@ const VersionsPage = (props) => {
     } else {
       newVersion = versions.versionSimpleDtoList.find(value => value.order === versions.versionSimpleDtoList.length);
     }
-    axios.get(apiUrl + '/version/' + newVersion.id + '/detail')
+    axios.get(process.env.REACT_APP_BECKEND_API_URL + '/version/' + newVersion.id + '/detail')
     .catch(error => handle401Error(error, history))
     .then(response => {
       if (response) {
@@ -95,17 +94,19 @@ const VersionsPage = (props) => {
   }
 
   function onSetAsCurrentVersion() {
-    axios.post(apiUrl + '/version/' + loadedVersion.id + '/current', {})
+    axios.post(process.env.REACT_APP_BECKEND_API_URL + '/version/' + loadedVersion.id + '/current', {})
     .catch(error => handle401Error(error, history))
     .then(response => {
-      const versionsDataResponse = setVersionsAndCurrentVersion(response);
-      const transaction = editorView.state.update({changes: {from: 0, to: editorView.state.doc.length, insert: versionsDataResponse.currentVersionText}});
-      editorView.dispatch(transaction);
-      setMuiMessage({
-        open: true,
-        severity: 'success',
-        message: 'Verzia bola úspešne označená za súčasnú'
-      });
+      if (response) {
+        const versionsDataResponse = setVersionsAndCurrentVersion(response);
+        const transaction = editorView.state.update({changes: {from: 0, to: editorView.state.doc.length, insert: versionsDataResponse.currentVersionText}});
+        editorView.dispatch(transaction);
+        setMuiMessage({
+          open: true,
+          severity: 'success',
+          message: 'Verzia bola úspešne označená za súčasnú'
+        });
+      }
     });
   }
 

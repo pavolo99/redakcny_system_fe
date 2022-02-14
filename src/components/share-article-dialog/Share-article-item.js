@@ -9,7 +9,6 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import Share from "../../assets/share.svg";
 import axios from "axios";
-import {apiUrl} from "../environment/environment";
 import {useHistory} from "react-router-dom";
 import {Autocomplete, Select} from "@mui/material";
 import MenuItem from "@mui/material/MenuItem";
@@ -40,7 +39,7 @@ export default function ShareArticleItem(props) {
   }
 
   function fetchArticleCollaborators() {
-    axios.get(apiUrl + '/collaborator/' + props.openedArticleId)
+    axios.get(process.env.REACT_APP_BECKEND_API_URL + '/collaborator/' + props.openedArticleId)
     .catch(error => handle401Error(error, history))
     .then(response => {
       if (response) {
@@ -66,7 +65,7 @@ export default function ShareArticleItem(props) {
 
   function onKeyChange(searchValue) {
     if (searchValue) {
-      axios.get(apiUrl + '/user/collaborator/' + searchValue)
+      axios.get(process.env.REACT_APP_BECKEND_API_URL + '/user/collaborator/' + searchValue)
       .catch(error => handle401Error(error, history))
       .then(response => {
         if (response) {
@@ -83,7 +82,7 @@ export default function ShareArticleItem(props) {
     let articleCollaborator = articleCollaboratorsCopy[index];
     articleCollaborator[property] = !articleCollaborator[property];
     setArticleCollaborators(articleCollaboratorsCopy);
-    axios.put(apiUrl + '/collaborator/updated/' + articleCollaborator.id, {
+    axios.put(process.env.REACT_APP_BECKEND_API_URL + '/collaborator/updated/' + articleCollaborator.id, {
       id: articleCollaborator.id,
       canEdit: articleCollaborator.canEdit,
       author: articleCollaborator.author
@@ -101,7 +100,7 @@ export default function ShareArticleItem(props) {
   }
 
   function onDeleteCollaborator(collaboratorId) {
-    axios.delete(apiUrl + '/collaborator/deleted/' + collaboratorId)
+    axios.delete(process.env.REACT_APP_BECKEND_API_URL + '/collaborator/deleted/' + collaboratorId)
     .catch((error) => handle401Error(error, history))
     .then(response => {
       if (response) {
@@ -118,7 +117,7 @@ export default function ShareArticleItem(props) {
   function onSelectCollaborator(value) {
     setSelectedCollaborator(value);
     if (value) {
-      axios.post(apiUrl + '/collaborator/added/' + props.openedArticleId + '/'
+      axios.post(process.env.REACT_APP_BECKEND_API_URL + '/collaborator/added/' + props.openedArticleId + '/'
           + value.id, {})
       .catch(error => {
         handle401Error(error, history);

@@ -17,7 +17,6 @@ import {MuiMessage} from "../../components/mui-message/Mui-message";
 import ImageSection from "../../components/image-section/Image-section";
 import EditorToolbar from "../../components/editor-toolbar/Editor-toolbar";
 import ReactMarkdown from 'react-markdown'
-import {apiUrl} from "../../components/environment/environment";
 import CommentSection from "../../components/comment-section/Comment-section";
 import {articleCanBeEdited, handle401Error} from "../../shared/Utils";
 import CollabInfoDialog
@@ -43,9 +42,9 @@ const EditorPage = () => {
   });
   const [allConnectedUsers, setAllConnectedUsers] = useState([])
 
-  useEffect(() => {
-    let interval;
-    axios.get(apiUrl + '/collab-session/' + location.state.articleId)
+    useEffect(() => {
+      let interval;
+      axios.get(process.env.REACT_APP_BECKEND_API_URL + '/collab-session/' + location.state.articleId)
     .catch(error => handleError(error))
     .then(response => {
       if (response) {
@@ -181,7 +180,7 @@ const EditorPage = () => {
 
   function onSaveArticle(event) {
     event.preventDefault();
-    axios.put(apiUrl + '/article/' + article.id, {...article, id: article.id})
+    axios.put(process.env.REACT_APP_BECKEND_API_URL + '/article/' + article.id, {...article, id: article.id})
     .catch(error => handleError(error))
     .then(response => {
       if (response) {
