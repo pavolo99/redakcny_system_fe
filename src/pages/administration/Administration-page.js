@@ -96,11 +96,7 @@ const AdministrationPage = () => {
     axios.put(apiUrl + '/administration/publication-config/test', createPublicationConfigObject())
     .catch(error => {
       handle401Error(error, history);
-      if (error.response.data.message === 'Gitlab project repo is null') {
-        setMuiMessage({severity: 'error', open: true, message: 'Spojenie neprebehlo úspešne. Skontrolujte prosím privátny token a cestu k projektu'})
-      } else {
-        setMuiMessage({severity: 'error', open: true, message: 'Nastala neočakávaná chyba pri testovaní spojenia'})
-      }
+      setMuiMessage({severity: 'error', open: true, message: 'Spojenie neprebehlo úspešne. Skontrolujte prosím privátny token a cestu k projektu'})
     })
     .then(response => {
       if (response) {

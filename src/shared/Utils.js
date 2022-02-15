@@ -23,7 +23,11 @@ export function getUser(userDto) {
     if (!userDto) {
         return '';
     }
-    return userDto.firstName + ' ' + userDto.lastName + ', ' + userDto.email + ', ' + userDto.username;
+    if (userDto.email) {
+        return userDto.firstName + ' ' + userDto.lastName + ', ' + userDto.email + ', ' + userDto.username;
+    } else {
+        return userDto.firstName + ' ' + userDto.lastName + ', ' + userDto.username;
+    }
 }
 
 export function generateHSLColorBasedOnUserInfo(userValue) {
