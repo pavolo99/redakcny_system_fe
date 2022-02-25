@@ -10,11 +10,11 @@ export default function LoginPage() {
         <div className="Login-box">
           <h1 className="Login-header">Prihlásenie</h1>
           <div className="Login-providers">
-            <a href={process.env.REACT_APP_BECKEND_API_URL + '/oauth/login/github'}>
+            <a href={'/oauth/login/github'}>
               <img src={GithubLoginButton} alt="Prihlásenie cez Github"
                    className="Github-provider"/>
             </a>
-            <a href={process.env.REACT_APP_BECKEND_API_URL + '/oauth/login/gitlab'}>
+            <a href={'/oauth/login/gitlab'}>
               <img src={GitlabLoginButton} alt="Prihlásenie cez GitLab"
                    className="Gitlab-provider"/>
             </a>
