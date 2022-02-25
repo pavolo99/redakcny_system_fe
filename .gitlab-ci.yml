@@ -5,5 +5,5 @@ build:
     - docker:dind
   script:
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-    - docker build -t $CI_REGISTRY/redakcny_system_fe:latest .
-    - docker push $CI_REGISTRY/redakcny_system_fe:latest
+    - docker build -t git.kpi.fei.tuke.sk:4567/kpi-zp/2022/dp.pavol.dlugos/redakcny_system_fe .
+    - docker push git.kpi.fei.tuke.sk:4567/kpi-zp/2022/dp.pavol.dlugos/redakcny_system_fe
