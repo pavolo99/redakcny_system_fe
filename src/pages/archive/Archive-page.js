@@ -9,6 +9,7 @@ import {extensions} from "../../components/codemirror-settings/extensions";
 import {theme} from "../../components/codemirror-settings/theme";
 import {Button} from "@material-ui/core";
 import {handle401Error} from "../../shared/Utils";
+import {MuiMessage} from "../../components/mui-message/Mui-message";
 
 const ArchivePage = (props) => {
   const history = useHistory();
@@ -71,6 +72,8 @@ const ArchivePage = (props) => {
         <div className="Archive-editor">
           <div ref={editorRef}/>
         </div>
+        <MuiMessage severity='success' open={props.location.state.published}
+                    message='Článok bol úspešne publikovaný a archivovaný'/>
       </>
   );
 };

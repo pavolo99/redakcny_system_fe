@@ -60,15 +60,14 @@ export default function Header(props) {
   }
 
   function onPublishArticle() {
-    const messageData = createMessageData(
-        'Článok bol úspešne publikovaný a archivovaný');
+    const messageData = createMessageData('Článok bol úspešne publikovaný a archivovaný');
     axios.put(apiUrl + '/article/published/' + props.openedArticleId)
     .catch((error) => {
       handlePublicationError(error, history, messageData);
     })
     .then((response) => {
       if (response) {
-        history.push('/archive', {articleId: props.openedArticleId});
+        history.push('/archive', {articleId: props.openedArticleId, published: true});
       }
     })
     .finally(() => setMuiMessage(messageData));

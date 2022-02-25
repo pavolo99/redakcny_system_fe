@@ -83,21 +83,22 @@ const EditorPage = () => {
     setArticle({...article, [targetName]: targetValue})
   }
 
-  const onUpdate = EditorView.updateListener.of((v) => {
-    setArticle(prevState => {
-      return {...prevState, text: v.state.doc.toString()}
-    });
+  const onUpdate = EditorView.updateListener.of((viewUpdate) => {
+    if (viewUpdate.docChanged) {
+      setArticle(prevState => {
+        return {...prevState, text: viewUpdate.state.doc.toString()}
+      });
+    }
   });
 
   function onSaveArticle(event) {
     event.preventDefault();
-    axios.put(apiUrl + '/article/' + article.id,
-        {...article, id: article.id})
+    axios.put(apiUrl + '/article/' + article.id, {...article, id: article.id})
     .catch(error => handleError(error))
     .then(response => {
       if (response) {
         setMuiMessage(prevState => {
-          return {...prevState, open: true}
+          return {...prevState, open: true, severity: 'success'}
         });
       }
     });
@@ -144,7 +145,7 @@ const EditorPage = () => {
     createTextSelection(selectionRange.to + cursorPositionIndex, selectionRange.to + cursorPositionIndex)
   }
 
-  const selectionRange = editorView && editorView.state.selection ? editorView.state.selection.ranges[0] : null;
+  const selectionRange = editorView && editorView.state && editorView.state.selection ? editorView.state.selection.ranges[0] : null;
 
   let loggedUserRole = JSON.parse(localStorage.getItem('loggedUser')).role;
   return (
@@ -158,35 +159,32 @@ const EditorPage = () => {
                     message={muiMessage.message}/>
         <form>
           <div className="Flex-row">
-            <div className="Key-words">
-              <div><TextField label="Kľúčové slová"
-                              name="keyWords" value={article.keyWords}
-                              variant="filled" style={{width: "100%"}}
-                              onChange={onInputsValueChange}/></div>
-            </div>
-            <div className="Article-name">
-              <TextField label="Názov článku" variant="filled"
-                         value={article.name}
-                         style={{width: "100%"}} name="name"
-                         required={true} onChange={onInputsValueChange}/>
-            </div>
-            <div className="Article-abstract">
-              <TextField label="Abstrakt" variant="filled"
-                         value={article.articleAbstract}
-                         style={{width: "100%"}} name="articleAbstract"
-                         onChange={onInputsValueChange}/>
-            </div>
+            <TextField label="Abstrakt" variant="filled"
+                       inputProps={{ maxLength: 1000 }} maxRows={3}
+                       value={article.articleAbstract} multiline
+                       style={{width: "100%"}} name="articleAbstract"
+                       onChange={onInputsValueChange}/>
           </div>
           <div className="Flex-row">
             <div className="Left-side">
-              <div><TextField name="publicFileName"
+              <div><TextField label="Názov článku" variant="filled"
+                              value={article.name} inputProps={{maxLength: 50}}
+                              style={{width: "100%"}} name="name"
+                              required={true}
+                              onChange={onInputsValueChange}/></div>
+              <div><TextField label="Kľúčové slová (Oddelené čiarkou)"
+                              inputProps={{maxLength: 50}}
+                              name="keyWords" value={article.keyWords}
+                              variant="filled" style={{width: "100%"}}
+                              onChange={onInputsValueChange}/></div>
+              <div><TextField name="publicFileName" inputProps={{maxLength: 50}}
                               label="Názov zverejneného súboru (Slug)"
                               value={article.publicFileName}
                               style={{width: "100%"}} variant="filled"
                               onChange={onInputsValueChange}/></div>
               {loggedUserRole === 'EDITOR' ? <div>
                 <TextField value={article.publicationDecision}
-                               name="publicationDecision"
+                               name="publicationDecision" inputProps={{ maxLength: 50 }}
                                label="Rozhodnutie o publikácií článku"
                                style={{width: "100%"}} variant="filled"
                                onChange={onInputsValueChange}/></div> : null}

@@ -115,8 +115,8 @@ export default function CommentSection(props) {
     props.setIsNewCommentIconClicked(false)
   }
 
-  function markAsResolved(commentId) {
-    axios.put(apiUrl + '/comment/resolved/' + commentId, {})
+  function toggleCommentResolved(commentId) {
+    axios.put(apiUrl + '/comment/resolved/' + commentId + '/toggle', {})
     .catch((error) => handle401Error(error, history))
     .then(response => {
       if (response) {
@@ -139,13 +139,14 @@ export default function CommentSection(props) {
     {comments.map(comment =>
         <div key={comment.id} className="Comment"
              onMouseEnter={() => onCommentMouseEnterEvent(comment)}>
-          {!comment.resolved ? <div className="Mark-solved-row">
-            <span className="Mark-solved-button"
-                  onClick={() => markAsResolved(comment.id)}>Označiť ako vyriešené</span>
-          </div> : null}
+          <div className="Mark-solved-row">
+            <span className="Mark-solved-button" onClick={() => toggleCommentResolved(comment.id)}>
+              {comment.resolved ? 'Označiť ako nevyriešené' : 'Označiť ako vyriešené'}
+            </span>
+          </div>
           <div className="Avatar-time-row">
-            <Avatar name={getFullName(comment.createdBy)} fgColor="white"
-                    round={true} size="35" color={generateHSLColorBasedOnUserInfo(getUserValue(comment.createdBy))}/>
+            <Avatar name={getFullName(comment.createdBy)} fgColor="white" round={true}
+                    size="35" color={generateHSLColorBasedOnUserInfo(getUserValue(comment.createdBy))}/>
             <div className="Comment-right-side">
               <div className="Updated-at">{convertTimestampToDate(comment.updatedAt)}</div>
               <div className="Text">{comment.text}</div>
@@ -170,7 +171,8 @@ export default function CommentSection(props) {
                     size="35" color={generateHSLColorBasedOnUserInfo(
                 getUserValue(loggedUser))}/>
             <TextField variant="standard" placeholder="Napíšte vašu odpoveď"
-                       value={commentReply.text} multiline={true}
+                       value={commentReply.text} multiline
+                       inputProps={{ maxLength: 1000 }}
                        style={{width: "100%", marginLeft: '1rem'}} name="reply"
                        onChange={(event) => onCommentReplyValueChange(
                            event.target.value)}/>
@@ -199,9 +201,9 @@ export default function CommentSection(props) {
                     size="35" color={generateHSLColorBasedOnUserInfo(
                 getUserValue(loggedUser))}/>
             <TextField variant="standard" placeholder="Napíšte komentár"
-                       value={commentText} multiline={true}
+                       value={commentText} multiline
                        style={{width: "100%", marginLeft: '1rem'}}
-                       name="comment"
+                       name="comment" inputProps={{ maxLength: 1000 }}
                        onChange={(event) => onCommentValueChange(
                            event.target.value)}/>
           </div>

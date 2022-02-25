@@ -72,8 +72,7 @@ export default function ArticleList(props) {
             <div key={article.id} onClick={(() => onEditArticle(article.id, article.articleStatus))}>
               <div className="Article-item">
                 <div>{article.name}</div>
-                <div><ArticleStatus name={article.articleStatus}
-                                    reviewNumber={article.reviewNumber}/></div>
+                <div><ArticleStatus name={article.articleStatus} reviewNumber={article.reviewNumber}/></div>
                 <div>{article.updatedAt}</div>
                 <div>{article.updatedBy}</div>
                 {loggedUserRole === 'EDITOR' && props.selectedArticles === 'REVIEWED_BY_ME' ? <div>{article.publicationDecision}</div> : null }
