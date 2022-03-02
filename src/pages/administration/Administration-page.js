@@ -22,7 +22,7 @@ const AdministrationPage = () => {
   const [users, setUsers] = React.useState([]);
   const [publicationConfig, setPublicationConfig] = React.useState({
     id: null,
-    provider: '',
+    domain: '',
     branch: '',
     commitMessage: '',
     pathToArticle: '',
@@ -65,7 +65,16 @@ const AdministrationPage = () => {
       .catch(error => handle401Error(error, history))
       .then(response => {
         if (response) {
-          setPublicationConfig(response.data);
+          const resData = response.data;
+          setPublicationConfig({
+            id: resData.id == null ? '' : resData.id,
+            domain: resData.domain == null ? '' : resData.domain,
+            branch: resData.branch == null ? '' : resData.branch,
+            commitMessage: resData.commitMessage == null ? '' : resData.commitMessage,
+            pathToArticle: resData.pathToArticle == null ? '' : resData.pathToArticle,
+            privateToken: resData.privateToken == null ? '' : resData.privateToken,
+            repositoryPath: resData.repositoryPath == null ? '' : resData.repositoryPath
+          });
         }
       });
     } else {
@@ -78,8 +87,8 @@ const AdministrationPage = () => {
     setPublicationConfig({...publicationConfig, [e.target.name]: e.target.value})
   }
 
-  function onProviderValueChange(event) {
-    setPublicationConfig({...publicationConfig, provider: event.target.value})
+  function onDomainValueChange(event) {
+    setPublicationConfig({...publicationConfig, domain: event.target.value})
   }
 
   function onSavePublicationConfig() {
@@ -111,7 +120,7 @@ const AdministrationPage = () => {
       branch: publicationConfig.branch,
       commitMessage: publicationConfig.commitMessage,
       repositoryPath: publicationConfig.repositoryPath,
-      provider: publicationConfig.provider,
+      domain: publicationConfig.domain,
       privateToken: publicationConfig.privateToken,
       pathToArticle: publicationConfig.pathToArticle
     }
@@ -124,74 +133,85 @@ const AdministrationPage = () => {
   const publicationConfigPart = <>
     <div className="Publication-config-row">
       <FormControl variant="filled"
-                   style={{width: "32.5%"}}>
-        <InputLabel
-            id="demo-simple-select-filled-label">Poskytovateľ</InputLabel>
-        <Select label="Poskytovateľ" labelId="demo-simple-select-filled-label"
+                   style={{width: "49%"}}>
+        <InputLabel id="domain-label">Doména a poskytovateľ</InputLabel>
+        <Select labelId="domain-label"
                 className={useStyles().root}
-                onChange={onProviderValueChange}
-                value={publicationConfig.provider}>
-          <MenuItem value="GITLAB">GITLAB</MenuItem>
-          <MenuItem value="GITHUB" disabled>GITHUB</MenuItem>
+                onChange={onDomainValueChange}
+                value={publicationConfig.domain}>
+          {/*TODO extend publication config to other domains as well*/}
+          <MenuItem value="GIT_KPI_FEI_TUKE_SK">https://git.kpi.fei.tuke.sk (GITLAB)</MenuItem>
+          <MenuItem value="GITLAB" disabled>https://gitlab.com (GITLAB)</MenuItem>
+          <MenuItem value="GITHUB" disabled>https://github.com (GITHUB)</MenuItem>
         </Select>
       </FormControl>
-      <TextField label="Názov vetvy" variant="filled" style={{width: "32.5%"}}
-                 value={publicationConfig.branch} name="branch"
-                 onChange={onInputsValueChange} inputProps={{maxLength: 70}}/>
 
-      <TextField label="Názov commitu" variant="filled" style={{width: "32.5%"}}
-                 value={publicationConfig.commitMessage} name="commitMessage"
-                 onChange={onInputsValueChange} inputProps={{maxLength: 70}}/>
+      <TextField label="Cesta alebo identifikátor projektového repozitára"
+                 inputProps={{maxLength: 70}} style={{width: "49%"}}
+                 value={publicationConfig.repositoryPath} variant="filled"
+                 onChange={onInputsValueChange} name="repositoryPath"/>
+    </div>
+    <div className="Publication-config-legend-row">
+
+      <div style={{width: '49%'}}>
+        <strong>Doména:</strong> konkrétna URL adresa poskytovateľa, na ktorej bude sídliť repozitár.
+      </div>
+      <div style={{width: '49%'}}>
+        <strong>Cesta alebo identifikátor (ID) projektového repozitára:</strong> kľúčový údaj pre špecifikáciu repozitára, do ktorého budú články publikované.
+      </div>
     </div>
     <div className="Publication-config-row">
 
-      <TextField label="Cesta publikovaného článku" variant="filled"
-                 value={publicationConfig.pathToArticle}
-                 style={{width: "32.5%"}} inputProps={{maxLength: 70}}
-                 onChange={onInputsValueChange} name="pathToArticle"/>
-      <TextField label="Privátny prístupový token" variant="filled"
-                 value={publicationConfig.privateToken} style={{width: "32.5%"}}
+      <TextField label="Súkromný prístupový token" variant="filled"
+                 value={publicationConfig.privateToken} style={{width: "49%"}}
                  onChange={onInputsValueChange} name="privateToken"
                  inputProps={{maxLength: 70}}
                  type={privateTokenVisibility ? 'text' : 'password'}/>
-      <TextField label="Cesta alebo ID projektového repozitára" variant="filled"
-                 inputProps={{maxLength: 70}} style={{width: "32.5%"}}
-                 value={publicationConfig.repositoryPath}
-                 onChange={onInputsValueChange} name="repositoryPath"/>
+
+      <TextField label="Cesta publikovaného článku" variant="filled"
+                 value={publicationConfig.pathToArticle}
+                 style={{width: "49%"}} inputProps={{maxLength: 70}}
+                 onChange={onInputsValueChange} name="pathToArticle"/>
+    </div>
+    <div className="Publication-config-legend-row">
+      <div style={{width: '49%'}}>
+        <strong>Súkromný prístupový token:</strong> hodnota <a href="https://docs.gitlab.com/ee/user/project/settings/project_access_tokens.html">PAT</a>,
+        ktorý je potrebné vytvoriť v rámci nastavení repozitára. Pre správne fungovanie je dôležité zvoliť scope <span className="Legend-label">api</span>.      </div>
+      <div style={{width: '49%'}}>
+          <strong>Cesta publikovaného článku:</strong> lokácia, na ktorú sa publikovaný článok v repozitári uloží. Prípona článku musí byť <span className="Legend-label">.md</span>.
+          <ul style={{margin: '0'}}>
+            <li>Atribút <span className="Legend-label">year</span> bude nahradený súčasným rokom.</li>
+            <li>Atribút <span className="Legend-label">month</span> bude nahradený súčasným mesiacom.</li>
+            <li>Atribút <span className="Legend-label">slug</span> (názov zverejneného súboru) bude nahradený publikačným názvom článku.</li>
+          </ul>
+      </div>
+    </div>
+    <div className="Publication-config-legend-row">
+      <div style={{width: '49%'}}>
+      </div>
+    </div>
+    <div className="Publication-config-row">
+      <TextField label="Názov vetvy" variant="filled" style={{width: "49%"}}
+                 value={publicationConfig.branch} name="branch"
+                 onChange={onInputsValueChange} inputProps={{maxLength: 70}}/>
+      <TextField label="Názov commitu" variant="filled" style={{width: "49%"}}
+                 value={publicationConfig.commitMessage} name="commitMessage"
+                 onChange={onInputsValueChange} inputProps={{maxLength: 70}}/>
+
+    </div>
+    <div className="Publication-config-legend-row">
+      <div style={{width: '49%'}}>
+        <strong>Vetva:</strong> názov vetvy, v ktorej má byť článok publikovaný - Pozor na predvolenú zmenu názvu z <i>master</i> na <span className="Legend-label">main</span>.
+      </div>
+      <div style={{width: '49%'}}>
+        <strong>Názov commitu:</strong> zaznamenaná správa pri publikovaní článku. Atribút <span className="Legend-label">articleName</span> bude nahradený názvom článku.
+      </div>
     </div>
 
     <div className="Action-buttons">
       <Button className="Show-private-token-button" onClick={onTogglePrivateTokenVisibility}>{privateTokenVisibility ? 'Skryť' : 'Zobraziť'} privátny token</Button>
       <Button className="Test-button" onClick={onTestPublicationConfigConnection}>Otestovať spojenie s repozitárom</Button>
       <Button className="Save-button" onClick={onSavePublicationConfig}>Uložiť konfiguráciu</Button>
-    </div>
-
-    <div className="Legend-header">Vysvetlivky:</div>
-    <div className="Legend">
-      <div>
-        <strong>Poskytovateľ:</strong> prostredie, v ktorom sú články publikované - predvolený poskytovateľ je Gitlab.
-      </div>
-      <div>
-        <strong>Vetva:</strong> názov vetvy, v ktorej má byť článok publikovaný - pozor na predvolenú zmenu názvu z <i>master</i> na <span className="Legend-label">main</span>.
-      </div>
-      <div>
-        <strong>Názov commitu:</strong> zaznamenaná správa pri publikovaní článku. Atribút <span className="Legend-label">articleName</span> bude nahradený názvom článku.
-      </div>
-      <div>
-        <strong>Cesta publikovaného článku:</strong> lokácia, na ktorú sa publikovaný článok v repozitári uloží. Prípona článku musí byť <span className="Legend-label">.md</span>.
-        <ul style={{margin: '0'}}>
-          <li>Atribút <span className="Legend-label">year</span> bude nahradený súčasným rokom.</li>
-          <li>Atribút <span className="Legend-label">month</span> bude nahradený súčasným mesiacom.</li>
-          <li>Atribút <span className="Legend-label">slug</span> bude nahradený publikačným názvom článku.</li>
-        </ul>
-      </div>
-      <div>
-        <strong>Privátny prístupový token:</strong> hodnota <a href="https://docs.gitlab.com/ee/user/project/settings/project_access_tokens.html">PAT</a>,
-        ktorý je potrebné vytvoriť v rámci nastavení repozitára. Pre správne fungovanie je dôležité zvoliť scope <span className="Legend-label">api</span>.
-      </div>
-      <div>
-        <strong>Cesta alebo ID projektového repozitára:</strong> kľúčový údaj pre špecifikáciu repozitára, do ktorého budú články publikované.
-      </div>
     </div>
 
   </>;
