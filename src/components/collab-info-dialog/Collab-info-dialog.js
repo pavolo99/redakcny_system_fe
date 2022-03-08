@@ -9,7 +9,6 @@ import axios from "axios";
 
 import {useHistory} from "react-router-dom";
 import Avatar from "react-avatar";
-import {apiUrl} from "../environment/environment";
 import {
   generateHSLColorBasedOnUserInfo,
   getFullName, getUsernameWithFullName, getUserValue,
@@ -22,7 +21,7 @@ export default function CollabInfoDialog(props) {
   const history = useHistory();
 
   function fetchConnectedUsers() {
-    axios.get(apiUrl + '/collab-session/' + props.articleId + '/connected')
+    axios.get(process.env.REACT_APP_BECKEND_API_URL + '/collab-session/' + props.articleId + '/connected')
     .catch(error => handle401Error(error, history))
     .then(response => {
       if (response) {
@@ -50,7 +49,7 @@ export default function CollabInfoDialog(props) {
   let loggedUserId = JSON.parse(localStorage.getItem('loggedUser')).id;
 
   function onLeaveArticleEdit(userIdToLeaveEdit) {
-    axios.put(apiUrl + '/collab-session/' + props.articleId + '/leave/' + userIdToLeaveEdit)
+    axios.put(process.env.REACT_APP_BECKEND_API_URL + '/collab-session/' + props.articleId + '/leave/' + userIdToLeaveEdit)
     .catch(error => handle401Error(error, history))
     .then(response => {
       if (response) {

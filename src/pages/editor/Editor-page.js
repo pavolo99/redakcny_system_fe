@@ -73,7 +73,7 @@ const EditorPage = () => {
           });
           if (canLoggedUserEdit) {
             // if logged user can edit, then push changes every 5 seconds
-            axios.post(apiUrl + '/collab-session/' + response.data.id, {text: newEditorView.state.doc.text.join('\n')})
+            axios.post(process.env.REACT_APP_BECKEND_API_URL + '/collab-session/' + response.data.id, {text: newEditorView.state.doc.text.join('\n')})
             .catch(error => handle401Error(error, history))
             .then(response => {
               if (response) {
@@ -82,7 +82,7 @@ const EditorPage = () => {
             })
           } else {
             // if logged user cannot edit, then fetch changes every 5 seconds
-            axios.get(apiUrl + '/collab-session/' + location.state.articleId)
+            axios.get(process.env.REACT_APP_BECKEND_API_URL + '/collab-session/' + location.state.articleId)
             .catch(error => handleError(error))
             .then(response => {
               if (response) {
@@ -134,7 +134,7 @@ const EditorPage = () => {
 
   function disconnectLoggedUserFromSession(interval) {
     clearInterval(interval);
-    axios.delete(apiUrl + '/collab-session/' + location.state.articleId)
+    axios.delete(process.env.REACT_APP_BECKEND_API_URL + '/collab-session/' + location.state.articleId)
   }
 
   const editorRef = useRef();
