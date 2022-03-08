@@ -26,7 +26,6 @@ export default function CollabInfoDialog(props) {
     .catch(error => handle401Error(error, history))
     .then(response => {
       if (response) {
-        console.log(response.data)
         setAllConnectedUsers(response.data);
       }
     });
