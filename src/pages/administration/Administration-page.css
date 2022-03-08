@@ -91,5 +91,6 @@
 
 .Avatar-flex-row {
     width: 45%;
+    align-items: center;
     display: flex;
 }

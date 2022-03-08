@@ -77,7 +77,12 @@ const EditorPage = () => {
             .catch(error => handle401Error(error, history))
             .then(response => {
               if (response) {
-                setArticleAndConnectedUsers(response);
+                setArticle((state) => {
+                  state.text = response.data.text
+                  state.canLoggedUserEdit = response.data.canLoggedUserEdit
+                  return state;
+                });
+                setAllConnectedUsers(response.data.allConnectedUsers)
               }
             })
           } else {
@@ -221,15 +226,16 @@ const EditorPage = () => {
   }
 
   function insertValueToEditorOnCurrentCursorPosition(insertedValue, cursorPositionIndex) {
+    const selection = editorView.state.selection.ranges[0]
     let insertTransaction = editorView.state.update({
       changes: {
-        from: selectionRange.to,
+        from: selection.to,
         insert: insertedValue
       }
     })
     editorView.dispatch(insertTransaction);
-    // just shift cursor
-    createTextSelection(selectionRange.to + cursorPositionIndex, selectionRange.to + cursorPositionIndex)
+    // shift cursor after inserting transaction
+    createTextSelection(selection.to + cursorPositionIndex, selection.to + cursorPositionIndex)
   }
 
   const selectionRange = editorView && editorView.state && editorView.state.selection ? editorView.state.selection.ranges[0] : null;

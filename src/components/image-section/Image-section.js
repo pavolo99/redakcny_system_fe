@@ -5,6 +5,7 @@ import DeleteIcon from "../../assets/delete-image.png"
 import {MuiMessage} from "../mui-message/Mui-message";
 import {useHistory} from "react-router-dom";
 import {articleCanBeEdited, handle401Error} from "../../shared/Utils";
+import {Tooltip} from "@mui/material";
 
 export default function ImageSection(props) {
   const history = useHistory();
@@ -88,7 +89,9 @@ export default function ImageSection(props) {
   const mappedImagesInfo = <div>
     {images.length > 0 ? images.map(imagesInfo => (
         <div key={imagesInfo.id} className="Image-row">
-          <div>{imagesInfo.name.length < 33 ? imagesInfo.name : (imagesInfo.name.substring(0, 30) + '...')}</div>
+          <Tooltip title={imagesInfo.name} placement="top" style={{cursor: 'default'}}>
+            <div>{imagesInfo.name.length < 33 ? imagesInfo.name : (imagesInfo.name.substring(0, 30) + '...')}</div>
+          </Tooltip>
           <div className="Delete-icon" onClick={(() => onRemoveImage(imagesInfo))}>
             <img src={DeleteIcon} alt="Vymazať obrázok"/>
           </div>

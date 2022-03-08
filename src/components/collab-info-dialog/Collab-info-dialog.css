@@ -1,11 +1,10 @@
 .Info-button {
     background-color: white;
-    border: 5px solid black;
     border-radius: 100%;
     bottom: 1px;
     left: 1px;
     position: fixed;
-    padding: 10px;
+    padding: 10px 8px 10px 10px;
     cursor: pointer;
 }
 

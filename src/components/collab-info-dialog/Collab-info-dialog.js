@@ -84,7 +84,8 @@ export default function CollabInfoDialog(props) {
       </div>
 
   return (<div>
-    <div onClick={handleClickOpen} className="Info-button">
+    <div onClick={handleClickOpen} className="Info-button"
+         style={{border: isCollabInfoDialogOpen ? '5px solid #2196F3' : '5px solid black'}}>
       INFO
     </div>
     <Dialog open={isCollabInfoDialogOpen} onClose={handleClose} fullWidth={true}
