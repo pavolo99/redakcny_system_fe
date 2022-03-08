@@ -144,6 +144,9 @@ export default function ShareArticleItem(props) {
     }
   }
 
+  const loggedUserEditor = JSON.parse(localStorage.getItem('loggedUser')).role === 'EDITOR';
+  const loggedUserOwner = articleCollaborators && articleCollaborators.length ? articleCollaborators.find(collaborator => collaborator.userDto.id === JSON.parse(localStorage.getItem('loggedUser')).id).owner : false;
+
   const mappedArticleCollaborators = <div>
     {articleCollaborators.map((collaborator, index) => (
         <div key={collaborator.userDto.id} className="Collaborator-row">
@@ -165,8 +168,12 @@ export default function ShareArticleItem(props) {
                   style={{width: '200px'}} value={collaborator.canEdit}
                   onChange={() => onCollaboratorPropertyChange(index,
                       'canEdit')}>
-                <MenuItem value={true}>Môže editovať</MenuItem>
-                <MenuItem value={false}>Nemôže editovať</MenuItem>
+                <MenuItem value={true} disabled={!loggedUserOwner && !loggedUserEditor}>
+                  Môže editovať
+                </MenuItem>
+                <MenuItem value={false} disabled={!loggedUserOwner && !loggedUserEditor}>
+                  Nemôže editovať
+                </MenuItem>
               </Select>
               </FormControl>}
           <FormControl variant="standard" className="Collaborator-column">
@@ -174,18 +181,22 @@ export default function ShareArticleItem(props) {
                     value={collaborator.author}
                     onChange={() => onCollaboratorPropertyChange(index,
                         'author')}>
-              <MenuItem value={true}>Je autor</MenuItem>
-              <MenuItem value={false}>Nie je autor</MenuItem>
+              <MenuItem value={true} disabled={!loggedUserOwner && !loggedUserEditor}>
+                Je autor
+              </MenuItem>
+              <MenuItem value={false} disabled={!loggedUserOwner && !loggedUserEditor}>
+                Nie je autor
+              </MenuItem>
             </Select>
           </FormControl>
-          {collaborator.owner ? <div className="Delete-collaborator"></div> :
+          {collaborator.owner || (!loggedUserOwner && !loggedUserEditor) ? <div className="Delete-collaborator"></div> :
               <div className="Delete-collaborator"
                    onClick={() => onDeleteCollaborator(collaborator.id)}>
                 ×
               </div>
           }
         </div>))}
-  </div>;
+  </div>
 
   return (<div>
     <div onClick={handleClickOpen} className="Display-flex">

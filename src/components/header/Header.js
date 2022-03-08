@@ -13,7 +13,11 @@ import axios from "axios";
 import {apiUrl} from "../environment/environment";
 import Avatar from 'react-avatar';
 import ShareArticleItem from "../share-article-dialog/Share-article-item";
-import {getFullName, handle401Error} from "../../shared/Utils";
+import {
+  generateHSLColorBasedOnUserInfo,
+  getFullName, getUserValue,
+  handle401Error
+} from "../../shared/Utils";
 
 export default function Header(props) {
   const history = useHistory();
@@ -53,10 +57,6 @@ export default function Header(props) {
 
   function onShowArticleVersions() {
     history.push('/versions', props.openedArticleId)
-  }
-
-  function onDownloadArticle() {
-    console.log('download');
   }
 
   function onPublishArticle() {
@@ -113,7 +113,11 @@ export default function Header(props) {
           'Article must be first reviewed or approved',
           'Článok musí byť po recenzii alebo musí byť schválený');
     })
-    .then(response => handleArticleStatusChangeEventFromResponse(response))
+    .then((response) => {
+      if (response) {
+        history.push('/archive', {articleId: props.openedArticleId});
+      }
+    })
     .finally(() => setMuiMessage(messageData));
   }
 
@@ -211,7 +215,6 @@ export default function Header(props) {
                                   articleStatus={props.openedArticleStatus}
                                   onShowArticleVersions={onShowArticleVersions}
                                   onRemoveArticle={onRemoveArticle}
-                                  onDownloadArticle={onDownloadArticle}
                                   onDenyArticle={onDenyArticle}
                                   onPublishArticle={onPublishArticle}
                                   onArchiveArticle={onArchiveArticle}/> : null}
@@ -224,9 +227,21 @@ export default function Header(props) {
     </div>
   </div>
 
+  const allConnectedUsersToArticle =
+      <div className="Connected-users">
+        {props.allConnectedUsers ? props.allConnectedUsers.map(user => (
+            <div key={user.id}>
+              <Avatar name={getFullName(user)} fgColor="white" round={true} size="35"
+                  color={generateHSLColorBasedOnUserInfo(getUserValue(user))}/>
+            </div>
+        )) : null}
+      </div>
+
   function onLogout() {
-    localStorage.clear();
     history.push('/login');
+    setTimeout(() => {
+      localStorage.clear();
+    }, 100)
   }
 
   const loggedUserAdministrator = loggedUser.administrator === 'true';
@@ -239,6 +254,7 @@ export default function Header(props) {
         <div className="Vertical-divider"/>
         {props.openedArticleId ? editorActionsMenu : null}
         {!props.openedArticleId && loggedUserAdministrator ? administration : null}
+        <div>{props.openedArticleId ? allConnectedUsersToArticle : null}</div>
         <div className="Share-avatar-row">{props.openedArticleId ? <div className="Share-item">
           <ShareArticleItem
               openedArticleName={props.openedArticleName}

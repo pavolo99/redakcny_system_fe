@@ -12,6 +12,7 @@ import {
 } from "../../shared/Utils";
 
 export default function ArticleList(props) {
+  const history = useHistory();
   const [articles, setArticles] = useState([]);
   const [articleStatus, setArticleStatus] = useState('ALL');
   let loggedUserId = JSON.parse(localStorage.getItem('loggedUser')).id;
@@ -48,7 +49,6 @@ export default function ArticleList(props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [props.selectedArticles, articleStatus]);
 
-  const history = useHistory();
 
   function onEditArticle(articleId, articleStatus) {
     history.push(articleStatus === 'ARCHIVED' ? '/archive' : '/editor', {articleId});

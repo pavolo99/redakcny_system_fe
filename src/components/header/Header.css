@@ -16,7 +16,7 @@
 }
 
 .Three-dots-menu {
-    margin-left: 20rem;
+    margin-left: 10rem;
     cursor: pointer;
     height: 0.5rem;
 }
@@ -67,4 +67,10 @@
 .Quick-action-items {
     min-width: 25%;
     display: flex;
+}
+
+.Connected-users {
+    display: flex;
+    flex-direction: row;
+    margin-left: 1rem;
 }

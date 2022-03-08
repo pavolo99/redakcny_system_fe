@@ -11,8 +11,6 @@ export default function ActionsMenu(props) {
         <div className="Dropdown-option" onClick={() => props.onRemoveArticle()}
              style={{pointerEvents: props.articleStatus !== 'WRITING' ? 'none' : ''}}>Zmazať</div>
         <hr className="Action-menu-divider"/>
-        <div className="Dropdown-option" onClick={() => props.onDownloadArticle()}>Stiahnuť</div>
-        <hr className="Action-menu-divider"/>
         <div className="Dropdown-option" onClick={() => props.onDenyArticle()}
              style={{pointerEvents: props.articleStatus !== 'IN_REVIEW' ? 'none' : ''}}>Zamietnuť</div>
         <div className="Dropdown-option" onClick={() => props.onPublishArticle()}

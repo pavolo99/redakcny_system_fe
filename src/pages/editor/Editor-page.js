@@ -2,7 +2,12 @@ import React, {useEffect, useRef, useState} from "react";
 import './Editor-page.css'
 import Header from "../../components/header/Header";
 import {EditorView} from "@codemirror/view";
-import {EditorSelection, EditorState, SelectionRange} from "@codemirror/state";
+import {
+  Compartment,
+  EditorSelection,
+  EditorState,
+  SelectionRange
+} from "@codemirror/state";
 import {Button, TextField} from "@material-ui/core";
 import {useHistory, useLocation} from "react-router-dom";
 import axios from "axios";
@@ -15,10 +20,15 @@ import ReactMarkdown from 'react-markdown'
 import {apiUrl} from "../../components/environment/environment";
 import CommentSection from "../../components/comment-section/Comment-section";
 import {articleCanBeEdited, handle401Error} from "../../shared/Utils";
+import CollabInfoDialog
+  from "../../components/collab-info-dialog/Collab-info-dialog";
 
 const EditorPage = () => {
   const location = useLocation();
   const history = useHistory();
+  const [collabChange, setCollabChange] = useState(null)
+  const [contentEditableCompartment, setContentEditableCompartment] = useState(null)
+
   const [article, setArticle] = useState({
     id: null,
     name: '',
@@ -31,34 +41,102 @@ const EditorPage = () => {
     articleStatus: null,
     canLoggedUserEdit: false,
   });
+  const [allConnectedUsers, setAllConnectedUsers] = useState([])
 
-    useEffect(() => {
-    axios.get(apiUrl + '/article/' + location.state.articleId)
+  useEffect(() => {
+    let interval;
+    axios.get(apiUrl + '/collab-session/' + location.state.articleId)
     .catch(error => handleError(error))
     .then(response => {
       if (response) {
-        const mergedArticleObject = {...article, ...response.data};
-        setArticle(mergedArticleObject);
+        setArticleAndConnectedUsers(response)
+        setCollabChange(Math.random())
 
+        const contentEditableCompartment = new Compartment()
+        setContentEditableCompartment(contentEditableCompartment)
         let editorState = EditorState.create({
           doc: response.data.text,
           extensions: [
-            EditorView.contentAttributes.of({ contenteditable: response.data.canLoggedUserEdit && articleCanBeEdited(response.data.articleStatus) }),
+            contentEditableCompartment.of(EditorView.contentAttributes.of({ contenteditable: response.data.canLoggedUserEdit && articleCanBeEdited(response.data.articleStatus) })),
             extensions,
             theme,
             onUpdate
           ],
         });
-        setEditorView(new EditorView({state: editorState, parent: editorRef.current}));
+        const newEditorView = new EditorView({state: editorState, parent: editorRef.current});
+        setEditorView(newEditorView);
+
+        interval = setInterval(() => {
+          let canLoggedUserEdit = false;
+          setArticle((state) => {
+            canLoggedUserEdit = state.canLoggedUserEdit
+            return state;
+          });
+          if (canLoggedUserEdit) {
+            // if logged user can edit, then push changes every 5 seconds
+            axios.post(apiUrl + '/collab-session/' + response.data.id, {text: newEditorView.state.doc.text.join('\n')})
+            .catch(error => handle401Error(error, history))
+            .then(response => {
+              if (response) {
+                setArticleAndConnectedUsers(response);
+              }
+            })
+          } else {
+            // if logged user cannot edit, then fetch changes every 5 seconds
+            axios.get(apiUrl + '/collab-session/' + location.state.articleId)
+            .catch(error => handleError(error))
+            .then(response => {
+              if (response) {
+                if (canLoggedUserEdit !== response.data.canLoggedUserEdit) {
+                  // just fire event to collab info dialog that article lock has changed
+                  setCollabChange(Math.random())
+                }
+                const mergedArticleObject = {...article, ...response.data};
+                setArticle(mergedArticleObject);
+                setAllConnectedUsers(response.data.allConnectedUsers)
+                newEditorView.dispatch({
+                  effects: contentEditableCompartment.reconfigure(
+                      EditorView.contentAttributes.of({
+                        contenteditable: response.data.canLoggedUserEdit
+                            && articleCanBeEdited(response.data.articleStatus)
+                      }))
+                })
+                let insertTransaction = newEditorView.state.update({
+                  changes: {
+                    from: 0,
+                    to: newEditorView.state.doc.length,
+                    insert: response.data.text
+                  }
+                })
+                newEditorView.dispatch(insertTransaction);
+              }
+            });
+          }
+        }, 5000);
       }
     });
 
+    // disconnect logged users session after close browser
+    window.addEventListener("beforeunload", () => {
+      disconnectLoggedUserFromSession(interval)
+    });
     return () => {
-      setEditorView({})
-      setArticle({});
+      // disconnect logged users session after route change
+      disconnectLoggedUserFromSession(interval);
     };
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
+
+  function setArticleAndConnectedUsers(response) {
+    const mergedArticleObject = {...article, ...response.data};
+    setArticle(mergedArticleObject);
+    setAllConnectedUsers(response.data.allConnectedUsers)
+  }
+
+  function disconnectLoggedUserFromSession(interval) {
+    clearInterval(interval);
+    axios.delete(apiUrl + '/collab-session/' + location.state.articleId)
+  }
 
   const editorRef = useRef();
 
@@ -72,6 +150,16 @@ const EditorPage = () => {
 
   const [editorVisible, setEditorVisible] = useState(true);
   const [isNewCommentIconClicked, setIsNewCommentIconClicked] = useState(false);
+
+  function leaveArticleEdit() {
+    setArticle((state) => {
+      state.canLoggedUserEdit = false
+      return state;
+    });
+    editorView.dispatch({
+      effects: contentEditableCompartment.reconfigure(EditorView.contentAttributes.of({contenteditable: false}))
+    })
+  }
 
   const onInputsValueChange = e => {
     const targetName = e.target.name;
@@ -152,6 +240,7 @@ const EditorPage = () => {
       <div>
         <Header openedArticleId={article.id}
                 openedArticleName={article.name}
+                allConnectedUsers={allConnectedUsers}
                 openedArticleStatus={article.articleStatus}
                 changeArticleStatus={(newArticleStatus) => setArticle(prevState => { return {...prevState, articleStatus: newArticleStatus}})}/>
         <MuiMessage severity={muiMessage.severity} open={muiMessage.open}
@@ -161,6 +250,7 @@ const EditorPage = () => {
           <div className="Flex-row">
             <TextField label="Abstrakt" variant="filled"
                        inputProps={{ maxLength: 1000 }} maxRows={3}
+                       disabled={!article.canLoggedUserEdit}
                        value={article.articleAbstract} multiline
                        style={{width: "100%"}} name="articleAbstract"
                        onChange={onInputsValueChange}/>
@@ -170,16 +260,18 @@ const EditorPage = () => {
               <div><TextField label="Názov článku" variant="filled"
                               value={article.name} inputProps={{maxLength: 50}}
                               style={{width: "100%"}} name="name"
-                              required={true}
+                              required={true} disabled={!article.canLoggedUserEdit}
                               onChange={onInputsValueChange}/></div>
               <div><TextField label="Kľúčové slová (Oddelené čiarkou)"
                               inputProps={{maxLength: 50}}
+                              disabled={!article.canLoggedUserEdit}
                               name="keyWords" value={article.keyWords}
                               variant="filled" style={{width: "100%"}}
                               onChange={onInputsValueChange}/></div>
               <div><TextField name="publicFileName" inputProps={{maxLength: 50}}
                               label="Názov zverejneného súboru (Slug)"
                               value={article.publicFileName}
+                              disabled={!article.canLoggedUserEdit}
                               style={{width: "100%"}} variant="filled"
                               onChange={onInputsValueChange}/></div>
               {loggedUserRole === 'EDITOR' ? <div>
@@ -187,7 +279,8 @@ const EditorPage = () => {
                                name="publicationDecision" inputProps={{ maxLength: 50 }}
                                label="Rozhodnutie o publikácií článku"
                                style={{width: "100%"}} variant="filled"
-                               onChange={onInputsValueChange}/></div> : null}
+                           disabled={!article.canLoggedUserEdit}
+                           onChange={onInputsValueChange}/></div> : null}
 
               <div>
                 <ImageSection articleId={article.id}
@@ -196,8 +289,8 @@ const EditorPage = () => {
                               onInsertTextToEditor={(insertedValue, cursorShiftIndex) => insertValueToEditorOnCurrentCursorPosition(insertedValue, cursorShiftIndex)}/>
               </div>
 
-              <Button className="Submit-button" onClick={onSaveArticle}>
-                Uložiť článok
+              <Button className="Submit-button" onClick={onSaveArticle}
+                      disabled={!article.canLoggedUserEdit}>Uložiť článok
               </Button>
 
             </div>
@@ -218,6 +311,10 @@ const EditorPage = () => {
             </div>
           </div>
         </form>
+        <CollabInfoDialog articleId={article.id}
+                          leaveArticleEdit={() => leaveArticleEdit()}
+                          canLoggedUserEdit={article.canLoggedUserEdit}
+                          collabChange={collabChange}/>
       </div>
   );
 };

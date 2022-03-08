@@ -9,7 +9,7 @@ export function getUserValue(userDto) {
     if (!userDto) {
         return '';
     }
-    return userDto.firstName + userDto.lastName + userDto.id;
+    return userDto.firstName + userDto.lastName + userDto.id + userDto.email;
 }
 
 export function getUsernameWithFullName(userDto) {
