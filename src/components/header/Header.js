@@ -10,7 +10,6 @@ import Admin from "../../assets/admin.svg"
 import ActionsMenu from "../actions-menu/Actions-menu";
 import {MuiMessage} from "../mui-message/Mui-message";
 import axios from "axios";
-import {apiUrl} from "../environment/environment";
 import Avatar from 'react-avatar';
 import ShareArticleItem from "../share-article-dialog/Share-article-item";
 import {
@@ -46,7 +45,7 @@ export default function Header(props) {
 
   function onRemoveArticle() {
     const messageData = createMessageData('Článok bol úspešne vymazaný');
-    axios.delete(apiUrl + '/article/deleted/' + props.openedArticleId)
+    axios.delete(process.env.REACT_APP_BECKEND_API_URL + '/article/deleted/' + props.openedArticleId)
     .catch((error) => {
       handleError(messageData, error,
           'Article must be in writing state and cannot be after any review',
@@ -61,7 +60,7 @@ export default function Header(props) {
 
   function onPublishArticle() {
     const messageData = createMessageData('Článok bol úspešne publikovaný a archivovaný');
-    axios.put(apiUrl + '/article/published/' + props.openedArticleId)
+    axios.put(process.env.REACT_APP_BECKEND_API_URL + '/article/published/' + props.openedArticleId)
     .catch((error) => {
       handlePublicationError(error, history, messageData);
     })
@@ -96,24 +95,28 @@ export default function Header(props) {
   function onDenyArticle() {
     const messageData = createMessageData(
         'Článok bol úspešne zamietnutý a archivovaný');
-    axios.put(apiUrl + '/article/denied/' + props.openedArticleId)
+    axios.put(process.env.REACT_APP_BECKEND_API_URL + '/article/denied/' + props.openedArticleId)
     .catch((error) => {
       handleError(messageData, error, 'Article must be after review',
           'Článok musí byť po recenzii');
     })
-    .then(response => handleArticleStatusChangeEventFromResponse(response))
+    .then(response => {
+      if (response) {
+        handleArticleStatusChangeEventFromResponse(response);
+      }
+    })
     .finally(() => setMuiMessage(messageData));
   }
 
   function onArchiveArticle() {
     const messageData = createMessageData('Článok bol úspešne archivovaný');
-    axios.put(apiUrl + '/article/archived/' + props.openedArticleId)
+    axios.put(process.env.REACT_APP_BECKEND_API_URL + '/article/archived/' + props.openedArticleId)
     .catch((error) => {
       handleError(messageData, error,
           'Article must be first reviewed or approved',
           'Článok musí byť po recenzii alebo musí byť schválený');
     })
-    .then((response) => {
+    .then(response => {
       if (response) {
         history.push('/archive', {articleId: props.openedArticleId});
       }
@@ -124,35 +127,47 @@ export default function Header(props) {
   function onSendToReview() {
     const messageData = createMessageData(
         'Článok bol úspešne odoslaný na recenziu');
-    axios.put(apiUrl + '/article/sent-to-review/' + props.openedArticleId)
+    axios.put(process.env.REACT_APP_BECKEND_API_URL + '/article/sent-to-review/' + props.openedArticleId)
     .catch((error) => {
       handleError(messageData, error, 'Article must be in the writing process',
           'Článok môže byť odoslaný na recenziu iba, ak je v stave písania');
     })
-    .then(response => handleArticleStatusChangeEventFromResponse(response))
+    .then(response => {
+      if (response) {
+        handleArticleStatusChangeEventFromResponse(response);
+      }
+    })
     .finally(() => setMuiMessage(messageData));
   }
 
   function onSendReview() {
     const messageData = createMessageData(
         'Recenzia článku bola úspešne odoslaná autorovi');
-    axios.put(apiUrl + '/article/sent-review/' + props.openedArticleId)
+    axios.put(process.env.REACT_APP_BECKEND_API_URL + '/article/sent-review/' + props.openedArticleId)
     .catch((error) => {
       handleError(messageData, error, 'Article must be in the review',
           'Recenzia môže byť odoslaná iba, ak je článok v recenzii');
     })
-    .then(response => handleArticleStatusChangeEventFromResponse(response))
+    .then(response => {
+      if (response) {
+        handleArticleStatusChangeEventFromResponse(response);
+      }
+    })
     .finally(() => setMuiMessage(messageData));
   }
 
   function onApproveArticle() {
     const messageData = createMessageData('Článok bol úspešne schválený');
-    axios.put(apiUrl + '/article/approved/' + props.openedArticleId)
+    axios.put(process.env.REACT_APP_BECKEND_API_URL + '/article/approved/' + props.openedArticleId)
     .catch((error) => {
       handleError(messageData, error, 'Article must be first reviewed',
           'Článok môže byť schválený až po recenzii');
     })
-    .then(response => handleArticleStatusChangeEventFromResponse(response))
+    .then(response => {
+      if (response) {
+        handleArticleStatusChangeEventFromResponse(response)
+      }
+    })
     .finally(() => setMuiMessage(messageData));
   }
 

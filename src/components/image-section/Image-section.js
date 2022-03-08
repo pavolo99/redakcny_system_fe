@@ -3,7 +3,6 @@ import React, {useEffect, useState} from "react";
 import axios from "axios";
 import DeleteIcon from "../../assets/delete-image.png"
 import {MuiMessage} from "../mui-message/Mui-message";
-import {apiUrl} from "../environment/environment";
 import {useHistory} from "react-router-dom";
 import {articleCanBeEdited, handle401Error} from "../../shared/Utils";
 
@@ -29,7 +28,7 @@ export default function ImageSection(props) {
     const selectedFile = event.target.files[0];
     const fd = new FormData();
     fd.append('file', selectedFile, selectedFile.name)
-    axios.post(apiUrl + '/image/uploaded/' + props.articleId, fd)
+    axios.post(process.env.REACT_APP_BECKEND_API_URL + '/image/uploaded/' + props.articleId, fd)
     .catch(error => {
       handle401Error(error, history);
       if (error.response.status === 400) {
@@ -47,7 +46,7 @@ export default function ImageSection(props) {
           message: 'Obrázok ' + selectedFile.name + ' bol úspešne nahraný',
           severity: 'success'
         });
-        const uploadedImagePath = apiUrl + '/image/content/' + response.data;
+        const uploadedImagePath = process.env.REACT_APP_BECKEND_API_URL + '/image/content/' + response.data;
         props.onInsertTextToEditor('\n![Pridajte nejaký popis](' + uploadedImagePath + ')\n', 3);
         fetchImagesInfo();
       }
@@ -55,7 +54,7 @@ export default function ImageSection(props) {
   }
 
   function onRemoveImage(imageInfo) {
-    axios.delete(apiUrl + '/image/' + imageInfo.id)
+    axios.delete(process.env.REACT_APP_BECKEND_API_URL + '/image/' + imageInfo.id)
     .catch(error => handle401Error(error, history))
     .then(response => {
       if (response) {
@@ -71,7 +70,7 @@ export default function ImageSection(props) {
 
   function fetchImagesInfo() {
     if (props.articleId) {
-      axios.get(apiUrl + '/image/info/' + props.articleId)
+      axios.get(process.env.REACT_APP_BECKEND_API_URL + '/image/info/' + props.articleId)
       .catch(error => handle401Error(error, history))
       .then(response => {
         if (response) {

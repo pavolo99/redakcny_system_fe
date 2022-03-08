@@ -4,7 +4,6 @@ import {Button} from "@material-ui/core";
 import {useHistory} from "react-router-dom";
 import axios from "axios";
 import ArticleStatus from "../article-status/Article-status";
-import {apiUrl} from "../environment/environment";
 import ArticleStatusDropdown from "../article-status-dropdown/Article-status-dropdown";
 import {
   convertTimestampToDate,
@@ -24,7 +23,7 @@ export default function ArticleList(props) {
         queryArticleStatus: articleStatus
       }
     };
-    axios.get(apiUrl + '/article/list', queryParams)
+    axios.get(process.env.REACT_APP_BECKEND_API_URL + '/article/list', queryParams)
     .catch(error => handle401Error(error, history))
     .then(response => {
       if (response) {
@@ -55,7 +54,7 @@ export default function ArticleList(props) {
   }
 
   function onCreateNewArticle() {
-    axios.post(apiUrl + '/article', {})
+    axios.post(process.env.REACT_APP_BECKEND_API_URL + '/article', {})
     .catch(error => handle401Error(error, history))
     .then(response => {
       if (response) {

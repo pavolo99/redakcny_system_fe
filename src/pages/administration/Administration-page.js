@@ -2,7 +2,6 @@ import React, {useEffect, useState} from "react";
 import './Administration-page.css'
 import {useHistory} from "react-router-dom";
 import axios from "axios";
-import {apiUrl} from "../../components/environment/environment";
 import {generateHSLColorBasedOnUserInfo, getFullName, getUserValue, handle401Error} from "../../shared/Utils";
 import {Checkbox, InputLabel, Select, Tab, Tabs} from "@mui/material";
 import {Button, makeStyles, TextField} from "@material-ui/core";
@@ -50,7 +49,7 @@ const AdministrationPage = () => {
   }
 
   function fetchUsersForAdmin() {
-    axios.get(apiUrl + '/administration/users')
+    axios.get(process.env.REACT_APP_BECKEND_API_URL + '/administration/users')
     .catch(error => handle401Error(error, history))
     .then(response => {
       if (response) {
@@ -61,7 +60,7 @@ const AdministrationPage = () => {
 
   useEffect(() => {
     if (displayedTab === 'publicationConfig') {
-      axios.get(apiUrl + '/administration/publication-config')
+      axios.get(process.env.REACT_APP_BECKEND_API_URL + '/administration/publication-config')
       .catch(error => handle401Error(error, history))
       .then(response => {
         if (response) {
@@ -92,7 +91,7 @@ const AdministrationPage = () => {
   }
 
   function onSavePublicationConfig() {
-    axios.put(apiUrl + '/administration/publication-config/' + publicationConfig.id, createPublicationConfigObject())
+    axios.put(process.env.REACT_APP_BECKEND_API_URL + '/administration/publication-config/' + publicationConfig.id, createPublicationConfigObject())
     .catch(error => handle401Error(error, history))
     .then(response => {
       if (response) {
@@ -102,7 +101,7 @@ const AdministrationPage = () => {
   }
 
   function onTestPublicationConfigConnection() {
-    axios.put(apiUrl + '/administration/publication-config/test', createPublicationConfigObject())
+    axios.put(process.env.REACT_APP_BECKEND_API_URL + '/administration/publication-config/test', createPublicationConfigObject())
     .catch(error => {
       handle401Error(error, history);
       setMuiMessage({severity: 'error', open: true, message: 'Spojenie neprebehlo úspešne. Skontrolujte prosím privátny token a cestu k projektu'})
@@ -217,7 +216,7 @@ const AdministrationPage = () => {
   </>;
 
   function onRoleValueChange(checkedValue, user, checkedRoleType) {
-    axios.put(apiUrl + '/administration/users/' + user.id, {
+    axios.put(process.env.REACT_APP_BECKEND_API_URL + '/administration/users/' + user.id, {
       id: user.id,
       editor: checkedRoleType === 'editor' ? checkedValue : user.editor,
       administrator: checkedRoleType === 'administrator' ? checkedValue : user.administrator

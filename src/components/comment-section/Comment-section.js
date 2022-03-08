@@ -1,7 +1,6 @@
 import "./Comment-section.css"
 import React, {useEffect, useState} from "react";
 import axios from "axios";
-import {apiUrl} from "../environment/environment";
 import {useHistory} from "react-router-dom";
 import Avatar from "react-avatar";
 import {
@@ -22,7 +21,7 @@ export default function CommentSection(props) {
 
   function fetchComments(allComments) {
     if (props.articleId) {
-      axios.get(apiUrl + '/comment/' + props.articleId + '/' + (allComments ?? showAllComments))
+      axios.get(process.env.REACT_APP_BECKEND_API_URL + '/comment/' + props.articleId + '/' + (allComments ?? showAllComments))
       .catch(error => handle401Error(error, history))
       .then(response => {
         if (response) {
@@ -68,7 +67,7 @@ export default function CommentSection(props) {
 
   function createCommentReply(commentId) {
 
-    axios.post(apiUrl + '/comment-reply/' + commentId, {text: commentReply.text})
+    axios.post(process.env.REACT_APP_BECKEND_API_URL + '/comment-reply/' + commentId, {text: commentReply.text})
     .catch((error) => handle401Error(error, history))
     .then(response => {
       if (response) {
@@ -79,7 +78,7 @@ export default function CommentSection(props) {
   }
 
   function onDeleteCommentReply(commentReplyId) {
-    axios.delete(apiUrl + '/comment-reply/' + commentReplyId)
+    axios.delete(process.env.REACT_APP_BECKEND_API_URL + '/comment-reply/' + commentReplyId)
     .catch(error => handle401Error(error, history))
     .then(response => {
       if (response) {
@@ -104,7 +103,7 @@ export default function CommentSection(props) {
       commentedText: props.commentedText,
       text: commentText
     }
-    axios.post(apiUrl + '/comment/' + articleId, commentCreateDto)
+    axios.post(process.env.REACT_APP_BECKEND_API_URL + '/comment/' + articleId, commentCreateDto)
     .catch((error) => handle401Error(error, history))
     .then(response => {
       if (response) {
@@ -116,7 +115,7 @@ export default function CommentSection(props) {
   }
 
   function toggleCommentResolved(commentId) {
-    axios.put(apiUrl + '/comment/resolved/' + commentId + '/toggle', {})
+    axios.put(process.env.REACT_APP_BECKEND_API_URL + '/comment/resolved/' + commentId, {})
     .catch((error) => handle401Error(error, history))
     .then(response => {
       if (response) {
@@ -126,7 +125,7 @@ export default function CommentSection(props) {
   }
 
   function onDeleteComment(commentId) {
-    axios.delete(apiUrl + '/comment/' + commentId)
+    axios.delete(process.env.REACT_APP_BECKEND_API_URL + '/comment/' + commentId)
     .catch(error => handle401Error(error, history))
     .then(response => {
       if (response) {
