@@ -5,5 +5,20 @@ build:
     - docker:dind
   script:
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-    - docker build -t $CI_REGISTRY/kpi-zp/2022/dp.pavol.dlugos/redakcny_system_fe:latest .
-    - docker push $CI_REGISTRY/kpi-zp/2022/dp.pavol.dlugos/redakcny_system_fe:latest
+    - docker build -t $CI_REGISTRY_IMAGE:latest .
+    - docker push $CI_REGISTRY_IMAGE:latest
+
+deploy:
+  stage: deploy
+  image: git.kpi.fei.tuke.sk:4567/sergej.chodarev/ssh-client
+  tags:
+    - kpi
+  only:
+    - master@kpi-zp/2022/dp.pavol.dlugos/redakcny_system_fe
+  before_script:
+    - eval $(ssh-agent -s)
+    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
+  script:
+    - ssh sergej@sputnik.kpi.fei.tuke.sk bin/update-service cwem frontend
+  variables:
+    GIT_STRATEGY: none  # Do not clone repository
