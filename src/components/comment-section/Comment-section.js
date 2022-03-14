@@ -115,7 +115,7 @@ export default function CommentSection(props) {
   }
 
   function toggleCommentResolved(commentId) {
-    axios.put(process.env.REACT_APP_BECKEND_API_URL + '/comment/resolved/' + commentId, {})
+    axios.put(process.env.REACT_APP_BECKEND_API_URL + '/comment/resolved/' + commentId + '/toggle', {})
     .catch((error) => handle401Error(error, history))
     .then(response => {
       if (response) {

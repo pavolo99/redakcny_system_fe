@@ -185,7 +185,8 @@ const EditorPage = () => {
 
   function onSaveArticle(event) {
     event.preventDefault();
-    axios.put(process.env.REACT_APP_BECKEND_API_URL + '/article/' + article.id, {...article, id: article.id})
+    axios.put(process.env.REACT_APP_BECKEND_API_URL + '/article/' + article.id,
+        {...article, id: article.id, text: editorView.state.doc.text.join('\n')})
     .catch(error => handleError(error))
     .then(response => {
       if (response) {
@@ -304,7 +305,8 @@ const EditorPage = () => {
                   onInsertTextToEditor={(insertedValue, cursorShiftIndex) => insertValueToEditorOnCurrentCursorPosition(insertedValue, cursorShiftIndex)}
                   editorVisible={editorVisible} toggleEditorPreview={() => onToggleEditorPreview()}/>
               <div ref={editorRef} className={editorVisible ? '' : 'Invisible'}/>
-              <ReactMarkdown children={article.text} className={editorVisible ? 'Invisible' : 'Visible Preview'}/>
+              <ReactMarkdown children={editorView && editorView.state ? editorView.state.doc.text.join('\n') : ''}
+                             className={editorVisible ? 'Invisible' : 'Visible Preview'}/>
             </div>
             <div className="Right-side">
               <CommentSection articleId={article.id}
