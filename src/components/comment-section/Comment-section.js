@@ -149,7 +149,8 @@ export default function CommentSection(props) {
             <div className="Comment-right-side">
               <div className="Updated-at">{convertTimestampToDate(comment.updatedAt)}</div>
               <div className="Text">{comment.text}</div>
-              {loggedUser.id === comment.createdBy.id ? <div className="Remove-button" onClick={() => onDeleteComment(comment.id)}>Vymazať</div> : null}
+              {loggedUser.id === comment.createdBy.id && !comment.commentReplyDtoList.length ?
+                  <div className="Remove-button" onClick={() => onDeleteComment(comment.id)}>Vymazať</div> : null}
             </div>
           </div>
           {comment.commentReplyDtoList.map(commentReply =>

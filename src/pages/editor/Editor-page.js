@@ -73,7 +73,8 @@ const EditorPage = () => {
           });
           if (canLoggedUserEdit) {
             // if logged user can edit, then push changes every 5 seconds
-            axios.post(process.env.REACT_APP_BECKEND_API_URL + '/collab-session/' + response.data.id, {text: newEditorView.state.doc.text.join('\n')})
+            axios.post(process.env.REACT_APP_BECKEND_API_URL + '/collab-session/' + response.data.id,
+                {text: getChangedTextFromView(newEditorView)})
             .catch(error => handle401Error(error, history))
             .then(response => {
               if (response) {
@@ -131,6 +132,21 @@ const EditorPage = () => {
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
+  function getChangedTextFromView(editorView) {
+    if (!editorView || !editorView.state || !editorView.state.doc) {
+      return article.text;
+    }
+    let changedText = '';
+    if (editorView.state.doc.text) {
+      changedText = editorView.state.doc.text.join('\n')
+    } else {
+      editorView.state.doc.children.forEach(node => {
+        node.text.forEach(text => changedText = changedText + text.replace("", '\n'))
+      });
+    }
+    return changedText;
+  }
+
   function setArticleAndConnectedUsers(response) {
     const mergedArticleObject = {...article, ...response.data};
     setArticle(mergedArticleObject);
@@ -186,7 +202,7 @@ const EditorPage = () => {
   function onSaveArticle(event) {
     event.preventDefault();
     axios.put(process.env.REACT_APP_BECKEND_API_URL + '/article/' + article.id,
-        {...article, id: article.id, text: editorView.state.doc.text.join('\n')})
+        {...article, id: article.id, text: getChangedTextFromView(editorView)})
     .catch(error => handleError(error))
     .then(response => {
       if (response) {
@@ -304,8 +320,8 @@ const EditorPage = () => {
               <EditorToolbar setIsNewCommentIconClicked={setIsNewCommentIconClicked} isNewCommentIconClicked={isNewCommentIconClicked}
                   onInsertTextToEditor={(insertedValue, cursorShiftIndex) => insertValueToEditorOnCurrentCursorPosition(insertedValue, cursorShiftIndex)}
                   editorVisible={editorVisible} toggleEditorPreview={() => onToggleEditorPreview()}/>
-              <div ref={editorRef} className={editorVisible ? '' : 'Invisible'}/>
-              <ReactMarkdown children={editorView && editorView.state ? editorView.state.doc.text.join('\n') : ''}
+              <div ref={editorRef} className={editorVisible ? '' : 'Invisible'} />
+              <ReactMarkdown children={getChangedTextFromView(editorView)}
                              className={editorVisible ? 'Invisible' : 'Visible Preview'}/>
             </div>
             <div className="Right-side">

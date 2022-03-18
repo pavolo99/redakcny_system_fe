@@ -10,7 +10,9 @@
     width: 50%;
     margin-bottom: 2rem;
     background-color: white;
-    min-height: 70vh;
+    height: 76vh;
+    overflow-y: auto;
+    overflow-x: hidden;
 }
 
 .Left-side {
@@ -30,9 +32,11 @@
 }
 
 .Right-side {
-    width: 25%;
+    width: 26%;
     background-color: white;
     margin-bottom: 2rem;
+    height: 76vh;
+    overflow-y: auto;
 }
 
 .Key-words {
@@ -59,8 +63,6 @@
     padding: 1rem 1rem 1rem 1.5rem;
     font-family: "Helvetica Neue", sans-serif;
     line-height: 150%;
-    height: 70vh;
-    overflow-y: auto;
 }
 
 .Visible {
