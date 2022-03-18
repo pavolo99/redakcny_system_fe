@@ -16,7 +16,7 @@
 }
 
 .Three-dots-menu {
-    margin-left: 10rem;
+    margin-left: 1rem;
     cursor: pointer;
     height: 0.5rem;
 }
@@ -35,7 +35,8 @@
 
 .Share-item {
     cursor: pointer;
-    margin-right: 5rem;
+    margin-right: 1rem;
+    margin-top: 4px;
 }
 
 .Share-avatar-row {
@@ -67,10 +68,12 @@
 .Quick-action-items {
     min-width: 25%;
     display: flex;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .Connected-users {
     display: flex;
     flex-direction: row;
-    margin-left: 1rem;
+    margin-right: 2rem;
 }

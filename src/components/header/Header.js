@@ -203,6 +203,18 @@ export default function Header(props) {
   const isLoggedUserAuthor = loggedUser.role === 'AUTHOR';
 
   const editorActionsMenu = <>
+    <img
+        src={isMenuClicked ? ThreeDotsMenuExpanded : ThreeDotsMenu}
+        alt="Menu" className="Three-dots-menu"
+        onClick={() => onMenuClick()}/>
+    {isMenuClicked ? <ActionsMenu openedArticleId={props.openedArticleId}
+                                  articleStatus={props.openedArticleStatus}
+                                  onShowArticleVersions={onShowArticleVersions}
+                                  onRemoveArticle={onRemoveArticle}
+                                  onDenyArticle={onDenyArticle}
+                                  onPublishArticle={onPublishArticle}
+                                  onArchiveArticle={onArchiveArticle}/>
+        : <div style={{width: '252px'}}/>}
     <div className="Quick-action-items">
       {isLoggedUserAuthor && props.openedArticleStatus === 'WRITING' ?
         <div className="Quick-menu-item" onClick={() => onSendToReview()}>
@@ -222,20 +234,9 @@ export default function Header(props) {
             <div className="Quick-menu-text">Schváliť</div>
           </div> : null}
     </div>
-    <img
-        src={isMenuClicked ? ThreeDotsMenuExpanded : ThreeDotsMenu}
-        alt="Menu" className="Three-dots-menu"
-        onClick={() => onMenuClick()}/>
-    {isMenuClicked ? <ActionsMenu openedArticleId={props.openedArticleId}
-                                  articleStatus={props.openedArticleStatus}
-                                  onShowArticleVersions={onShowArticleVersions}
-                                  onRemoveArticle={onRemoveArticle}
-                                  onDenyArticle={onDenyArticle}
-                                  onPublishArticle={onPublishArticle}
-                                  onArchiveArticle={onArchiveArticle}/> : null}
   </>;
 
-  const administration = <div className="Quick-action-items">
+  const administration = <div>
     <div className="Quick-menu-item" onClick={() => onNavigateToAdministration()}>
       <img src={Admin} alt="Schváliť" className="Quick-menu-img"/>
       <div className="Quick-menu-text">Administrácia</div>
@@ -269,17 +270,17 @@ export default function Header(props) {
         <div className="Vertical-divider"/>
         {props.openedArticleId ? editorActionsMenu : null}
         {!props.openedArticleId && loggedUserAdministrator ? administration : null}
-        <div>{props.openedArticleId ? allConnectedUsersToArticle : null}</div>
         <div className="Share-avatar-row">{props.openedArticleId ? <div className="Share-item">
           <ShareArticleItem
               openedArticleName={props.openedArticleName}
               openedArticleId={props.openedArticleId}/>
         </div> : null}
-            <img src={Logout} className="Logout-button" alt="Odhlásiť sa" onClick={onLogout}/>
-          <div className="Avatar">
+          <div>{props.openedArticleId ? allConnectedUsersToArticle : null}</div>
+          <img src={Logout} className="Logout-button" alt="Odhlásiť sa" title="Odhlásiť sa" onClick={onLogout}/>
+          {!props.openedArticleId ? <div className="Avatar">
             <Avatar name={getFullName(loggedUser)} round={true} size="40"
                     fgColor="black" color="white"/>
-          </div>
+          </div> : null}
         </div>
         <MuiMessage severity={muiMessage.severity} open={muiMessage.open}
                     onCloseMuiMessage={closeMuiMessage}
