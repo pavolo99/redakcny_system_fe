@@ -47,9 +47,7 @@ export default function Header(props) {
     const messageData = createMessageData('Článok bol úspešne vymazaný');
     axios.delete(process.env.REACT_APP_BECKEND_API_URL + '/article/deleted/' + props.openedArticleId)
     .catch((error) => {
-      handleError(messageData, error,
-          'Article must be in writing state and cannot be after any review',
-          'Článok môže byť vymazaný iba, ak článok nie je a ani nebol v žiadnej recenzii');
+      handleError(messageData, error, 'Article cannot be deleted', 'Článok nemôže byť vymazaný.');
     })
     .finally(() => setMuiMessage(messageData));
   }
@@ -80,7 +78,7 @@ export default function Header(props) {
     } else if (error.response.data.message === 'Publication configuration is not complete') {
       messageData.message = 'Konfigurácia publikácie je nedokončená. Kontaktujte administrátora prosím.';
     } else if (error.response.data.message === 'Article publication file name cannot be empty') {
-      messageData.message = 'Názov zverejneného súboru musí byť vyplnený.';
+      messageData.message = 'Najprv sa uistite, či sú všetky metaúdaje vyplnené a verzia článku je uložená. Inak je cesta k zverejnenému článku nesprávna. Kontaktujte administrátora prosím.';
     } else if (error.response.data.message === 'Invalid path to article') {
       messageData.message = 'Cesta k článku v repozitári je nesprávna. Kontaktujte administrátora prosím.';
     } else if (error.response.data.message === 'Branch does not exist') {

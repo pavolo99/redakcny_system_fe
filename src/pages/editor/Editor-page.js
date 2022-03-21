@@ -81,6 +81,7 @@ const EditorPage = () => {
                 setArticle((state) => {
                   state.text = response.data.text
                   state.canLoggedUserEdit = response.data.canLoggedUserEdit
+                  state.articleStatus = response.data.articleStatus
                   return state;
                 });
                 setAllConnectedUsers(response.data.allConnectedUsers)
@@ -106,7 +107,7 @@ const EditorPage = () => {
                             && articleCanBeEdited(response.data.articleStatus)
                       }))
                 })
-                let insertTransaction = newEditorView.state.update({
+                const insertTransaction = newEditorView.state.update({
                   changes: {
                     from: 0,
                     to: newEditorView.state.doc.length,
@@ -284,14 +285,14 @@ const EditorPage = () => {
                               style={{width: "100%"}} name="name"
                               required={true} disabled={!article.canLoggedUserEdit}
                               onChange={onInputsValueChange}/></div>
-              <div><TextField label="Kľúčové slová (Oddelené čiarkou)"
+              <div><TextField label="Kľúčové slová (oddelené čiarkou)"
                               inputProps={{maxLength: 50}}
                               disabled={!article.canLoggedUserEdit}
                               name="keyWords" value={article.keyWords}
                               variant="filled" style={{width: "100%"}}
                               onChange={onInputsValueChange}/></div>
               <div><TextField name="publicFileName" inputProps={{maxLength: 50}}
-                              label="Názov zverejneného súboru (Slug)"
+                              label="Názov zverejneného súboru (slug)"
                               value={article.publicFileName}
                               disabled={!article.canLoggedUserEdit}
                               style={{width: "100%"}} variant="filled"
@@ -320,15 +321,17 @@ const EditorPage = () => {
               <EditorToolbar setIsNewCommentIconClicked={setIsNewCommentIconClicked} isNewCommentIconClicked={isNewCommentIconClicked}
                   onInsertTextToEditor={(insertedValue, cursorShiftIndex) => insertValueToEditorOnCurrentCursorPosition(insertedValue, cursorShiftIndex)}
                   editorVisible={editorVisible} toggleEditorPreview={() => onToggleEditorPreview()}/>
-              <div ref={editorRef} className={editorVisible ? '' : 'Invisible'} />
-              <ReactMarkdown children={getChangedTextFromView(editorView)}
-                             className={editorVisible ? 'Invisible' : 'Visible Preview'}/>
+              <div style={{overflowY: 'auto', height: '68vh'}}>
+                <div ref={editorRef} className={editorVisible ? '' : 'Invisible'}/>
+                <ReactMarkdown children={getChangedTextFromView(editorView)}
+                               className={editorVisible ? 'Invisible'
+                                   : 'Visible Preview'}/></div>
             </div>
             <div className="Right-side">
               <CommentSection articleId={article.id}
                               isNewCommentIconClicked={isNewCommentIconClicked}
                               setIsNewCommentIconClicked={setIsNewCommentIconClicked}
-                              commentedText={article.text.substring(selectionRange ? selectionRange.from : 0, selectionRange ? selectionRange.to : 0)}
+                              commentedText={getChangedTextFromView(editorView).substring(selectionRange ? selectionRange.from : 0, selectionRange ? selectionRange.to : 0)}
                               selectionRange={selectionRange}
                               selectCommentedText={(from, to) => createTextSelection(from, to)}/>
             </div>

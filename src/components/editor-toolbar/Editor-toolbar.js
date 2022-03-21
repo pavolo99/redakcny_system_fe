@@ -19,14 +19,14 @@ export default function EditorToolbar(props) {
             {props.editorVisible ? 'Náhľad' : 'Editor'}
           </Button>
 
-          <img src={InsertBold} alt="Vložiť hrubé písmo" className="Toolbar-insert-icon" onClick={() => props.onInsertTextToEditor('****', 2)}/>
-          <img src={InsertItalic} alt="Vložiť kurzívu" className="Toolbar-insert-icon" onClick={() => props.onInsertTextToEditor('__', 1)}/>
-          <img src={InsertQuote} alt="Vložiť citáciu" className="Toolbar-insert-icon" onClick={() => props.onInsertTextToEditor('>', 1)}/>
-          <img src={InsertImage} alt="Vložiť obrázok" className="Toolbar-insert-icon" onClick={() => props.onInsertTextToEditor('\n![Pridajte nejaký popis]()\n', 3)}/>
-          <img src={InsertLink} alt="Vložiť odkaz" className="Toolbar-insert-icon" onClick={() => props.onInsertTextToEditor('[Pridajte nejaký popis]()', 1)}/>
+          <img src={InsertBold} alt="Vložiť hrubé písmo" className="Toolbar-insert-icon" onClick={() => props.onInsertTextToEditor('****', 2)} style={{pointerEvents: props.editorVisible ? 'all' : 'none'}}/>
+          <img src={InsertItalic} alt="Vložiť kurzívu" className="Toolbar-insert-icon" onClick={() => props.onInsertTextToEditor('__', 1)} style={{pointerEvents: props.editorVisible ? 'all' : 'none'}}/>
+          <img src={InsertQuote} alt="Vložiť citáciu" className="Toolbar-insert-icon" onClick={() => props.onInsertTextToEditor('>', 1)} style={{pointerEvents: props.editorVisible ? 'all' : 'none'}}/>
+          <img src={InsertImage} alt="Vložiť obrázok" className="Toolbar-insert-icon" onClick={() => props.onInsertTextToEditor('\n![Pridajte nejaký popis]()\n', 3)} style={{pointerEvents: props.editorVisible ? 'all' : 'none'}}/>
+          <img src={InsertLink} alt="Vložiť odkaz" className="Toolbar-insert-icon" onClick={() => props.onInsertTextToEditor('[Pridajte nejaký popis]()', 1)} style={{pointerEvents: props.editorVisible ? 'all' : 'none'}}/>
           <Tooltip title="Pridať komentár k označenému textu"
                    onClick={() => props.setIsNewCommentIconClicked(props.isNewCommentIconClicked ? props.isNewCommentIconClicked : !props.isNewCommentIconClicked)}
-                   className="Toolbar-insert-icon" style={{marginLeft: '10rem'}}>
+                   className="Toolbar-insert-icon" style={{marginLeft: '10rem', pointerEvents: props.editorVisible ? 'all' : 'none'}}>
             <img src={AddComment} alt="Pridať komentár"/>
           </Tooltip>
         </div>

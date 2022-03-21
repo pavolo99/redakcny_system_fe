@@ -175,7 +175,7 @@ const AdministrationPage = () => {
     <div className="Publication-config-legend-row">
       <div style={{width: '49%'}}>
         <strong>Súkromný prístupový token:</strong> hodnota <a href="https://docs.gitlab.com/ee/user/project/settings/project_access_tokens.html">PAT</a>,
-        ktorý je potrebné vytvoriť v rámci nastavení repozitára. Pre správne fungovanie je dôležité zvoliť scope <span className="Legend-label">api</span>.      </div>
+        ktorú je potrebné vytvoriť v rámci nastavení repozitára. Pre správne fungovanie je dôležité zvoliť scope <span className="Legend-label">api</span>.      </div>
       <div style={{width: '49%'}}>
           <strong>Cesta publikovaného článku:</strong> lokácia, na ktorú sa publikovaný článok v repozitári uloží. Prípona článku musí byť <span className="Legend-label">.md</span>.
           <ul style={{margin: '0'}}>
@@ -234,6 +234,8 @@ const AdministrationPage = () => {
 
   const userRolesAdministrationPart = <>
     <div className="Users-content">
+      <h4>Ak zmeníte práva používateľovi, ktorý je práve prihlásený, tak je
+        potrebné, aby sa odhlásil a opätovne prihlásil.</h4>
       {users.map(user => (
           <div className="User-row" key={user.id}>
               <div className="Avatar-flex-row">
