@@ -12,11 +12,12 @@ export function getUserValue(userDto) {
     return userDto.firstName + userDto.lastName + userDto.id + userDto.email;
 }
 
-export function getUsernameWithFullName(userDto) {
+export function getUsernameWithFullName(userDto, loggedUserId) {
     if (!userDto) {
         return '';
     }
-    return userDto.username + ' (' + userDto.firstName + ' ' + userDto.lastName + ')';
+    const loggedUserName = loggedUserId === userDto.id ? 'Vy' : userDto.firstName + ' ' + userDto.lastName
+    return userDto.username + ' (' + loggedUserName + ')';
 }
 
 export function getUser(userDto) {

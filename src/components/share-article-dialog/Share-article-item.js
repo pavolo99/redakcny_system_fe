@@ -144,6 +144,7 @@ export default function ShareArticleItem(props) {
   }
 
   const loggedUserEditor = JSON.parse(localStorage.getItem('loggedUser')).role === 'EDITOR';
+  const loggedUserId = JSON.parse(localStorage.getItem('loggedUser')).id;
   const loggedUserOwner = articleCollaborators && articleCollaborators.length ? articleCollaborators.find(collaborator => collaborator.userDto.id === JSON.parse(localStorage.getItem('loggedUser')).id).owner : false;
 
   const mappedArticleCollaborators = <div>
@@ -155,7 +156,7 @@ export default function ShareArticleItem(props) {
                     color={generateHSLColorBasedOnUserInfo(getUserValue(collaborator.userDto))}/>
           </div>
           <div className="Collaborator-column-name">
-            <div>{getUsernameWithFullName(collaborator.userDto)}</div>
+            <div>{getUsernameWithFullName(collaborator.userDto, loggedUserId)}</div>
             <div>{collaborator.userDto.email}</div>
           </div>
           {collaborator.owner ? <div

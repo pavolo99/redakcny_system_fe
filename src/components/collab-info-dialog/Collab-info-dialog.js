@@ -70,7 +70,7 @@ export default function CollabInfoDialog(props) {
                         color={generateHSLColorBasedOnUserInfo(getUserValue(user.userDto))}/>
               </div>
               <div className="Connected-user-info-column">
-                <div>{getUsernameWithFullName(user.userDto)}</div>
+                <div>{getUsernameWithFullName(user.userDto, loggedUserId)}</div>
                 <div>{user.userDto.email}</div>
               </div>
               {props.canLoggedUserEdit && loggedUserId !== user.userDto.id && user.canUserEdit ?
