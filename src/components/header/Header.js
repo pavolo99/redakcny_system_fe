@@ -17,6 +17,7 @@ import {
   getFullName, getUserValue,
   handle401Error
 } from "../../shared/Utils";
+import Logo from "../../assets/redaction-system-logo.svg";
 
 export default function Header(props) {
   const history = useHistory();
@@ -263,6 +264,7 @@ export default function Header(props) {
   return (
       <div className="Header">
         <div className="App-link" onClick={onRedirectToDashboard}>
+          <img src={Logo} alt="Redakčný systém"/>
           <span>Redakčný systém</span>
         </div>
         <div className="Vertical-divider"/>

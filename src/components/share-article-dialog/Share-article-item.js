@@ -208,8 +208,8 @@ export default function ShareArticleItem(props) {
             maxWidth={'md'}>
       <DialogTitle>{props.openedArticleName}</DialogTitle>
       <DialogContent>
-        <div className="Collaborators-number">Počet ľudí, ktorí majú prístup: <b>{articleCollaborators.length}</b>.
-          Počet autorov: <b>{articleCollaborators.filter(value => value.author).length}</b>.
+        <div className="Collaborators-number">Počet ľudí, ktorí majú prístup: <b>{articleCollaborators.length}</b> (z toho autorov
+          <b> {articleCollaborators.filter(value => value.author).length}</b>).
         </div>
         <div>{mappedArticleCollaborators}</div>
         <Autocomplete
@@ -221,7 +221,7 @@ export default function ShareArticleItem(props) {
             renderInput={(params) => <TextField {...params}
                                                 label="Pridať spolupracovníka"
                                                 variant="standard"
-                                                placeholder="Vyhľadávajte podľa mena, priezviska, používateľského mena alebo e-mailu"/>}/>
+                                                placeholder="Vyhľadávajte podľa mena, priezviska alebo e-mailu"/>}/>
       </DialogContent>
       <DialogActions>
         <Button onClick={handleClose}>Zavrieť</Button>

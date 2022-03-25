@@ -25,7 +25,6 @@ import CollabInfoDialog
 const EditorPage = () => {
   const location = useLocation();
   const history = useHistory();
-  const [collabChange, setCollabChange] = useState(null)
   const [contentEditableCompartment, setContentEditableCompartment] = useState(null)
 
   const [article, setArticle] = useState({
@@ -49,8 +48,6 @@ const EditorPage = () => {
     .then(response => {
       if (response) {
         setArticleAndConnectedUsers(response)
-        setCollabChange(Math.random())
-
         const contentEditableCompartment = new Compartment()
         setContentEditableCompartment(contentEditableCompartment)
         let editorState = EditorState.create({
@@ -93,10 +90,6 @@ const EditorPage = () => {
             .catch(error => handleError(error))
             .then(response => {
               if (response) {
-                if (canLoggedUserEdit !== response.data.canLoggedUserEdit) {
-                  // just fire event to collab info dialog that article lock has changed
-                  setCollabChange(Math.random())
-                }
                 const mergedArticleObject = {...article, ...response.data};
                 setArticle(mergedArticleObject);
                 setAllConnectedUsers(response.data.allConnectedUsers)
@@ -243,17 +236,42 @@ const EditorPage = () => {
     }))
   }
 
-  function insertValueToEditorOnCurrentCursorPosition(insertedValue, cursorPositionIndex) {
+  function insertBoldOrItalicValueToEditor(insertedValue) {
     const selection = editorView.state.selection.ranges[0]
-    let insertTransaction = editorView.state.update({
+    const insertFromTransaction = editorView.state.update({
       changes: {
-        from: selection.to,
+        from: selection.from,
         insert: insertedValue
       }
     })
-    editorView.dispatch(insertTransaction);
-    // shift cursor after inserting transaction
-    createTextSelection(selection.to + cursorPositionIndex, selection.to + cursorPositionIndex)
+    editorView.dispatch(insertFromTransaction);
+    const insertToTransaction = editorView.state.update({
+      changes: {
+        from: selection.to + insertedValue.length,
+        insert: insertedValue
+      }
+    })
+    editorView.dispatch(insertToTransaction);
+    createTextSelection(selection.from + insertedValue.length, selection.to + insertedValue.length)
+  }
+
+  function insertLinkOrImageValueToEditor(insertedValueFrom, insertedValueTo) {
+    const selection = editorView.state.selection.ranges[0]
+    const insertFromTransaction = editorView.state.update({
+      changes: {
+        from: selection.from,
+        insert: insertedValueFrom
+      }
+    });
+    editorView.dispatch(insertFromTransaction);
+    const insertToTransaction = editorView.state.update({
+      changes: {
+        from: selection.to + insertedValueFrom.length,
+        insert: insertedValueTo
+      }
+    })
+    editorView.dispatch(insertToTransaction);
+    createTextSelection(selection.from + insertedValueFrom.length, selection.to + insertedValueFrom.length)
   }
 
   const selectionRange = editorView && editorView.state && editorView.state.selection ? editorView.state.selection.ranges[0] : null;
@@ -271,20 +289,18 @@ const EditorPage = () => {
                     message={muiMessage.message}/>
         <form>
           <div className="Flex-row">
-            <TextField label="Abstrakt" variant="filled"
-                       inputProps={{ maxLength: 1000 }} maxRows={3}
-                       disabled={!article.canLoggedUserEdit}
-                       value={article.articleAbstract} multiline
-                       style={{width: "100%"}} name="articleAbstract"
-                       onChange={onInputsValueChange}/>
-          </div>
-          <div className="Flex-row">
             <div className="Left-side">
               <div><TextField label="Názov článku" variant="filled"
                               value={article.name} inputProps={{maxLength: 50}}
                               style={{width: "100%"}} name="name"
                               required={true} disabled={!article.canLoggedUserEdit}
                               onChange={onInputsValueChange}/></div>
+              <TextField label="Abstrakt" variant="filled"
+                         inputProps={{ maxLength: 1000 }} minRows={5}
+                         maxRows={5} disabled={!article.canLoggedUserEdit}
+                         value={article.articleAbstract} multiline
+                         style={{width: "100%"}} name="articleAbstract"
+                         onChange={onInputsValueChange}/>
               <div><TextField label="Kľúčové slová (oddelené čiarkou)"
                               inputProps={{maxLength: 50}}
                               disabled={!article.canLoggedUserEdit}
@@ -309,7 +325,7 @@ const EditorPage = () => {
                 <ImageSection articleId={article.id}
                               canLoggedUserEdit={article.canLoggedUserEdit}
                               articleStatus={article.articleStatus}
-                              onInsertTextToEditor={(insertedValue, cursorShiftIndex) => insertValueToEditorOnCurrentCursorPosition(insertedValue, cursorShiftIndex)}/>
+                              onInsertLinkOrImageValueToEditor={(insertedValueFrom, insertedValueTo) => insertLinkOrImageValueToEditor(insertedValueFrom, insertedValueTo)}/>
               </div>
 
               <Button className="Submit-button" onClick={onSaveArticle}
@@ -319,13 +335,15 @@ const EditorPage = () => {
             </div>
             <div className="Center-editor">
               <EditorToolbar setIsNewCommentIconClicked={setIsNewCommentIconClicked} isNewCommentIconClicked={isNewCommentIconClicked}
-                  onInsertTextToEditor={(insertedValue, cursorShiftIndex) => insertValueToEditorOnCurrentCursorPosition(insertedValue, cursorShiftIndex)}
+                             canLoggedUserEdit={article.canLoggedUserEdit}
+                  onInsertBoldOrItalicValueToEditor={(insertedValue) => insertBoldOrItalicValueToEditor(insertedValue)}
+                  onInsertLinkOrImageValueToEditor={(insertedValueFrom, insertedValueTo) => insertLinkOrImageValueToEditor(insertedValueFrom, insertedValueTo)}
                   editorVisible={editorVisible} toggleEditorPreview={() => onToggleEditorPreview()}/>
-              <div style={{overflowY: 'auto', height: '68vh'}}>
+              <div style={{overflowY: 'auto', height: '76vh'}}>
                 <div ref={editorRef} className={editorVisible ? '' : 'Invisible'}/>
                 <ReactMarkdown children={getChangedTextFromView(editorView)}
-                               className={editorVisible ? 'Invisible'
-                                   : 'Visible Preview'}/></div>
+                               className={editorVisible ? 'Invisible' : 'Visible Preview'}/>
+              </div>
             </div>
             <div className="Right-side">
               <CommentSection articleId={article.id}
@@ -339,8 +357,7 @@ const EditorPage = () => {
         </form>
         <CollabInfoDialog articleId={article.id}
                           leaveArticleEdit={() => leaveArticleEdit()}
-                          canLoggedUserEdit={article.canLoggedUserEdit}
-                          collabChange={collabChange}/>
+                          canLoggedUserEdit={article.canLoggedUserEdit}/>
       </div>
   );
 };

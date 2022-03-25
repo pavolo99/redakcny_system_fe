@@ -25,9 +25,9 @@ export function getUser(userDto) {
         return '';
     }
     if (userDto.email) {
-        return userDto.firstName + ' ' + userDto.lastName + ', ' + userDto.email + ', ' + userDto.username;
+        return userDto.firstName + ' ' + userDto.lastName + ' (' + userDto.email + ')';
     } else {
-        return userDto.firstName + ' ' + userDto.lastName + ', ' + userDto.username;
+        return userDto.firstName + ' ' + userDto.lastName;
     }
 }
 

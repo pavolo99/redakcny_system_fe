@@ -274,13 +274,13 @@ const AdministrationPage = () => {
         </div>
         <hr className="Administration-header-divider"/>
         <div className="Administration-content">
-          <Tabs variant="fullWidth"
+          <Tabs variant="standard"
                 value={displayedTab}
                 onChange={handleChange}
                 textColor="primary"
                 indicatorColor="primary">
-            <Tab value="publicationConfig" label="Publikačná konfigurácia"/>
-            <Tab value="userRoles" label="Správa používateľských rolí"/>
+            <Tab value="publicationConfig" label="Publikačná konfigurácia" style={{textTransform: 'none'}}/>
+            <Tab value="userRoles" label="Používatelia" style={{textTransform: 'none'}}/>
           </Tabs>
           {displayedTab === 'publicationConfig'
               ? publicationConfigPart : userRolesAdministrationPart}

@@ -207,10 +207,10 @@ export default function CommentSection(props) {
                        onChange={(event) => onCommentValueChange(
                            event.target.value)}/>
           </div>
-          {commentText ? <div className="Comment-reply-buttons-row">
+          <div className="Comment-reply-buttons-row">
             <Button className="Comment-reply-button-cancel" onClick={cancelComment}>Zrušiť</Button>
-            <Button className="Comment-reply-button-submit" onClick={() => createComment(props.articleId)}>Odoslať</Button>
-          </div> : null}
+            {commentText ? <Button className="Comment-reply-button-submit" onClick={() => createComment(props.articleId)}>Odoslať</Button> : null}
+          </div>
         </div> : null}
         {mappedCommentsWithItsReplies}
       </div>

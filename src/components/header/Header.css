@@ -13,6 +13,8 @@
     margin-left: 1rem;
     cursor: pointer;
     white-space: nowrap;
+    align-items: inherit;
+    display: flex;
 }
 
 .Three-dots-menu {
@@ -24,7 +26,7 @@
 .Vertical-divider {
     border-left: 3px solid white;
     height: 64px;
-    margin-left: 57px;
+    margin-left: 17px;
 }
 
 .Quick-menu-item {

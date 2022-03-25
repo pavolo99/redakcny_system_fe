@@ -13,7 +13,7 @@
 }
 
 .Left-side {
-    margin-right: 1rem;
+    margin-right: 0.5rem;
     width: 24%;
     display: flex;
     flex-direction: column;
@@ -32,7 +32,7 @@
     width: 26%;
     background-color: white;
     margin-bottom: 2rem;
-    height: 76vh;
+    height: 85vh;
     overflow-y: auto;
 }
 
@@ -49,6 +49,7 @@
 .Submit-button {
     background-color: #2196F3 !important;
     color: white !important;
+    margin-bottom: 2rem !important;
 }
 
 .Submit-button:disabled {

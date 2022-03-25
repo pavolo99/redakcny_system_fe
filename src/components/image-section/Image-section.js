@@ -48,7 +48,7 @@ export default function ImageSection(props) {
           severity: 'success'
         });
         const uploadedImagePath = process.env.REACT_APP_BECKEND_API_URL + '/image/content/' + response.data;
-        props.onInsertTextToEditor('\n![Pridajte nejaký popis](' + uploadedImagePath + ')\n', 3);
+        props.onInsertLinkOrImageValueToEditor('![', '](' + uploadedImagePath + ')')
         fetchImagesInfo();
       }
     })
@@ -92,9 +92,10 @@ export default function ImageSection(props) {
           <Tooltip title={imagesInfo.name} placement="top" style={{cursor: 'default'}}>
             <div>{imagesInfo.name.length < 33 ? imagesInfo.name : (imagesInfo.name.substring(0, 30) + '...')}</div>
           </Tooltip>
-          <div className="Delete-icon" onClick={(() => onRemoveImage(imagesInfo))}>
-            <img src={DeleteIcon} alt="Vymazať obrázok"/>
-          </div>
+          {props.canLoggedUserEdit && articleCanBeEdited(props.articleStatus) ?
+              <div className="Delete-icon" onClick={(() => onRemoveImage(imagesInfo))}>
+                <img src={DeleteIcon} alt="Odstrániť obrázok" title="Odstrániť obrázok"/>
+              </div> : null}
         </div>
     )) : <div className="Empty-images">Žiadne vlastné obrázky</div>}
   </div>;

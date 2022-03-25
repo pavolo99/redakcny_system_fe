@@ -63,7 +63,7 @@ export default function CollabInfoDialog(props) {
       <div>
         <h3>Aktívni používatelia</h3>
         {allConnectedUsers.map(user => (
-            <div key={user.id} className="Connected-users-row">
+            <div key={user.id} className="Connected-user-row">
               <div>
                 <Avatar name={getFullName(user.userDto)} fgColor="white"
                         round={true} size="40"

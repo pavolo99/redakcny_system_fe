@@ -12,6 +12,7 @@
 }
 
 .Administration-content {
+    margin-top: 1rem;
     padding-bottom: 1rem;
     padding-left: 1rem;
     padding-right: 1rem;
@@ -43,7 +44,7 @@
 .Show-private-token-button {
     background-color: #543030 !important;
     color: white !important;
-    width: 15% !important;
+    width: 20% !important;
     margin-right: auto !important;
 }
 
