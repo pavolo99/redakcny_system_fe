@@ -274,6 +274,10 @@ const EditorPage = () => {
     createTextSelection(selection.from + insertedValueFrom.length, selection.to + insertedValueFrom.length)
   }
 
+  function onEditorClick() {
+    editorView.focus();
+  }
+
   const selectionRange = editorView && editorView.state && editorView.state.selection ? editorView.state.selection.ranges[0] : null;
 
   let loggedUserRole = JSON.parse(localStorage.getItem('loggedUser')).role;
@@ -339,7 +343,7 @@ const EditorPage = () => {
                   onInsertBoldOrItalicValueToEditor={(insertedValue) => insertBoldOrItalicValueToEditor(insertedValue)}
                   onInsertLinkOrImageValueToEditor={(insertedValueFrom, insertedValueTo) => insertLinkOrImageValueToEditor(insertedValueFrom, insertedValueTo)}
                   editorVisible={editorVisible} toggleEditorPreview={() => onToggleEditorPreview()}/>
-              <div style={{overflowY: 'auto', height: '76vh'}}>
+              <div style={{overflowY: 'auto', height: '76vh', cursor: 'text'}} onClick={() => onEditorClick()}>
                 <div ref={editorRef} className={editorVisible ? '' : 'Invisible'}/>
                 <ReactMarkdown children={getChangedTextFromView(editorView)}
                                className={editorVisible ? 'Invisible' : 'Visible Preview'}/>
