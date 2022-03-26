@@ -144,7 +144,7 @@ export default function CommentSection(props) {
             </span>
           </div>
           <div className="Avatar-time-row">
-            <Avatar name={getFullName(comment.createdBy)} fgColor="white" round={true}
+            <Avatar name={getFullName(comment.createdBy)} fgColor="white" round={true} style={{cursor: 'default'}}
                     size="35" color={generateHSLColorBasedOnUserInfo(getUserValue(comment.createdBy))}/>
             <div className="Comment-right-side">
               <div className="Updated-at">{convertTimestampToDate(comment.updatedAt)}</div>
@@ -156,7 +156,7 @@ export default function CommentSection(props) {
           {comment.commentReplyDtoList.map(commentReply =>
               <div key={commentReply.id}>
                 <div className="Avatar-time-row">
-                  <Avatar name={getFullName(commentReply.createdBy)} fgColor="white" round={true}
+                  <Avatar name={getFullName(commentReply.createdBy)} fgColor="white" round={true} style={{cursor: 'default'}}
                           size="35" color={generateHSLColorBasedOnUserInfo(getUserValue(commentReply.createdBy))}/>
                   <div className="Comment-right-side">
                     <div className="Updated-at">{convertTimestampToDate(commentReply.updatedAt)}</div>
@@ -167,9 +167,8 @@ export default function CommentSection(props) {
               </div>
           )}
           {commentReply.commentId === comment.id ? <div className="Reply-avatar-input-row">
-            <Avatar name={getFullName(loggedUser)} fgColor="white" round={true}
-                    size="35" color={generateHSLColorBasedOnUserInfo(
-                getUserValue(loggedUser))}/>
+            <Avatar name={getFullName(loggedUser)} fgColor="white" round={true} style={{cursor: 'default'}}
+                    size="35" color={generateHSLColorBasedOnUserInfo(getUserValue(loggedUser))}/>
             <TextField variant="standard" placeholder="Napíšte vašu odpoveď"
                        value={commentReply.text} multiline
                        inputProps={{ maxLength: 1000 }}
@@ -197,9 +196,8 @@ export default function CommentSection(props) {
         </div>
         {props.isNewCommentIconClicked ? <div className="Comment New-comment">
           <div className="Add-comment-avatar-input-row">
-            <Avatar name={getFullName(loggedUser)} fgColor="white" round={true}
-                    size="35" color={generateHSLColorBasedOnUserInfo(
-                getUserValue(loggedUser))}/>
+            <Avatar name={getFullName(loggedUser)} fgColor="white" round={true} style={{cursor: 'default'}}
+                    size="35" color={generateHSLColorBasedOnUserInfo(getUserValue(loggedUser))}/>
             <TextField variant="standard" placeholder="Napíšte komentár"
                        value={commentText} multiline
                        style={{width: "100%", marginLeft: '1rem'}}

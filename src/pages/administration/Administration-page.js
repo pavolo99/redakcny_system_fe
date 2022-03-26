@@ -239,7 +239,7 @@ const AdministrationPage = () => {
       {users.map(user => (
           <div className="User-row" key={user.id}>
               <div className="Avatar-flex-row">
-                <Avatar name={getFullName(user)} fgColor="white"
+                <Avatar name={getFullName(user)} fgColor="white" style={{cursor: 'default'}}
                         round={true} size="40" className="Avatar"
                         color={generateHSLColorBasedOnUserInfo(getUserValue(user))}/>
                 <div>

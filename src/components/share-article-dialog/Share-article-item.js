@@ -7,7 +7,7 @@ import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
-import Share from "../../assets/share.svg";
+import PeopleGroup from "../../assets/people-group.svg";
 import axios from "axios";
 import {useHistory} from "react-router-dom";
 import {Autocomplete, Select, Tooltip} from "@mui/material";
@@ -152,7 +152,7 @@ export default function ShareArticleItem(props) {
         <div key={collaborator.userDto.id} className="Collaborator-row">
           <div className="Collaborator-column-avatar">
             <Avatar name={getFullName(collaborator.userDto)} fgColor="white"
-                    round={true} size="40"
+                    round={true} size="40" style={{cursor: 'default'}}
                     color={generateHSLColorBasedOnUserInfo(getUserValue(collaborator.userDto))}/>
           </div>
           <div className="Collaborator-column-name">
@@ -199,9 +199,10 @@ export default function ShareArticleItem(props) {
   </div>
 
   return (<div>
-    <Tooltip title="Pridať spolupracovníka">
-      <div onClick={handleClickOpen}>
-        <img src={Share} alt="Pridať spolupracovníka" width="30px"/>
+    <Tooltip title="Administrácia spolupracovníkov">
+      <div onClick={handleClickOpen} className="Quick-menu-item">
+        <img src={PeopleGroup} alt="Zdieľanie" className="Quick-menu-img"/>
+        <div className="Quick-menu-text">Zdieľanie</div>
       </div>
     </Tooltip>
     <Dialog open={isShareDialogOpen} onClose={handleClose} fullWidth={true}

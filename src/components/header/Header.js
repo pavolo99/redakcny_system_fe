@@ -1,23 +1,24 @@
 import React, {useState} from "react";
 import "./Header.css"
 import {useHistory} from "react-router-dom";
-import ThreeDotsMenu from "../../assets/three-dots-menu.svg"
-import ThreeDotsMenuExpanded from "../../assets/three-dots-menu-expanded.svg"
 import Review from "../../assets/review.svg"
 import Approve from "../../assets/approve.svg"
+import Versions from "../../assets/versions.svg"
 import Logout from "../../assets/logout.png"
 import Admin from "../../assets/admin.svg"
-import ActionsMenu from "../actions-menu/Actions-menu";
+import Button from '@mui/material/Button';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
+import Fade from '@mui/material/Fade';
+import MenuIcon from '@mui/icons-material/Menu';
 import {MuiMessage} from "../mui-message/Mui-message";
 import axios from "axios";
 import Avatar from 'react-avatar';
 import ShareArticleItem from "../share-article-dialog/Share-article-item";
-import {
-  generateHSLColorBasedOnUserInfo,
-  getFullName, getUserValue,
-  handle401Error
-} from "../../shared/Utils";
+import {getFullName, handle401Error} from "../../shared/Utils";
 import Logo from "../../assets/redaction-system-logo.svg";
+import {Tooltip} from "@mui/material";
+import CollabInfoDialog from "../collab-info-dialog/Collab-info-dialog";
 
 export default function Header(props) {
   const history = useHistory();
@@ -25,8 +26,6 @@ export default function Header(props) {
   const onRedirectToDashboard = () => {
     history.push('/dashboard')
   }
-
-  const [isMenuClicked, setIsMenuClicked] = useState(false);
 
   const [muiMessage, setMuiMessage] = useState({
     open: false,
@@ -40,17 +39,13 @@ export default function Header(props) {
     })
   }
 
-  function onMenuClick() {
-    setIsMenuClicked((prevState) => !prevState);
-  }
-
   function onRemoveArticle() {
     const messageData = createMessageData('Článok bol úspešne vymazaný');
     axios.delete(process.env.REACT_APP_BECKEND_API_URL + '/article/deleted/' + props.openedArticleId)
     .catch((error) => {
-      handleError(messageData, error, 'Article cannot be deleted', 'Článok nemôže byť vymazaný.');
+      handleError(messageData, error, 'Article cannot be deleted', 'Článok po odoslaní na recenziu už nemôže byť vymazaný.');
     })
-    .finally(() => setMuiMessage(messageData));
+    .finally(() => history.push('/dashboard'));
   }
 
   function onShowArticleVersions() {
@@ -124,8 +119,7 @@ export default function Header(props) {
   }
 
   function onSendToReview() {
-    const messageData = createMessageData(
-        'Článok bol úspešne odoslaný na recenziu');
+    const messageData = createMessageData('Článok bol úspešne odoslaný na recenziu');
     axios.put(process.env.REACT_APP_BECKEND_API_URL + '/article/sent-to-review/' + props.openedArticleId)
     .catch((error) => {
       handleError(messageData, error, 'Article must be in the writing process',
@@ -134,6 +128,7 @@ export default function Header(props) {
     .then(response => {
       if (response) {
         handleArticleStatusChangeEventFromResponse(response);
+        onMenuClose()
       }
     })
     .finally(() => setMuiMessage(messageData));
@@ -198,24 +193,40 @@ export default function Header(props) {
     history.push('/administration');
   }
 
+  function leaveArticleEdit() {
+    props.leaveArticleEdit()
+  }
+
   let loggedUser = JSON.parse(localStorage.getItem('loggedUser'));
   const isLoggedUserAuthor = loggedUser.role === 'AUTHOR';
 
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const isMenuOpen = Boolean(anchorEl);
+  const onMenuOpen = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const onMenuClose = () => {
+    setAnchorEl(null);
+  };
+
   const editorActionsMenu = <>
-    <img
-        src={isMenuClicked ? ThreeDotsMenuExpanded : ThreeDotsMenu}
-        alt="Menu" className="Three-dots-menu"
-        onClick={() => onMenuClick()}/>
-    {isMenuClicked ? <ActionsMenu openedArticleId={props.openedArticleId}
-                                  articleStatus={props.openedArticleStatus}
-                                  onShowArticleVersions={onShowArticleVersions}
-                                  onRemoveArticle={onRemoveArticle}
-                                  onDenyArticle={onDenyArticle}
-                                  onPublishArticle={onPublishArticle}
-                                  onArchiveArticle={onArchiveArticle}/>
-        : <div style={{width: '252px'}}/>}
+    <Button startIcon={<MenuIcon style={{marginBottom: '1px', fontSize: '160%'}} /> }
+            style={{color: 'white', textTransform: 'none', fontSize: '160%', marginLeft: '0.5rem', marginTop: '2px'}}
+        id="menu-button" aria-controls={isMenuOpen ? 'fade-menu' : undefined}
+        aria-haspopup="true" title="Menu" onClick={onMenuOpen}
+        aria-expanded={isMenuOpen ? 'true' : undefined}/>
+    <Menu id="fade-menu" MenuListProps={{'aria-labelledby': 'menu-button'}}
+        anchorEl={anchorEl} open={isMenuOpen} onClose={onMenuClose} TransitionComponent={Fade}>
+      <MenuItem onClick={() => onSendToReview()} disabled={props.openedArticleStatus !== 'WRITING'}>Odoslať na recenziu</MenuItem>
+      <MenuItem onClick={() => onSendReview()} disabled={isLoggedUserAuthor || props.openedArticleStatus !== 'IN_REVIEW'}>Odoslať recenziu</MenuItem>
+      <MenuItem onClick={() => onApproveArticle()} disabled={isLoggedUserAuthor || props.openedArticleStatus !== 'IN_REVIEW'}>Schváliť</MenuItem>
+      <MenuItem onClick={() => onDenyArticle()} disabled={isLoggedUserAuthor || props.openedArticleStatus !== 'IN_REVIEW'}>Zamietnuť</MenuItem>
+      <MenuItem onClick={() => onPublishArticle()} disabled={isLoggedUserAuthor || props.openedArticleStatus !== 'APPROVED'}>Publikovať</MenuItem>
+      <MenuItem onClick={() => onArchiveArticle()} disabled={props.openedArticleStatus !== 'ARCHIVED'}>Archivovať</MenuItem>
+      <MenuItem onClick={() => onRemoveArticle()} disabled={props.openedArticleStatus !== 'WRITING'}>Zmazať</MenuItem>
+    </Menu>
     <div className="Quick-action-items">
-      {isLoggedUserAuthor && props.openedArticleStatus === 'WRITING' ?
+      {props.openedArticleStatus === 'WRITING' ?
         <div className="Quick-menu-item" onClick={() => onSendToReview()}>
           <img src={Review} alt="Odoslať na recenziu"
                className="Quick-menu-img"/>
@@ -237,20 +248,10 @@ export default function Header(props) {
 
   const administration = <div>
     <div className="Quick-menu-item" onClick={() => onNavigateToAdministration()}>
-      <img src={Admin} alt="Schváliť" className="Quick-menu-img"/>
+      <img src={Admin} alt="Administrácia" className="Quick-menu-img"/>
       <div className="Quick-menu-text">Administrácia</div>
     </div>
   </div>
-
-  const allConnectedUsersToArticle =
-      <div className="Connected-users">
-        {props.allConnectedUsers ? props.allConnectedUsers.map(user => (
-            <div key={user.id}>
-              <Avatar name={getFullName(user)} fgColor="white" round={true} size="35"
-                  color={generateHSLColorBasedOnUserInfo(getUserValue(user))}/>
-            </div>
-        )) : null}
-      </div>
 
   function onLogout() {
     history.push('/login');
@@ -263,24 +264,41 @@ export default function Header(props) {
 
   return (
       <div className="Header">
-        <div className="App-link" onClick={onRedirectToDashboard}>
+        <div className="App-link" onClick={onRedirectToDashboard} title="Zoznam článkov">
           <img src={Logo} alt="Redakčný systém"/>
           <span>Redakčný systém</span>
         </div>
         <div className="Vertical-divider"/>
         {props.openedArticleId ? editorActionsMenu : null}
         {!props.openedArticleId && loggedUserAdministrator ? administration : null}
-        <div className="Share-avatar-row">{props.openedArticleId ? <div className="Share-item">
-          <ShareArticleItem
-              openedArticleName={props.openedArticleName}
-              openedArticleId={props.openedArticleId}/>
-        </div> : null}
-          <div>{props.openedArticleId ? allConnectedUsersToArticle : null}</div>
-          <img src={Logout} className="Logout-button" alt="Odhlásiť sa" title="Odhlásiť sa" onClick={onLogout}/>
+        <div className="Header-row">{props.openedArticleId ?
+            <div className="Share-item">
+              <ShareArticleItem
+                  openedArticleName={props.openedArticleName}
+                  openedArticleId={props.openedArticleId}/>
+            </div> : null}
+          <div>{props.openedArticleId ? <CollabInfoDialog
+                  articleId={props.openedArticleId}
+                  leaveArticleEdit={() => leaveArticleEdit()}
+                  allConnectedUsers={props.allConnectedUsers}
+                  allCollaborators={props.allCollaborators}
+                  canLoggedUserEdit={props.canLoggedUserEditOpenedArticle}/>
+              : null}
+          </div>
+          {props.openedArticleId ?
+              <Tooltip title="Prehľad verzií" onClick={() => onShowArticleVersions()}>
+                <div className="Quick-menu-item">
+                  <img src={Versions} alt="Verzie" className="Quick-menu-img"/>
+                  <div className="Quick-menu-text">Verzie</div>
+                </div>
+              </Tooltip> : null}
           {!props.openedArticleId ? <div className="Avatar">
             <Avatar name={getFullName(loggedUser)} round={true} size="40"
-                    fgColor="black" color="white"/>
+                    fgColor="black" color="white" style={{cursor: 'default'}}/>
           </div> : null}
+          <div className="Vertical-divider"/>
+          <img src={Logout} className="Logout-button" alt="Odhlásiť sa" title="Odhlásiť sa" onClick={onLogout}
+               style={{marginRight: props.openedArticleId ? '1rem' : '-1rem'}}/>
         </div>
         <MuiMessage severity={muiMessage.severity} open={muiMessage.open}
                     onCloseMuiMessage={closeMuiMessage}

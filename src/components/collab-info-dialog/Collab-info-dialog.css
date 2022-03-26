@@ -16,8 +16,8 @@
     padding: 1rem;
 }
 
-.Connected-user-row:nth-child(odd) {
-    background-color: #f5f5f5;
+.Connected-user-row:nth-child(even) {
+    background-color: #e0e0e0;
 }
 
 .Connected-user-info-column {
@@ -28,4 +28,10 @@
 .Leave-article-edit-button {
     background-color: #2196F3 !important;
     color: white !important;
+}
+
+.Connected-users {
+    display: flex;
+    flex-direction: row;
+    margin-right: 2rem;
 }

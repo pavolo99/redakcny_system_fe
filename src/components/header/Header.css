@@ -26,7 +26,7 @@
 .Vertical-divider {
     border-left: 3px solid white;
     height: 64px;
-    margin-left: 17px;
+    margin-left: 2rem;
 }
 
 .Quick-menu-item {
@@ -38,18 +38,17 @@
 .Share-item {
     cursor: pointer;
     margin-right: 1rem;
-    margin-top: 4px;
 }
 
-.Share-avatar-row {
+.Header-row {
     display: flex;
     margin-left: auto;
     align-items: center;
 }
 
 .Quick-menu-img {
-    margin-left: 1rem;
-    margin-right: 1rem;
+    margin-left: 0.5rem;
+    margin-right: 0.5rem;
 }
 
 .Quick-menu-text {
@@ -63,19 +62,11 @@
 
 .Logout-button {
     cursor: pointer;
-    margin-right: 1rem;
+    margin-left: 1rem;
     width: 30px;
 }
 
 .Quick-action-items {
     min-width: 25%;
     display: flex;
-    margin-left: auto;
-    margin-right: auto;
-}
-
-.Connected-users {
-    display: flex;
-    flex-direction: row;
-    margin-right: 2rem;
 }

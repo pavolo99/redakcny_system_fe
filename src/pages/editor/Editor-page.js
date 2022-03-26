@@ -19,8 +19,6 @@ import EditorToolbar from "../../components/editor-toolbar/Editor-toolbar";
 import ReactMarkdown from 'react-markdown'
 import CommentSection from "../../components/comment-section/Comment-section";
 import {articleCanBeEdited, handle401Error} from "../../shared/Utils";
-import CollabInfoDialog
-  from "../../components/collab-info-dialog/Collab-info-dialog";
 
 const EditorPage = () => {
   const location = useLocation();
@@ -40,6 +38,7 @@ const EditorPage = () => {
     canLoggedUserEdit: false,
   });
   const [allConnectedUsers, setAllConnectedUsers] = useState([])
+  const [allCollaborators, setAllCollaborators] = useState([])
 
     useEffect(() => {
       let interval;
@@ -48,6 +47,7 @@ const EditorPage = () => {
     .then(response => {
       if (response) {
         setArticleAndConnectedUsers(response)
+        setAllCollaborators(response.data.allCollaborators)
         const contentEditableCompartment = new Compartment()
         setContentEditableCompartment(contentEditableCompartment)
         let editorState = EditorState.create({
@@ -82,6 +82,7 @@ const EditorPage = () => {
                   return state;
                 });
                 setAllConnectedUsers(response.data.allConnectedUsers)
+                setAllCollaborators(response.data.allCollaborators)
               }
             })
           } else {
@@ -93,6 +94,7 @@ const EditorPage = () => {
                 const mergedArticleObject = {...article, ...response.data};
                 setArticle(mergedArticleObject);
                 setAllConnectedUsers(response.data.allConnectedUsers)
+                setAllCollaborators(response.data.allCollaborators)
                 newEditorView.dispatch({
                   effects: contentEditableCompartment.reconfigure(
                       EditorView.contentAttributes.of({
@@ -285,8 +287,11 @@ const EditorPage = () => {
       <div>
         <Header openedArticleId={article.id}
                 openedArticleName={article.name}
+                canLoggedUserEditOpenedArticle={article.canLoggedUserEdit}
                 allConnectedUsers={allConnectedUsers}
+                allCollaborators={allCollaborators}
                 openedArticleStatus={article.articleStatus}
+                leaveArticleEdit={() => leaveArticleEdit()}
                 changeArticleStatus={(newArticleStatus) => setArticle(prevState => { return {...prevState, articleStatus: newArticleStatus}})}/>
         <MuiMessage severity={muiMessage.severity} open={muiMessage.open}
                     onCloseMuiMessage={closeMuiMessage}
@@ -359,9 +364,6 @@ const EditorPage = () => {
             </div>
           </div>
         </form>
-        <CollabInfoDialog articleId={article.id}
-                          leaveArticleEdit={() => leaveArticleEdit()}
-                          canLoggedUserEdit={article.canLoggedUserEdit}/>
       </div>
   );
 };

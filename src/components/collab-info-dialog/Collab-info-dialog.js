@@ -53,7 +53,7 @@ export default function CollabInfoDialog(props) {
     .catch(error => handle401Error(error, history))
     .then(response => {
       if (response) {
-        props.leaveArticleEdit(userIdToLeaveEdit)
+        props.leaveArticleEdit()
         handleClose();
       }
     });
@@ -66,7 +66,7 @@ export default function CollabInfoDialog(props) {
             <div key={user.id} className="Connected-user-row">
               <div>
                 <Avatar name={getFullName(user.userDto)} fgColor="white"
-                        round={true} size="40"
+                        round={true} size="40" style={{cursor: 'default'}}
                         color={generateHSLColorBasedOnUserInfo(getUserValue(user.userDto))}/>
               </div>
               <div className="Connected-user-info-column">
@@ -84,10 +84,19 @@ export default function CollabInfoDialog(props) {
       </div>
 
   return (<div>
-    <div onClick={handleClickOpen} className="Info-button"
-         style={{border: isCollabInfoDialogOpen ? '5px solid #2196F3' : '5px solid black'}}>
-      INFO
-    </div>
+    <div className="Connected-users" onClick={handleClickOpen}>
+      {props.allCollaborators ? props.allCollaborators.map(collaborator => {
+        const activeUserForThisArticle = props.allConnectedUsers.find(user => user.id === collaborator.id);
+        return (
+            <div key={collaborator.id}>
+              <Avatar name={getFullName(collaborator)} fgColor="white"
+                      round={true} size="35" style={{cursor: 'pointer'}}
+                      title={collaborator.firstName  + ' ' + collaborator.lastName + ' - ' + (activeUserForThisArticle ? 'Aktívny' : 'Neaktívny')}
+                      color={activeUserForThisArticle ? generateHSLColorBasedOnUserInfo(getUserValue(collaborator)) : 'lightgrey'}/>
+            </div>
+        );
+      }) : null}
+      </div>
     <Dialog open={isCollabInfoDialogOpen} onClose={handleClose} fullWidth={true}
             maxWidth={'md'}>
       <DialogTitle>          {props.canLoggedUserEdit

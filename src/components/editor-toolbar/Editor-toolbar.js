@@ -40,7 +40,7 @@ export default function EditorToolbar(props) {
                title="Pridať komentár k označenému textu"
                onClick={() => props.setIsNewCommentIconClicked(props.isNewCommentIconClicked ? props.isNewCommentIconClicked : !props.isNewCommentIconClicked)}
                className="Toolbar-insert-icon"
-               style={{marginLeft: 'auto', marginRight: '10rem', marginTop: '3px', display: props.editorVisible ? 'flex' : 'none'}}/>
+               style={{marginLeft: '10rem', marginTop: '3px', display: props.editorVisible ? 'flex' : 'none'}}/>
         </div>
 
         <hr className="Editor-toolbar-divider"/>
