@@ -141,6 +141,7 @@ const EditorPage = () => {
       editorView.state.doc.children.forEach(node => {
         node.text.forEach(text => changedText = changedText + text.replace("", '\n'))
       });
+      changedText = changedText.substring(1)
     }
     return changedText;
   }
