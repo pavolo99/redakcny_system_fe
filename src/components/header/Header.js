@@ -221,7 +221,7 @@ export default function Header(props) {
       <MenuItem onClick={() => onSendReview()} disabled={isLoggedUserAuthor || props.openedArticleStatus !== 'IN_REVIEW'}>Odoslať recenziu</MenuItem>
       <MenuItem onClick={() => onApproveArticle()} disabled={isLoggedUserAuthor || props.openedArticleStatus !== 'IN_REVIEW'}>Schváliť</MenuItem>
       <MenuItem onClick={() => onDenyArticle()} disabled={isLoggedUserAuthor || props.openedArticleStatus !== 'IN_REVIEW'}>Zamietnuť</MenuItem>
-      <MenuItem onClick={() => onPublishArticle()} disabled={isLoggedUserAuthor || props.openedArticleStatus !== 'APPROVED'}>Publikovať</MenuItem>
+      <MenuItem onClick={() => onPublishArticle()} disabled={props.openedArticleStatus !== 'APPROVED'}>Publikovať</MenuItem>
       <MenuItem onClick={() => onArchiveArticle()} disabled={props.openedArticleStatus !== 'ARCHIVED'}>Archivovať</MenuItem>
       <MenuItem onClick={() => onRemoveArticle()} disabled={props.openedArticleStatus !== 'WRITING'}>Zmazať</MenuItem>
     </Menu>
@@ -282,7 +282,7 @@ export default function Header(props) {
                   leaveArticleEdit={() => leaveArticleEdit()}
                   allConnectedUsers={props.allConnectedUsers}
                   allCollaborators={props.allCollaborators}
-                  canLoggedUserEdit={props.canLoggedUserEditOpenedArticle}/>
+                  userIdWhoCanEdit={props.userIdWhoCanEditOpenedArticle}/>
               : null}
           </div>
           {props.openedArticleId ?

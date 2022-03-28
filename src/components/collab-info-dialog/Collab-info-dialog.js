@@ -73,11 +73,17 @@ export default function CollabInfoDialog(props) {
                 <div>{getUsernameWithFullName(user.userDto, loggedUserId)}</div>
                 <div>{user.userDto.email}</div>
               </div>
-              {props.canLoggedUserEdit && loggedUserId !== user.userDto.id && user.canUserEdit ?
-                  <div className="Connected-user-info-column">
-                <Button className="Leave-article-edit-button" onClick={() => onLeaveArticleEdit(user.userDto.id)}>
-                  Prenechať editovanie článku
-                </Button>
+              {props.userIdWhoCanEdit === loggedUserId && loggedUserId !== user.userDto.id && user.canUserEdit ?
+                  <div>
+                    <Button className="Leave-article-edit-button"
+                            onClick={() => onLeaveArticleEdit(user.userDto.id)}
+                            title="Prenechať editovanie článku používateľovi">Prenechať editovanie článku</Button>
+              </div> : null}
+              {props.userIdWhoCanEdit !== loggedUserId && props.userIdWhoCanEdit === user.userDto.id ?
+                  <div>
+                    <strong>
+                      Práve môže editovať článok
+                    </strong>
               </div> : null}
             </div>
         ))}
@@ -97,9 +103,9 @@ export default function CollabInfoDialog(props) {
         );
       }) : null}
       </div>
-    <Dialog open={isCollabInfoDialogOpen} onClose={handleClose} fullWidth={true}
-            maxWidth={'md'}>
-      <DialogTitle>          {props.canLoggedUserEdit
+    <Dialog open={isCollabInfoDialogOpen} onClose={handleClose} fullWidth={true} maxWidth="md">
+      <DialogTitle>
+        {props.userIdWhoCanEdit === loggedUserId
           ? ' Editovanie článku je uzamknuté vami.'
           : ' Editovanie článku je uzamknuté iným používateľom. Ak chcete článok editovať, musíte počkať, pokiaľ vám neprenechá právo na editovanie.'}
       </DialogTitle>

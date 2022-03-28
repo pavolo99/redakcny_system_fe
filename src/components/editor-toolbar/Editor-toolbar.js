@@ -9,6 +9,8 @@ import React from "react";
 
 export default function EditorToolbar(props) {
 
+  let loggedUserId = JSON.parse(localStorage.getItem('loggedUser')).id;
+
   return (
       <div className="Editor-toolbar">
         <div className="Toolbar-row">
@@ -20,22 +22,22 @@ export default function EditorToolbar(props) {
           <img src={InsertBold} alt="Vložiť hrubé písmo"
                className="Toolbar-insert-icon" title="Vložiť hrubé písmo"
                onClick={() => props.onInsertBoldOrItalicValueToEditor('**')}
-               style={{display: props.editorVisible && props.canLoggedUserEdit ? 'flex' : 'none'}}/>
+               style={{display: props.editorVisible && props.userIdWhoCanEdit === loggedUserId ? 'flex' : 'none'}}/>
           <img src={InsertItalic} alt="Vložiť kurzívu"
                className="Toolbar-insert-icon"
                onClick={() => props.onInsertBoldOrItalicValueToEditor('*')}
                title="Vložiť kurzívu"
-               style={{display: props.editorVisible && props.canLoggedUserEdit ? 'flex' : 'none'}}/>
+               style={{display: props.editorVisible && props.userIdWhoCanEdit === loggedUserId ? 'flex' : 'none'}}/>
           <img src={InsertImage} alt="Vložiť obrázok"
                className="Toolbar-insert-icon"
                onClick={() => props.onInsertLinkOrImageValueToEditor('![', ']()')}
                title="Vložiť obrázok"
-               style={{display: props.editorVisible && props.canLoggedUserEdit ? 'flex' : 'none'}}/>
+               style={{display: props.editorVisible && props.userIdWhoCanEdit === loggedUserId ? 'flex' : 'none'}}/>
           <img src={InsertLink} alt="Vložiť odkaz"
                className="Toolbar-insert-icon"
                onClick={() => props.onInsertLinkOrImageValueToEditor('[', ']()')}
                title="Vložiť![](../../../../../Downloads/edit_note_black_24dp 1.png) odkaz"
-               style={{display: props.editorVisible && props.canLoggedUserEdit ? 'flex' : 'none'}}/>
+               style={{display: props.editorVisible && props.userIdWhoCanEdit === loggedUserId ? 'flex' : 'none'}}/>
           <img src={AddComment} alt="Pridať komentár"
                title="Pridať komentár k označenému textu"
                onClick={() => props.setIsNewCommentIconClicked(props.isNewCommentIconClicked ? props.isNewCommentIconClicked : !props.isNewCommentIconClicked)}

@@ -35,12 +35,14 @@ const EditorPage = () => {
     publicationDecision: '',
     reviewNumber: 0,
     articleStatus: null,
-    canLoggedUserEdit: false,
+    userIdWhoCanEdit: null,
   });
   const [allConnectedUsers, setAllConnectedUsers] = useState([])
   const [allCollaborators, setAllCollaborators] = useState([])
 
-    useEffect(() => {
+  let loggedUserId = JSON.parse(localStorage.getItem('loggedUser')).id;
+
+  useEffect(() => {
       let interval;
       axios.get(process.env.REACT_APP_BECKEND_API_URL + '/collab-session/' + location.state.articleId)
     .catch(error => handleError(error))
@@ -53,7 +55,7 @@ const EditorPage = () => {
         let editorState = EditorState.create({
           doc: response.data.text,
           extensions: [
-            contentEditableCompartment.of(EditorView.contentAttributes.of({ contenteditable: response.data.canLoggedUserEdit && articleCanBeEdited(response.data.articleStatus) })),
+            contentEditableCompartment.of(EditorView.contentAttributes.of({ contenteditable: response.data.userIdWhoCanEdit === loggedUserId && articleCanBeEdited(response.data.articleStatus) })),
             extensions,
             theme,
             onUpdate
@@ -63,12 +65,12 @@ const EditorPage = () => {
         setEditorView(newEditorView);
 
         interval = setInterval(() => {
-          let canLoggedUserEdit = false;
+          let userIdWhoCanEdit = null;
           setArticle((state) => {
-            canLoggedUserEdit = state.canLoggedUserEdit
+            userIdWhoCanEdit = state.userIdWhoCanEdit
             return state;
           });
-          if (canLoggedUserEdit) {
+          if (userIdWhoCanEdit === loggedUserId) {
             // if logged user can edit, then push changes every 5 seconds
             axios.post(process.env.REACT_APP_BECKEND_API_URL + '/collab-session/' + response.data.id,
                 {text: getChangedTextFromView(newEditorView)})
@@ -77,7 +79,7 @@ const EditorPage = () => {
               if (response) {
                 setArticle((state) => {
                   state.text = response.data.text
-                  state.canLoggedUserEdit = response.data.canLoggedUserEdit
+                  state.userIdWhoCanEdit = response.data.userIdWhoCanEdit
                   state.articleStatus = response.data.articleStatus
                   return state;
                 });
@@ -98,7 +100,7 @@ const EditorPage = () => {
                 newEditorView.dispatch({
                   effects: contentEditableCompartment.reconfigure(
                       EditorView.contentAttributes.of({
-                        contenteditable: response.data.canLoggedUserEdit
+                        contenteditable: response.data.userIdWhoCanEdit === loggedUserId
                             && articleCanBeEdited(response.data.articleStatus)
                       }))
                 })
@@ -169,7 +171,7 @@ const EditorPage = () => {
 
   function leaveArticleEdit() {
     setArticle((state) => {
-      state.canLoggedUserEdit = false
+      state.userIdWhoCanEdit = null
       return state;
     });
     editorView.dispatch({
@@ -287,7 +289,7 @@ const EditorPage = () => {
       <div>
         <Header openedArticleId={article.id}
                 openedArticleName={article.name}
-                canLoggedUserEditOpenedArticle={article.canLoggedUserEdit}
+                userIdWhoCanEditOpenedArticle={article.userIdWhoCanEdit}
                 allConnectedUsers={allConnectedUsers}
                 allCollaborators={allCollaborators}
                 openedArticleStatus={article.articleStatus}
@@ -301,25 +303,25 @@ const EditorPage = () => {
             <div className="Left-side">
               <div><TextField label="Názov článku" variant="filled"
                               value={article.name} inputProps={{maxLength: 50}}
-                              style={{width: "100%"}} name="name"
-                              required={true} disabled={!article.canLoggedUserEdit}
+                              style={{width: "100%"}} name="name" required={true}
+                              disabled={article.userIdWhoCanEdit !== loggedUserId}
                               onChange={onInputsValueChange}/></div>
-              <TextField label="Abstrakt" variant="filled"
+              <TextField label="Abstrakt" variant="filled" maxRows={5}
                          inputProps={{ maxLength: 1000 }} minRows={5}
-                         maxRows={5} disabled={!article.canLoggedUserEdit}
+                         disabled={article.userIdWhoCanEdit !== loggedUserId}
                          value={article.articleAbstract} multiline
                          style={{width: "100%"}} name="articleAbstract"
                          onChange={onInputsValueChange}/>
               <div><TextField label="Kľúčové slová (oddelené čiarkou)"
                               inputProps={{maxLength: 50}}
-                              disabled={!article.canLoggedUserEdit}
+                              disabled={article.userIdWhoCanEdit !== loggedUserId}
                               name="keyWords" value={article.keyWords}
                               variant="filled" style={{width: "100%"}}
                               onChange={onInputsValueChange}/></div>
               <div><TextField name="publicFileName" inputProps={{maxLength: 50}}
                               label="Názov zverejneného súboru (slug)"
                               value={article.publicFileName}
-                              disabled={!article.canLoggedUserEdit}
+                              disabled={article.userIdWhoCanEdit !== loggedUserId}
                               style={{width: "100%"}} variant="filled"
                               onChange={onInputsValueChange}/></div>
               {loggedUserRole === 'EDITOR' ? <div>
@@ -327,24 +329,25 @@ const EditorPage = () => {
                                name="publicationDecision" inputProps={{ maxLength: 50 }}
                                label="Rozhodnutie o publikácií článku"
                                style={{width: "100%"}} variant="filled"
-                           disabled={!article.canLoggedUserEdit}
+                           disabled={article.userIdWhoCanEdit !== loggedUserId}
                            onChange={onInputsValueChange}/></div> : null}
 
               <div>
                 <ImageSection articleId={article.id}
-                              canLoggedUserEdit={article.canLoggedUserEdit}
+                              userIdWhoCanEdit={article.userIdWhoCanEdit}
                               articleStatus={article.articleStatus}
                               onInsertLinkOrImageValueToEditor={(insertedValueFrom, insertedValueTo) => insertLinkOrImageValueToEditor(insertedValueFrom, insertedValueTo)}/>
               </div>
 
               <Button className="Submit-button" onClick={onSaveArticle}
-                      disabled={!article.canLoggedUserEdit}>Uložiť článok
+                      disabled={article.userIdWhoCanEdit !== loggedUserId}>
+                Uložiť článok
               </Button>
 
             </div>
             <div className="Center-editor">
               <EditorToolbar setIsNewCommentIconClicked={setIsNewCommentIconClicked} isNewCommentIconClicked={isNewCommentIconClicked}
-                             canLoggedUserEdit={article.canLoggedUserEdit}
+                             userIdWhoCanEdit={article.userIdWhoCanEdit}
                   onInsertBoldOrItalicValueToEditor={(insertedValue) => insertBoldOrItalicValueToEditor(insertedValue)}
                   onInsertLinkOrImageValueToEditor={(insertedValueFrom, insertedValueTo) => insertLinkOrImageValueToEditor(insertedValueFrom, insertedValueTo)}
                   editorVisible={editorVisible} toggleEditorPreview={() => onToggleEditorPreview()}/>

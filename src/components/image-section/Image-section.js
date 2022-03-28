@@ -86,13 +86,15 @@ export default function ImageSection(props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [props.articleId])
 
+  let loggedUserId = JSON.parse(localStorage.getItem('loggedUser')).id;
+
   const mappedImagesInfo = <div>
     {images.length > 0 ? images.map(imagesInfo => (
         <div key={imagesInfo.id} className="Image-row">
           <Tooltip title={imagesInfo.name} placement="top" style={{cursor: 'default'}}>
             <div>{imagesInfo.name.length < 33 ? imagesInfo.name : (imagesInfo.name.substring(0, 30) + '...')}</div>
           </Tooltip>
-          {props.canLoggedUserEdit && articleCanBeEdited(props.articleStatus) ?
+          {props.userIdWhoCanEdit === loggedUserId && articleCanBeEdited(props.articleStatus) ?
               <div className="Delete-icon" onClick={(() => onRemoveImage(imagesInfo))}>
                 <img src={DeleteIcon} alt="Odstrániť obrázok" title="Odstrániť obrázok"/>
               </div> : null}
@@ -108,7 +110,7 @@ export default function ImageSection(props) {
         <h4 className="Images-header">Obrázky</h4>
         {mappedImagesInfo}
         <input type="file" className="Upload-image" accept="image/*"
-               disabled={!props.canLoggedUserEdit || !articleCanBeEdited(props.articleStatus)}
+               disabled={props.userIdWhoCanEdit !== loggedUserId || !articleCanBeEdited(props.articleStatus)}
                onChange={(event) => onFileUpload(event)}/>
       </div>
   );
