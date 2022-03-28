@@ -85,6 +85,12 @@ export default function CollabInfoDialog(props) {
                       Práve môže editovať článok
                     </strong>
               </div> : null}
+              {props.userIdWhoCanEdit === loggedUserId && props.userIdWhoCanEdit === user.userDto.id ?
+                  <div>
+                    <strong>
+                      Momentálne môžete editovať článok
+                    </strong>
+              </div> : null}
             </div>
         ))}
       </div>
