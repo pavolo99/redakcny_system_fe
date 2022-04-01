@@ -44,7 +44,7 @@ const VersionsPage = (props) => {
 
   useEffect(() => {
     if (props.location.state) {
-      axios.get(process.env.REACT_APP_BECKEND_API_URL + '/version/' + props.location.state + '/all')
+      axios.get(process.env.REACT_APP_BECKEND_API_URL + '/version/' + props.location.state.openedArticleId + '/all')
       .catch(error => handle401Error(error, history))
       .then(response => {
         if (response) {
@@ -127,8 +127,10 @@ const VersionsPage = (props) => {
   const editorRef = useRef();
 
   function onRedirectToArticle() {
-    history.push('/editor', {articleId: props.location.state});
+    history.push('/editor', {articleId: props.location.state.openedArticleId});
   }
+
+  const loggedUserId = JSON.parse(localStorage.getItem('loggedUser')).id;
 
   return (
       <>
@@ -164,7 +166,7 @@ const VersionsPage = (props) => {
                onClick={() => onNavigateVersion(true, true)}/>
           <div>Celkový počet verzií: <strong>{versions && versions.versionSimpleDtoList ? versions.versionSimpleDtoList.length : 0}</strong></div>
           <Button className="Set-as-current-version-button" onClick={onSetAsCurrentVersion}
-                  disabled={versions && versions.versionSimpleDtoList && loadedVersion.order === versions.versionSimpleDtoList.length}>
+                  disabled={(versions && versions.versionSimpleDtoList && loadedVersion.order === versions.versionSimpleDtoList.length) || (loggedUserId !== props.location.state.userIdWhoCanEditOpenedArticle)}>
             Nastaviť ako súčasnú verziu</Button>
         </div>
         <hr className="Version-header-divider"/>

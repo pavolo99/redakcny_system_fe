@@ -9,14 +9,12 @@
 }
 
 .Connected-user-row {
-    margin-top: 0.5rem;
-    margin-bottom: 0.5rem;
     display: flex;
     align-items: center;
     padding: 1rem;
 }
 
-.Connected-user-row:nth-child(even) {
+.Connected-user-row:nth-child(odd) {
     background-color: #e0e0e0;
 }
 

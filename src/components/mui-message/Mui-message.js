@@ -9,7 +9,8 @@ export function MuiMessage({severity, open, onCloseMuiMessage, message}) {
   });
 
   return (
-      <Snackbar autoHideDuration={6000} open={open} onClose={onCloseMuiMessage}>
+      <Snackbar autoHideDuration={6000} open={open} onClose={onCloseMuiMessage}
+                anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}>
         <Alert onClose={onCloseMuiMessage} severity={severity}>
           {message}
         </Alert>

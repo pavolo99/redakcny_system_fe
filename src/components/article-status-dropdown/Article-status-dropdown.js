@@ -16,14 +16,13 @@ const useStyles = makeStyles(() => ({
 
 export default function ArticleStatusDropdown(props) {
   return (
-      <FormControl className={useStyles().root + ' Article-status-dropdown'}
-                   variant="filled"
-                   disabled={props.selectedArticles === 'APPROVED'
-                   || props.selectedArticles === 'ARCHIVED'}>
+      <FormControl className={useStyles().root + ' Article-status-dropdown'} variant="filled"
+                   disabled={props.selectedArticles === 'APPROVED' || props.selectedArticles === 'ARCHIVED'}>
         <InputLabel>Stav článku</InputLabel>
-        <Select value={props.articleStatus}
-                onChange={(event) => props.filterArticlesByStatus(event)}>
-          <MenuItem value="ALL">Všetky</MenuItem>
+        <Select value={props.articleStatus} onChange={(event) => props.filterArticlesByStatus(event)}>
+          <MenuItem value="ALL">
+            {props.selectedArticles === 'APPROVED' ? 'Schválené' : (props.selectedArticles === 'ARCHIVED' ? 'Archivované' : 'Všetky')}
+          </MenuItem>
           <MenuItem value="WRITING">V procese</MenuItem>
           <MenuItem value="IN_REVIEW">Pripravené na recenziu</MenuItem>
           <MenuItem value="AFTER_REVIEW">Po recenzii</MenuItem>

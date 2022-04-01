@@ -2,32 +2,36 @@ export function getFullName(userDto) {
     if (!userDto) {
         return '';
     }
-    return userDto.firstName + ' ' + userDto.lastName;
+    return userDto.fullName ? userDto.fullName : userDto.username;
 }
 
 export function getUserValue(userDto) {
     if (!userDto) {
         return '';
     }
-    return userDto.firstName + userDto.lastName + userDto.id + userDto.email;
+    return userDto.fullName + userDto.id + userDto.email + userDto.authProvider;
 }
 
 export function getUsernameWithFullName(userDto, loggedUserId) {
     if (!userDto) {
         return '';
     }
-    const loggedUserName = loggedUserId === userDto.id ? 'Vy' : userDto.firstName + ' ' + userDto.lastName
-    return userDto.username + ' (' + loggedUserName + ')';
+    const loggedUserFullName = loggedUserId === userDto.id ? ' (Vy)' : (userDto.fullName ? ' (' + userDto.fullName + ')' : '')
+    return userDto.username + loggedUserFullName;
 }
 
 export function getUser(userDto) {
     if (!userDto) {
         return '';
     }
-    if (userDto.email) {
-        return userDto.firstName + ' ' + userDto.lastName + ' (' + userDto.email + ')';
+    if (userDto.fullName) {
+        if (userDto.email) {
+            return userDto.fullName + ' (' + userDto.email + ')';
+        } else {
+            return userDto.fullName;
+        }
     } else {
-        return userDto.firstName + ' ' + userDto.lastName;
+        return userDto.username
     }
 }
 

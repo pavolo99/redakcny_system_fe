@@ -73,6 +73,10 @@ const ArchivePage = (props) => {
         </div>
         <MuiMessage severity='success' open={props.location.state.published}
                     message='Článok bol úspešne publikovaný a archivovaný'/>
+        <MuiMessage severity='success' open={props.location.state.denied}
+                    message='Článok bol úspešne zamietnutý a archivovaný'/>
+        <MuiMessage severity='success' open={props.location.state.archived}
+                    message='Článok bol úspešne archivovaný'/>
       </>
   );
 };

@@ -10,7 +10,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 import PeopleGroup from "../../assets/people-group.svg";
 import axios from "axios";
 import {useHistory} from "react-router-dom";
-import {Autocomplete, Select, Tooltip} from "@mui/material";
+import {Autocomplete, Select} from "@mui/material";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Avatar from 'react-avatar';
@@ -199,12 +199,12 @@ export default function ShareArticleItem(props) {
   </div>
 
   return (<div>
-    <Tooltip title="Administrácia spolupracovníkov">
+    <div title="Administrácia spolupracovníkov">
       <div onClick={handleClickOpen} className="Quick-menu-item">
         <img src={PeopleGroup} alt="Zdieľanie" className="Quick-menu-img"/>
         <div className="Quick-menu-text">Zdieľanie</div>
       </div>
-    </Tooltip>
+    </div>
     <Dialog open={isShareDialogOpen} onClose={handleClose} fullWidth={true}
             maxWidth={'md'}>
       <DialogTitle>{props.openedArticleName}</DialogTitle>

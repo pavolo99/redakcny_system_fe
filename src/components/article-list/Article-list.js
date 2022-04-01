@@ -41,12 +41,15 @@ export default function ArticleList(props) {
   };
 
   useEffect(() => {
-    if (props.selectedArticles === 'ARCHIVED' || props.selectedArticles === 'APPROVER') {
-      setArticleStatus('ALL');
-    }
+    setArticleStatus('ALL');
     fetchArticlesBasedOnTypeAndStatus();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [props.selectedArticles, articleStatus]);
+  }, [props.selectedArticles]);
+
+  useEffect(() => {
+    fetchArticlesBasedOnTypeAndStatus();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [articleStatus]);
 
 
   function onEditArticle(articleId, articleStatus) {
@@ -84,7 +87,7 @@ export default function ArticleList(props) {
   return (
       <div className="Content">
         <div className="Flex-row-space-between">
-          <Button className="New-article-button" onClick={onCreateNewArticle}>
+          <Button className="New-article-button" onClick={onCreateNewArticle} title="Vytvoriť nový článok">
             + Nový článok
           </Button>
           <ArticleStatusDropdown articleStatus={articleStatus}

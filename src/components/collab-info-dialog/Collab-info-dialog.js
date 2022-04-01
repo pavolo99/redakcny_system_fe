@@ -61,7 +61,6 @@ export default function CollabInfoDialog(props) {
 
   const mappedConnectedUsers =
       <div>
-        <h3>Aktívni používatelia</h3>
         {allConnectedUsers.map(user => (
             <div key={user.id} className="Connected-user-row">
               <div>
@@ -103,18 +102,14 @@ export default function CollabInfoDialog(props) {
             <div key={collaborator.id}>
               <Avatar name={getFullName(collaborator)} fgColor="white"
                       round={true} size="35" style={{cursor: 'pointer'}}
-                      title={collaborator.firstName  + ' ' + collaborator.lastName + ' - ' + (activeUserForThisArticle ? 'Aktívny' : 'Neaktívny')}
+                      title={(collaborator.fullName ? collaborator.fullName : collaborator.username) + ' - ' + (activeUserForThisArticle ? 'Aktívny' : 'Neaktívny')}
                       color={activeUserForThisArticle ? generateHSLColorBasedOnUserInfo(getUserValue(collaborator)) : 'lightgrey'}/>
             </div>
         );
       }) : null}
       </div>
     <Dialog open={isCollabInfoDialogOpen} onClose={handleClose} fullWidth={true} maxWidth="md">
-      <DialogTitle>
-        {props.userIdWhoCanEdit === loggedUserId
-          ? ' Editovanie článku je uzamknuté vami.'
-          : ' Editovanie článku je uzamknuté iným používateľom. Ak chcete článok editovať, musíte počkať, pokiaľ vám neprenechá právo na editovanie.'}
-      </DialogTitle>
+      <DialogTitle>Aktívni používatelia</DialogTitle>
       <DialogContent>
         {mappedConnectedUsers}
       </DialogContent>

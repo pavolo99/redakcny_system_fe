@@ -5,7 +5,6 @@ import DeleteIcon from "../../assets/delete-image.png"
 import {MuiMessage} from "../mui-message/Mui-message";
 import {useHistory} from "react-router-dom";
 import {articleCanBeEdited, handle401Error} from "../../shared/Utils";
-import {Tooltip} from "@mui/material";
 
 export default function ImageSection(props) {
   const history = useHistory();
@@ -38,7 +37,14 @@ export default function ImageSection(props) {
           message: 'Obrázok ' + selectedFile.name + ' už existuje',
           severity: 'error'
         });
+      } else if (error.response.status === 413) {
+        setMuiMessage({
+          open: true,
+          message: 'Obrázok ' + selectedFile.name + ' je príliš veľký',
+          severity: 'error'
+        });
       }
+      event.target.value = null;
     })
     .then(response => {
       if (response) {
@@ -50,6 +56,7 @@ export default function ImageSection(props) {
         const uploadedImagePath = process.env.REACT_APP_BECKEND_API_URL + '/image/content/' + response.data;
         props.onInsertLinkOrImageValueToEditor('![', '](' + uploadedImagePath + ')')
         fetchImagesInfo();
+        event.target.value = null;
       }
     })
   }
@@ -91,9 +98,9 @@ export default function ImageSection(props) {
   const mappedImagesInfo = <div>
     {images.length > 0 ? images.map(imagesInfo => (
         <div key={imagesInfo.id} className="Image-row">
-          <Tooltip title={imagesInfo.name} placement="top" style={{cursor: 'default'}}>
+          <div title={imagesInfo.name} style={{cursor: 'default'}}>
             <div>{imagesInfo.name.length < 33 ? imagesInfo.name : (imagesInfo.name.substring(0, 30) + '...')}</div>
-          </Tooltip>
+          </div>
           {props.userIdWhoCanEdit === loggedUserId && articleCanBeEdited(props.articleStatus) ?
               <div className="Delete-icon" onClick={(() => onRemoveImage(imagesInfo))}>
                 <img src={DeleteIcon} alt="Odstrániť obrázok" title="Odstrániť obrázok"/>

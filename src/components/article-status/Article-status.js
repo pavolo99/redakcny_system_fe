@@ -3,7 +3,7 @@ export default function ArticleStatus(props) {
   let articleStatusName;
   switch (props.name) {
     case 'WRITING':
-      articleStatusName = reviewNumber === 0 ? 'V procese' : 'Po ' + props.reviewNumber + '. recenzii'
+      articleStatusName = 'V procese' + (reviewNumber === 0 ? '' : ' (po ' + props.reviewNumber + '. recenzii)')
       break;
     case 'IN_REVIEW':
       articleStatusName = 'V ' + reviewNumber + '. recenzii'

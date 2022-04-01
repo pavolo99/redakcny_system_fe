@@ -48,6 +48,9 @@ const EditorPage = () => {
     .catch(error => handleError(error))
     .then(response => {
       if (response) {
+        if (loggedUserId === response.data.userIdWhoCanEdit) {
+          setMuiMessage({open: true, message: 'Momentálne môžete editovať článok', severity: 'success'})
+        }
         setArticleAndConnectedUsers(response)
         setAllCollaborators(response.data.allCollaborators)
         const contentEditableCompartment = new Compartment()
@@ -93,6 +96,13 @@ const EditorPage = () => {
             .catch(error => handleError(error))
             .then(response => {
               if (response) {
+                if (userIdWhoCanEdit !== response.data.userIdWhoCanEdit) {
+                  if (loggedUserId === response.data.userIdWhoCanEdit) {
+                    setMuiMessage({open: true, message: 'Momentálne môžete editovať článok', severity: 'success'})
+                  } else if (response.data.userIdWhoCanEdit) {
+                    setMuiMessage({open: true, message: 'Momentálne môže článok editovať váš spolupracovník', severity: 'info'});
+                  }
+                }
                 const mergedArticleObject = {...article, ...response.data};
                 setArticle(mergedArticleObject);
                 setAllConnectedUsers(response.data.allConnectedUsers)
@@ -139,7 +149,15 @@ const EditorPage = () => {
       changedText = editorView.state.doc.text.join('\n')
     } else {
       editorView.state.doc.children.forEach(node => {
-        node.text.forEach(text => changedText = changedText + text.replace("", '\n'))
+        if (node.children) {
+          node.children.forEach(children => {
+            if (children.textContent) {
+              children.text.forEach(text => changedText = changedText + text.replace("", '\n'));
+            }
+          });
+        } else if (node.text) {
+          node.text.forEach(text => changedText = changedText + text.replace("", '\n'));
+        }
       });
       changedText = changedText.substring(1)
     }
@@ -205,9 +223,7 @@ const EditorPage = () => {
     .catch(error => handleError(error))
     .then(response => {
       if (response) {
-        setMuiMessage(prevState => {
-          return {...prevState, open: true, severity: 'success'}
-        });
+        setMuiMessage({message: 'Článok bol úspešne uložený', open: true, severity: 'success'});
       }
     });
   }
@@ -215,7 +231,7 @@ const EditorPage = () => {
   function handleError(error) {
     handle401Error(error, history);
     if (error.response.status === 400) {
-      setMuiMessage({open: true, message: 'Musíte vyplniť všetky povinné polia', severity: 'error'});
+      setMuiMessage({open: true, message: 'Názov a text (max. 100 000 znakov) článku musia byť vyplnené.', severity: 'error'});
     } else {
       setMuiMessage({open: true, message: 'Nastala neočakávaná chyba pri ukladaní článku', severity: 'error'});
     }

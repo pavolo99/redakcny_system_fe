@@ -17,7 +17,6 @@ import Avatar from 'react-avatar';
 import ShareArticleItem from "../share-article-dialog/Share-article-item";
 import {getFullName, handle401Error} from "../../shared/Utils";
 import Logo from "../../assets/redaction-system-logo.svg";
-import {Tooltip} from "@mui/material";
 import CollabInfoDialog from "../collab-info-dialog/Collab-info-dialog";
 
 export default function Header(props) {
@@ -49,7 +48,11 @@ export default function Header(props) {
   }
 
   function onShowArticleVersions() {
-    history.push('/versions', props.openedArticleId)
+    history.push('/versions',
+        {
+          openedArticleId: props.openedArticleId,
+          userIdWhoCanEditOpenedArticle: props.userIdWhoCanEditOpenedArticle
+        })
   }
 
   function onPublishArticle() {
@@ -87,8 +90,7 @@ export default function Header(props) {
   }
 
   function onDenyArticle() {
-    const messageData = createMessageData(
-        'Článok bol úspešne zamietnutý a archivovaný');
+    const messageData = createMessageData('Článok bol úspešne zamietnutý a archivovaný');
     axios.put(process.env.REACT_APP_BECKEND_API_URL + '/article/denied/' + props.openedArticleId)
     .catch((error) => {
       handleError(messageData, error, 'Article must be after review',
@@ -96,7 +98,7 @@ export default function Header(props) {
     })
     .then(response => {
       if (response) {
-        handleArticleStatusChangeEventFromResponse(response);
+        history.push('/archive', {articleId: props.openedArticleId, denied: true});
       }
     })
     .finally(() => setMuiMessage(messageData));
@@ -112,7 +114,7 @@ export default function Header(props) {
     })
     .then(response => {
       if (response) {
-        history.push('/archive', {articleId: props.openedArticleId});
+        history.push('/archive', {articleId: props.openedArticleId, archived: true});
       }
     })
     .finally(() => setMuiMessage(messageData));
@@ -213,7 +215,7 @@ export default function Header(props) {
     <Button startIcon={<MenuIcon style={{marginBottom: '1px', fontSize: '160%'}} /> }
             style={{color: 'white', textTransform: 'none', fontSize: '160%', marginLeft: '0.5rem', marginTop: '2px'}}
         id="menu-button" aria-controls={isMenuOpen ? 'fade-menu' : undefined}
-        aria-haspopup="true" title="Menu" onClick={onMenuOpen}
+        aria-haspopup="true" title="Menu akcií" onClick={onMenuOpen}
         aria-expanded={isMenuOpen ? 'true' : undefined}/>
     <Menu id="fade-menu" MenuListProps={{'aria-labelledby': 'menu-button'}}
         anchorEl={anchorEl} open={isMenuOpen} onClose={onMenuClose} TransitionComponent={Fade}>
@@ -222,7 +224,9 @@ export default function Header(props) {
       <MenuItem onClick={() => onApproveArticle()} disabled={isLoggedUserAuthor || props.openedArticleStatus !== 'IN_REVIEW'}>Schváliť</MenuItem>
       <MenuItem onClick={() => onDenyArticle()} disabled={isLoggedUserAuthor || props.openedArticleStatus !== 'IN_REVIEW'}>Zamietnuť</MenuItem>
       <MenuItem onClick={() => onPublishArticle()} disabled={props.openedArticleStatus !== 'APPROVED'}>Publikovať</MenuItem>
-      <MenuItem onClick={() => onArchiveArticle()} disabled={props.openedArticleStatus !== 'ARCHIVED'}>Archivovať</MenuItem>
+      <MenuItem onClick={() => onArchiveArticle()} disabled={props.openedArticleStatus === 'WRITING' || props.openedArticleStatus === 'APPROVED'}>
+        Archivovať
+      </MenuItem>
       <MenuItem onClick={() => onRemoveArticle()} disabled={props.openedArticleStatus !== 'WRITING'}>Zmazať</MenuItem>
     </Menu>
     <div className="Quick-action-items">
@@ -286,12 +290,12 @@ export default function Header(props) {
               : null}
           </div>
           {props.openedArticleId ?
-              <Tooltip title="Prehľad verzií" onClick={() => onShowArticleVersions()}>
+              <div title="Prehľad verzií" onClick={() => onShowArticleVersions()}>
                 <div className="Quick-menu-item">
                   <img src={Versions} alt="Verzie" className="Quick-menu-img"/>
                   <div className="Quick-menu-text">Verzie</div>
                 </div>
-              </Tooltip> : null}
+              </div> : null}
           {!props.openedArticleId ? <div className="Avatar">
             <Avatar name={getFullName(loggedUser)} round={true} size="40"
                     fgColor="black" color="white" style={{cursor: 'default'}}/>

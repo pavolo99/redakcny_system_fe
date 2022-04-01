@@ -36,7 +36,7 @@ export default function EditorToolbar(props) {
           <img src={InsertLink} alt="Vložiť odkaz"
                className="Toolbar-insert-icon"
                onClick={() => props.onInsertLinkOrImageValueToEditor('[', ']()')}
-               title="Vložiť![](../../../../../Downloads/edit_note_black_24dp 1.png) odkaz"
+               title="Vložiť odkaz"
                style={{display: props.editorVisible && props.userIdWhoCanEdit === loggedUserId ? 'flex' : 'none'}}/>
           <img src={AddComment} alt="Pridať komentár"
                title="Pridať komentár k označenému textu"
