@@ -36,11 +36,11 @@
 
 .Mark-solved-button {
     cursor: pointer;
-    color: #2196F3;
+    font-weight: 500;
 }
 
 .Mark-solved-button:hover {
-    color: black;
+    color: black !important;
 }
 
 .Comment-right-side {

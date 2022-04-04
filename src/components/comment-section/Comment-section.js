@@ -136,10 +136,11 @@ export default function CommentSection(props) {
 
   const mappedCommentsWithItsReplies = <div className="Comments-list">
     {comments.map(comment =>
-        <div key={comment.id} className="Comment"
+        <div key={comment.id} className="Comment" style={{opacity: comment.resolved ? '0.6' : '1'}}
              onMouseEnter={() => onCommentMouseEnterEvent(comment)}>
           <div className="Mark-solved-row">
-            <span className="Mark-solved-button" onClick={() => toggleCommentResolved(comment.id)}>
+            <span className="Mark-solved-button" onClick={() => toggleCommentResolved(comment.id)}
+            style={{color: comment.resolved ? '#ff0000' : '#2196F3'}}>
               {comment.resolved ? 'Označiť ako nevyriešené' : 'Označiť ako vyriešené'}
             </span>
           </div>

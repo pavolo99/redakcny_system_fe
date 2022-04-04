@@ -84,6 +84,9 @@ const EditorPage = () => {
                   state.text = response.data.text
                   state.userIdWhoCanEdit = response.data.userIdWhoCanEdit
                   state.articleStatus = response.data.articleStatus
+                  if (response.data.articleStatus === 'ARCHIVED') {
+                    history.push('/archive', {articleId: state.id});
+                  }
                   return state;
                 });
                 setAllConnectedUsers(response.data.allConnectedUsers)
