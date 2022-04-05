@@ -42,21 +42,21 @@
 }
 
 .Show-private-token-button {
-    background-color: #543030 !important;
+    background-color: #2196F3 !important;
     color: white !important;
     width: 20% !important;
     margin-right: auto !important;
 }
 
 .Test-button {
-    background-color: #3db612 !important;
+    background-color: #2196F3 !important;
     color: white !important;
     width: 25% !important;
     margin-right: 2rem !important;
 }
 
 .Save-button {
-    background-color: #2196F3 !important;
+    background-color: #3db612 !important;
     width: 15% !important;
     color: white !important;
 }
