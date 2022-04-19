@@ -9,6 +9,7 @@ import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import {MuiMessage} from "../../components/mui-message/Mui-message";
 import Avatar from "react-avatar";
+import Back from "../../assets/back.svg"
 
 const useStyles = makeStyles(() => ({
   root: {}
@@ -268,8 +269,8 @@ const AdministrationPage = () => {
   return (
       <>
         <div className="Administration-header">
-          <div className="Back-to-dashboard" onClick={onRedirectToDashboard}>
-            <span>Späť na zoznam článkov</span>
+          <div className="Back" onClick={onRedirectToDashboard}>
+            <img src={Back} alt="Späť na zoznam článkov" title="Späť na zoznam článkov"/>
           </div>
         </div>
         <hr className="Administration-header-divider"/>

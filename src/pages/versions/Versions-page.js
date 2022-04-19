@@ -9,6 +9,7 @@ import {
 } from "../../shared/Utils";
 import SkipEnd from "../../assets/skip-end.svg"
 import SkipStart from "../../assets/skip-start.svg"
+import Back from "../../assets/back.svg"
 import NavigateNext from "../../assets/navigate-next.svg"
 import NavigatePrevious from "../../assets/navigate-previous.svg"
 import {EditorState} from "@codemirror/state";
@@ -135,8 +136,8 @@ const VersionsPage = (props) => {
   return (
       <>
         <div className="Version-header">
-          <div className="Back-to-article" onClick={onRedirectToArticle}>
-            <span>Späť na článok</span>
+          <div className="Back" onClick={onRedirectToArticle}>
+            <img src={Back} alt="Späť na článok" title="Späť na článok"/>
           </div>
           <div className="Version-info">
             <div className="Bold">
@@ -150,19 +151,19 @@ const VersionsPage = (props) => {
 
           <img style={loadedVersion.order === 1 ? {opacity: '0.5', pointerEvents: 'none'} : {}}
                src={SkipStart} alt="Preskočiť na začiatok"
-               className="Navigate-img"
+               className="Navigate-img" title="Preskočiť na začiatok"
                onClick={() => onNavigateVersion(false, true)}/>
           <img style={loadedVersion.order === 1 ? {opacity: '0.5', pointerEvents: 'none'} : {}}
                src={NavigatePrevious} alt="Zobraziť predchádzajúcu"
-               className="Navigate-img"
+               className="Navigate-img" title="Zobraziť predchádzajúcu"
                onClick={() => onNavigateVersion(false, false)}/>
           <img style={versions && versions.versionSimpleDtoList ? loadedVersion.order === versions.versionSimpleDtoList.length ? {opacity: '0.5', pointerEvents: 'none'} : {} : null}
                src={NavigateNext} alt="Zobraziť nasledujúcu"
-               className="Navigate-img"
+               className="Navigate-img" title="Zobraziť nasledujúcu"
                onClick={() => onNavigateVersion(true, false)}/>
           <img style={versions && versions.versionSimpleDtoList ? loadedVersion.order === versions.versionSimpleDtoList.length ? {opacity: '0.5', pointerEvents: 'none'} : {} : null}
                src={SkipEnd} alt="Preskočiť na koniec"
-               className="Navigate-img"
+               className="Navigate-img" title="Preskočiť na koniec"
                onClick={() => onNavigateVersion(true, true)}/>
           <div>Celkový počet verzií: <strong>{versions && versions.versionSimpleDtoList ? versions.versionSimpleDtoList.length : 0}</strong></div>
           <Button className="Set-as-current-version-button" onClick={onSetAsCurrentVersion}

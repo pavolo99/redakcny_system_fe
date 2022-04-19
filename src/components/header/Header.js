@@ -1,6 +1,7 @@
 import React, {useState} from "react";
 import "./Header.css"
 import {useHistory} from "react-router-dom";
+import Save from "../../assets/save.svg"
 import Review from "../../assets/review.svg"
 import Approve from "../../assets/approve.svg"
 import Versions from "../../assets/versions.svg"
@@ -56,37 +57,7 @@ export default function Header(props) {
   }
 
   function onPublishArticle() {
-    const messageData = createMessageData('Článok bol úspešne publikovaný a archivovaný');
-    axios.put(process.env.REACT_APP_BECKEND_API_URL + '/article/published/' + props.openedArticleId)
-    .catch((error) => {
-      handlePublicationError(error, history, messageData);
-    })
-    .then((response) => {
-      if (response) {
-        history.push('/archive', {articleId: props.openedArticleId, published: true});
-      }
-    })
-    .finally(() => setMuiMessage(messageData));
-  }
-
-  function handlePublicationError(error, history, messageData) {
-    handle401Error(error, history);
-    messageData.severity = 'error';
-    if (error.response.data.message === 'A file with this name already exists') {
-      messageData.message = 'Článok alebo obrázok s rovnakým názvom už v repozitári existuje. Kontaktujte administrátora prosím.';
-    } else if (error.response.data.message === 'Publication configuration is not complete') {
-      messageData.message = 'Konfigurácia publikácie je nedokončená. Kontaktujte administrátora prosím.';
-    } else if (error.response.data.message === 'Article publication file name cannot be empty') {
-      messageData.message = 'Najprv sa uistite, či sú všetky metaúdaje vyplnené a verzia článku je uložená. Inak je cesta k zverejnenému článku nesprávna. Kontaktujte administrátora prosím.';
-    } else if (error.response.data.message === 'Invalid path to article') {
-      messageData.message = 'Cesta k článku v repozitári je nesprávna. Kontaktujte administrátora prosím.';
-    } else if (error.response.data.message === 'Branch does not exist') {
-      messageData.message = 'Vetva v repozitári neexistuje. Kontaktujte administrátora prosím.';
-    } else if (error.response.data.message === 'Unauthorized, make sure that private token is correct') {
-      messageData.message = 'Prístup k repozitáru bol zamietnutý. Uistite sa, či privátny token je správny. Kontaktujte administrátora prosím.';
-    } else {
-      messageData.message = 'Nastala neočakávaná chyba pri publikácií článku. Kontaktujte administrátora prosím.';
-    }
+    props.publishArticle()
   }
 
   function onDenyArticle() {
@@ -121,56 +92,19 @@ export default function Header(props) {
   }
 
   function onSendToReview() {
-    const messageData = createMessageData('Článok bol úspešne odoslaný na recenziu');
-    axios.put(process.env.REACT_APP_BECKEND_API_URL + '/article/sent-to-review/' + props.openedArticleId)
-    .catch((error) => {
-      handleError(messageData, error, 'Article must be in the writing process',
-          'Článok môže byť odoslaný na recenziu iba, ak je v stave písania');
-    })
-    .then(response => {
-      if (response) {
-        handleArticleStatusChangeEventFromResponse(response);
-        onMenuClose()
-      }
-    })
-    .finally(() => setMuiMessage(messageData));
+    props.sendToReview()
   }
 
   function onSendReview() {
-    const messageData = createMessageData(
-        'Recenzia článku bola úspešne odoslaná autorovi');
-    axios.put(process.env.REACT_APP_BECKEND_API_URL + '/article/sent-review/' + props.openedArticleId)
-    .catch((error) => {
-      handleError(messageData, error, 'Article must be in the review',
-          'Recenzia môže byť odoslaná iba, ak je článok v recenzii');
-    })
-    .then(response => {
-      if (response) {
-        handleArticleStatusChangeEventFromResponse(response);
-      }
-    })
-    .finally(() => setMuiMessage(messageData));
+    props.sendReview()
   }
 
   function onApproveArticle() {
-    const messageData = createMessageData('Článok bol úspešne schválený');
-    axios.put(process.env.REACT_APP_BECKEND_API_URL + '/article/approved/' + props.openedArticleId)
-    .catch((error) => {
-      handleError(messageData, error, 'Article must be first reviewed',
-          'Článok môže byť schválený až po recenzii');
-    })
-    .then(response => {
-      if (response) {
-        handleArticleStatusChangeEventFromResponse(response)
-      }
-    })
-    .finally(() => setMuiMessage(messageData));
+    props.approveArticle()
   }
 
-  function handleArticleStatusChangeEventFromResponse(response) {
-    if (response) {
-      props.changeArticleStatus(response.data.articleStatus);
-    }
+  function onSaveArticleVersion() {
+    props.saveArticleVersion()
   }
 
   function createMessageData(message) {
@@ -230,6 +164,11 @@ export default function Header(props) {
       <MenuItem onClick={() => onRemoveArticle()} disabled={props.openedArticleStatus !== 'WRITING'}>Zmazať</MenuItem>
     </Menu>
     <div className="Quick-action-items">
+      {props.openedArticleId ? <div className="Quick-menu-item" onClick={() => onSaveArticleVersion()}>
+        <img src={Save} alt="Uložiť článok"
+             className="Quick-menu-img"/>
+        <div className="Quick-menu-text">Uložiť článok</div>
+      </div> : null}
       {props.openedArticleStatus === 'WRITING' ?
         <div className="Quick-menu-item" onClick={() => onSendToReview()}>
           <img src={Review} alt="Odoslať na recenziu"

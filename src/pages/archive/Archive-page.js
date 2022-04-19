@@ -9,6 +9,7 @@ import {theme} from "../../components/codemirror-settings/theme";
 import {Button} from "@material-ui/core";
 import {handle401Error} from "../../shared/Utils";
 import {MuiMessage} from "../../components/mui-message/Mui-message";
+import Back from "../../assets/back.svg";
 
 const ArchivePage = (props) => {
   const history = useHistory();
@@ -91,8 +92,8 @@ const ArchivePage = (props) => {
   return (
       <>
         <div className="Archive-header">
-          <div className="Back-to-dashboard" onClick={onRedirectToDashboard}>
-            <span>Späť na zoznam článkov</span>
+          <div className="Back" onClick={onRedirectToDashboard}>
+            <img src={Back} alt="Späť na zoznam článkov" title="Späť na zoznam článkov"/>
           </div>
           <div className="Name">
             {archivedArticle.name}

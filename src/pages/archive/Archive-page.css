@@ -11,12 +11,6 @@
     margin: 0 !important;
 }
 
-.Back-to-dashboard {
-    font-size: 150%;
-    margin-left: 1rem;
-    cursor: pointer;
-}
-
 .Archive-editor {
     min-height: 90vh;
     background-color: white;

@@ -8,7 +8,7 @@ import {
   EditorState,
   SelectionRange
 } from "@codemirror/state";
-import {Button, TextField} from "@material-ui/core";
+import {TextField} from "@material-ui/core";
 import {useHistory, useLocation} from "react-router-dom";
 import axios from "axios";
 import {extensions} from "../../components/codemirror-settings/extensions";
@@ -45,7 +45,7 @@ const EditorPage = () => {
   useEffect(() => {
       let interval;
       axios.get(process.env.REACT_APP_BECKEND_API_URL + '/collab-session/' + location.state.articleId)
-    .catch(error => handleError(error))
+    .catch(error => handle401Error(error, history))
     .then(response => {
       if (response) {
         if (loggedUserId === response.data.userIdWhoCanEdit) {
@@ -96,7 +96,7 @@ const EditorPage = () => {
           } else {
             // if logged user cannot edit, then fetch changes every 5 seconds
             axios.get(process.env.REACT_APP_BECKEND_API_URL + '/collab-session/' + location.state.articleId)
-            .catch(error => handleError(error))
+            .catch(error => handle401Error(error, history))
             .then(response => {
               if (response) {
                 if (userIdWhoCanEdit !== response.data.userIdWhoCanEdit) {
@@ -219,8 +219,7 @@ const EditorPage = () => {
     }
   });
 
-  function onSaveArticle(event) {
-    event.preventDefault();
+  function saveArticleVersion() {
     axios.put(process.env.REACT_APP_BECKEND_API_URL + '/article/' + article.id,
         {...article, id: article.id, text: getChangedTextFromView(editorView)})
     .catch(error => handleError(error))
@@ -231,13 +230,89 @@ const EditorPage = () => {
     });
   }
 
+  function approveArticle() {
+    axios.put(process.env.REACT_APP_BECKEND_API_URL + '/article/approved/' + article.id,
+        {...article, id: article.id, text: getChangedTextFromView(editorView)})
+    .catch((error => handleError(error)))
+    .then(response => {
+      if (response) {
+        setArticle({...article, articleStatus: response.data.articleStatus})
+        setMuiMessage({open: true, message: 'Článok bol úspešne uložený a schválený', severity: 'success'});
+      }
+    })
+  }
+
+  function sendReview() {
+    axios.put(process.env.REACT_APP_BECKEND_API_URL + '/article/sent-review/' + article.id,
+        {...article, id: article.id, text: getChangedTextFromView(editorView)})
+    .catch((error => handleError(error)))
+    .then(response => {
+      if (response) {
+        setArticle({...article, articleStatus: response.data.articleStatus})
+        setMuiMessage({open: true, message: 'Recenzia článku bola úspešne odoslaná autorovi', severity: 'success'});
+      }
+    })
+  }
+
+  function sendToReview() {
+    axios.put(process.env.REACT_APP_BECKEND_API_URL + '/article/sent-to-review/' + article.id,
+        {...article, id: article.id, text: getChangedTextFromView(editorView)})
+    .catch((error => handleError(error)))
+    .then(response => {
+      if (response) {
+        setArticle({...article, articleStatus: response.data.articleStatus})
+        setMuiMessage({open: true, message: 'Článok bol úspešne odoslaný na recenziu', severity: 'success'});
+      }
+    })
+  }
+
+    function handlePublicationError(error, history) {
+      handle401Error(error, history);
+      let message;
+      if (error.response.data.message === 'A file with this name already exists') {
+        message = 'Článok alebo obrázok s rovnakým názvom už v repozitári existuje. Kontaktujte administrátora prosím.';
+      } else if (error.response.data.message === 'Publication configuration is not complete') {
+        message = 'Konfigurácia publikácie je nedokončená. Kontaktujte administrátora prosím.';
+      } else if (error.response.data.message === 'Article publication file name cannot be empty') {
+        message = 'Najprv sa uistite, či sú všetky metaúdaje vyplnené a verzia článku je uložená. Inak je cesta k zverejnenému článku nesprávna. Kontaktujte administrátora prosím.';
+      } else if (error.response.data.message === 'Invalid path to article') {
+        message = 'Cesta k článku v repozitári je nesprávna. Kontaktujte administrátora prosím.';
+      } else if (error.response.data.message === 'Branch does not exist') {
+        message = 'Vetva v repozitári neexistuje. Kontaktujte administrátora prosím.';
+      } else if (error.response.data.message === 'Unauthorized, make sure that private token is correct') {
+        message = 'Prístup k repozitáru bol zamietnutý. Uistite sa, či privátny token je správny. Kontaktujte administrátora prosím.';
+      } else {
+        message = 'Nastala neočakávaná chyba pri publikácií článku. Kontaktujte administrátora prosím.';
+      }
+      setMuiMessage({open: true, severity: 'error', message: message})
+  }
+
+  function publishArticle() {
+    axios.put(process.env.REACT_APP_BECKEND_API_URL + '/article/published/' + article.id,
+        {...article, id: article.id, text: getChangedTextFromView(editorView)})
+    .catch((error => handlePublicationError(error)))
+    .then(response => {
+      if (response) {
+        history.push('/archive', {articleId: article.id, published: true});
+      }
+    })
+  }
+
   function handleError(error) {
     handle401Error(error, history);
-    if (error.response.status === 400) {
-      setMuiMessage({open: true, message: 'Názov a text (max. 100 000 znakov) článku musia byť vyplnené.', severity: 'error'});
+    let message;
+     if (error.response.message === 'Article must be first reviewed') {
+      message = 'Článok môže byť schválený až po recenzii';
+    } else if (error.response.message === 'Article must be in the review') {
+      message = 'Recenzia môže byť odoslaná iba vtedy, ak je článok v recenzii';
+    } else if (error.response.message === 'Article must be in the writing process') {
+      message = 'Článok môže byť odoslaný na recenziu iba vtedy, ak je v stave písania';
+    } else if (error.response.status === 400) {
+      message = 'Názov a text (max. 100 000 znakov) článku musia byť vyplnené.'
     } else {
-      setMuiMessage({open: true, message: 'Nastala neočakávaná chyba pri ukladaní článku', severity: 'error'});
+      message = 'Nastala neočakávaná chyba pri ukladaní článku';
     }
+    setMuiMessage({open: true, severity: 'error', message: message})
   }
 
   const closeMuiMessage = () => {
@@ -314,7 +389,11 @@ const EditorPage = () => {
                 allCollaborators={allCollaborators}
                 openedArticleStatus={article.articleStatus}
                 leaveArticleEdit={() => leaveArticleEdit()}
-                changeArticleStatus={(newArticleStatus) => setArticle(prevState => { return {...prevState, articleStatus: newArticleStatus}})}/>
+                approveArticle={() => approveArticle()}
+                sendReview={() => sendReview()}
+                sendToReview={() => sendToReview()}
+                publishArticle={() => publishArticle()}
+                saveArticleVersion={() => saveArticleVersion()}/>
         <MuiMessage severity={muiMessage.severity} open={muiMessage.open}
                     onCloseMuiMessage={closeMuiMessage}
                     message={muiMessage.message}/>
@@ -358,11 +437,6 @@ const EditorPage = () => {
                               articleStatus={article.articleStatus}
                               onInsertLinkOrImageValueToEditor={(insertedValueFrom, insertedValueTo) => insertLinkOrImageValueToEditor(insertedValueFrom, insertedValueTo)}/>
               </div>
-
-              <Button className="Submit-button" onClick={onSaveArticle}
-                      disabled={article.userIdWhoCanEdit !== loggedUserId}>
-                Uložiť článok
-              </Button>
 
             </div>
             <div className="Center-editor">
